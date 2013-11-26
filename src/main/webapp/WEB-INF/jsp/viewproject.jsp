@@ -2,6 +2,7 @@
 <%@taglib prefix="c-rt" uri="http://java.sun.com/jstl/core_rt" %>
 <%@taglib prefix="f" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -104,6 +105,12 @@
       <td>${pw.project.todo}</td>
     </tr>
   </table>
+  
+  <br>
+  <jsp:useBean id="today" class="java.util.Date" scope="page" />
+  <a href="${jobauditBaseProjectUrl}to_y=<fmt:formatDate value="${today}" pattern="y" />&to_m=11&project=${pw.project.projectCode }">Jobaudit record for project</a>
+  <br/>
+  NB: Jobaudit currently only records data on nesi projects (e.g. nesi00001)
 
   <br>
   <h4>Researchers on project</h4>

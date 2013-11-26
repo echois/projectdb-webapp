@@ -25,6 +25,8 @@ public class ResearcherController extends GlobalController {
     	ModelAndView mav = new ModelAndView();
     	Researcher r = projectDao.getResearcherById(id);
     	List<Project> ps = projectDao.getProjectsForResearcherId(r.getId());
+    	mav.addObject("heatmapBaseUserUrl",heatmapBaseUserUrl);
+    	mav.addObject("jobauditBaseUserUrl",jobauditBaseUserUrl);
     	mav.addObject("linuxUsername", projectDao.getLinuxUsername(r.getId()));
     	mav.addObject("researcher", r);
     	mav.addObject("projects", ps);

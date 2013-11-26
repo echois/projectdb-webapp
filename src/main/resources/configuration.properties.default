@@ -14,5 +14,9 @@ session.duration.seconds=
 proxy=
 proxyIp=
 
+heatmapBaseUserUrl=http://ganglia.uoa.nesi.org.nz/hpc/cgi-bin/showq.cgi?user=
+jobauditBaseUserUrl=http://ganglia.uoa.nesi.org.nz/jobaudit/html/userrecords?upi=
+jobauditBaseProjectUrl=http://ganglia.uoa.nesi.org.nz/jobaudit/html/statistics_project?from_y=2012&from_m=0&
+
 remoteUserHeader=
 remoteAddrHeader=

@@ -49,6 +49,7 @@ public class ProjectController extends GlobalController {
 				}
 			}
 		}
+		mav.addObject("jobauditBaseProjectUrl",this.jobauditBaseProjectUrl);
 		return mav;
 	}
 	// See a filterable list of all projects

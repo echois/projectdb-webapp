@@ -33,6 +33,12 @@ public class GlobalController {
 	protected String profileDefaultPicture;
 	@Value("${remoteUserHeader}")
 	protected String remoteUserHeader;
+	@Value("${heatmapBaseUserUrl}")
+	protected String heatmapBaseUserUrl;
+	@Value("${jobauditBaseUserUrl}")
+	protected String jobauditBaseUserUrl;
+	@Value("${jobauditBaseProjectUrl}")
+	protected String jobauditBaseProjectUrl;
 	protected Log log = LogFactory.getLog(this.getClass().getName());
 	protected Random random = new Random();
 	

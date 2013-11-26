@@ -74,8 +74,8 @@
   <c:if test="${not empty linuxUsername}">
   	<br>
   	<b>External Records:</b><br/>
-  	<a href="http://ganglia.uoa.nesi.org.nz/hpc/cgi-bin/showq.cgi?user=${linuxUsername }">Currently Running/Queued</a><br/>
-  	<a href="http://ganglia.uoa.nesi.org.nz/jobaudit/html/userrecords?upi=${linuxUsername }">Jobaudit Records (History)</a>
+  	<a href="${heatmapBaseUserUrl}${linuxUsername}">Currently Running/Queued on Auckland NeSI Cluster</a><br/>
+  	<a href="${jobauditBaseUserUrl}${linuxUsername }">Jobaudit Records on Auckland NeSI Cluster (History)</a>
   </c:if>
   <br><br>
   <b>Projects:</b>
