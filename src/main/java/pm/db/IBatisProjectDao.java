@@ -25,6 +25,7 @@ import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
@@ -155,6 +156,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		for (Project p: ps) {
 			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
 			p.setProjectTypeName(t.getName());
+			p.setStatusName(getProjectStatusById(p.getStatusId()));
 		}
 		return ps;
 	}
@@ -201,6 +203,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		Project p = (Project) getSqlMapClientTemplate().queryForObject("getProjectById", id);
 		ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
 		p.setProjectTypeName(t.getName());
+		p.setStatusName(getProjectStatusById(p.getStatusId()));
 		return p;
 	}
 
@@ -401,6 +404,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		for (Project p: ps) {
 			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
 			p.setProjectTypeName(t.getName());
+			p.setStatusName(getProjectStatusById(p.getStatusId()));
 		}
 		return ps;
     }
@@ -410,6 +414,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		for (Project p: ps) {
 			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
 			p.setProjectTypeName(t.getName());
+			p.setStatusName(getProjectStatusById(p.getStatusId()));
 		}
 		return ps;
     }
@@ -690,5 +695,17 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 
 	public String getKpiCodeNameById(Integer codeId) {
 		return (String) getSqlMapClientTemplate().queryForObject("getKpiCodeNameById", codeId);
+	}
+	
+	public List<ProjectStatus> getProjectStatuses() {
+		return (List<ProjectStatus>) getSqlMapClientTemplate().queryForList("getProjectStatuses");
+	}
+	
+	public String getProjectStatusById(Integer id) {
+		return (String) getSqlMapClientTemplate().queryForObject("getProjectStatusById", id);
+	}
+	
+	public String getLinuxUsername(Integer id) {
+		return (String) getSqlMapClientTemplate().queryForObject("getLinuxUsername", id); 
 	}
 }

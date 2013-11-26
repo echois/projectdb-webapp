@@ -5,6 +5,8 @@ public class Project {
 	private Integer id;
 	private String projectCode;
 	private Integer projectTypeId;
+	private Integer statusId;
+	private String statusName;
 	private String name;
 	private String description;
 	private String hostInstitution;
@@ -31,6 +33,14 @@ public class Project {
 
 	public void setProjectTypeId(Integer projectTypeId) {
 		this.projectTypeId = projectTypeId;
+	}
+
+	public Integer getStatusId() {
+		return statusId;
+	}
+
+	public void setStatusId(Integer statusId) {
+		this.statusId = statusId;
 	}
 
 	public String getProjectCode() {
@@ -131,5 +141,13 @@ public class Project {
 
 	public Integer getProjectId() {
 		return this.id;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 }

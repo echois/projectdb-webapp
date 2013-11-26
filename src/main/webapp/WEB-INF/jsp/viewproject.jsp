@@ -68,6 +68,10 @@
       <td>${pw.project.projectTypeName}</td>
     </tr>
     <tr>
+      <td><nobr>Status:</nobr></td>
+      <td>${pw.project.statusName}</td>
+    </tr>
+    <tr>
       <td><nobr>First Day:</nobr></td>
       <td>${pw.project.startDate}</td>
     </tr>

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import pm.pojo.APLink;
 import pm.pojo.Project;
+import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
@@ -94,7 +95,14 @@ public class ProjectController extends GlobalController {
 		Map<Integer,String> pTypes = new LinkedHashMap<Integer,String>();
         if (projectTypes != null) {
             for (ProjectType pt : projectTypes) {
-                    pTypes.put(pt.getId(), pt.getName());
+            	pTypes.put(pt.getId(), pt.getName());
+            }    
+        }
+        List<ProjectStatus> st = projectDao.getProjectStatuses();
+		Map<Integer,String> statuses = new LinkedHashMap<Integer,String>();
+        if (st != null) {
+            for (ProjectStatus s : st) {
+            	statuses.put(s.getId(), s.getName());
             }    
         }
 		ProjectWrapper pw = null;
@@ -132,6 +140,7 @@ public class ProjectController extends GlobalController {
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
 		mav.addObject("projectWrapper",pw);
         mav.addObject("projectTypes", pTypes);
+        mav.addObject("statuses", statuses);
         mav.addObject("institutions", this.projectDao.getInstitutions());
         return mav;
     }
@@ -146,6 +155,10 @@ public class ProjectController extends GlobalController {
 		pw.setProject(newPw.getProject());
 		pw.setRedirect(newPw.getRedirect());
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
+		if (pw.getProject().getStatusId().equals(4)) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			pw.getProject().setEndDate(df.format(new Date()));
+		}
 
 		if (op.equals("CANCEL")) {
 			return handleCancel(pid);
@@ -265,6 +278,11 @@ public class ProjectController extends GlobalController {
 		}
 		if (count == 0 || count > 1) {
 			pw.setErrorMessage("There must be exactly 1 primary adviser on a project");
+			return false;
+		}
+		// At least one HPC
+		if (pw.getProjectFacilities().isEmpty()) {
+			pw.setErrorMessage("There must be at least one HPC facility associated with the project");
 			return false;
 		}
 		return true;

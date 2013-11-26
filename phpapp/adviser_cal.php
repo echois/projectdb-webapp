@@ -36,8 +36,8 @@ X-WR-CALDESC:Follow Up dates and Review dates
 $projects = $db->query("SELECT * FROM project p INNER JOIN adviser_project ap ON p.id=ap.projectId WHERE ap.adviserId=$id");
 
 while ($p = $projects->fetch_object()) {
-  $review = isset($p->nextReviewDate) ? new DateTime($p->nextReviewDate) : '';
-  $followUp = isset($p->nextFollowUpDate) ? new DateTime($p->nextFollowUpDate) : '';
+  $review = new DateTime($p->nextReviewDate);
+  $followUp = new DateTime($p->nextFollowUpDate);
   $now = new DateTime();
   
   $review = $review->format('Ymd');
@@ -54,7 +54,8 @@ while ($p = $projects->fetch_object()) {
   //$desc .= "<br/><a href='http://cluster.ceres.auckland.ac.nz/pm/html/viewproject?id=$pid'>http://cluster.ceres.auckland.ac.nz/pm/html/viewproject?id=$pid</a>";
   $desc = "<a href='http://cluster.ceres.auckland.ac.nz/pm/html/viewproject?id=$pid'>http://cluster.ceres.auckland.ac.nz/pm/html/viewproject?id=$pid</a>";
   
-  echo "BEGIN:VEVENT
+  if (!empty($p->nextReviewDate)) {
+    echo "BEGIN:VEVENT
 DTSTART;VALUE=DATE:$review
 DTEND;VALUE=DATE:$review
 DTSTAMP:$now
@@ -63,7 +64,10 @@ DESCRIPTION:$desc
 LAST-MODIFIED:$now
 SUMMARY:$pname review date
 END:VEVENT
-BEGIN:VEVENT
+";
+  }
+  if (!empty($p->nextFollowUpDate)) {
+    echo "BEGIN:VEVENT
 DTSTART;VALUE=DATE:$followUp
 DTEND;VALUE=DATE:$followUp
 DTSTAMP:$now
@@ -73,6 +77,7 @@ LAST-MODIFIED:$now
 SUMMARY:$pname follow up date
 END:VEVENT
 ";
+  }
 }
 
 echo 'END:VCALENDAR';

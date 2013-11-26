@@ -78,6 +78,7 @@
 	    <th>Name</th>
 	    <th>Code</th>
 	    <th>Type</th>
+	    <th>Status</th>
 	    <th>Adviser's Role</th>
 	    <th>Host Institution</th>
 	    <th>First Day</th>
@@ -96,6 +97,7 @@
         </td>
         <td>${project.projectCode}</td>
         <td><nobr>${project.projectTypeName}</nobr></td>
+        <td><nobr>${project.statusName}</nobr></td>
         <td><nobr>${adviserRole[project.id]}</nobr></td>
         <td><nobr>${project.hostInstitution}</nobr></td>
         <td>${project.startDate}</td>

@@ -57,6 +57,7 @@
    	    <th>Last Day</th>
 	    <th>Host Institution</th>
         <th>Type</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
@@ -85,6 +86,7 @@
         <td>${project.endDate}</td>
         <td>${project.hostInstitution}</td>
         <td>${project.projectTypeName}</td>
+        <td>${project.statusName}</td>
       </tr>
     </c:forEach>
     </tbody>

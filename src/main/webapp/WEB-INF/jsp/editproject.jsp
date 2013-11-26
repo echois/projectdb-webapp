@@ -123,6 +123,11 @@
       <td><form:select path="project.projectTypeId" items="${projectTypes}"/></td>
     </tr>
     <tr>
+      <td>Status:</td>
+      <td>&nbsp;</td>
+      <td><form:select path="project.statusId" items="${statuses}"/></td>
+    </tr>
+    <tr>
       <td>First Day:</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker1" path="project.startDate" size="20"/></td>
@@ -229,6 +234,33 @@
   <button class="update" value="editaplink?projectId=${projectWrapper.project.id}">Add adviser to project</button><br>  
  
   <br>
+  
+  <a id="facilities"></a>
+  <h4>HPC Facilities</h4>
+
+  <table id="facilityTable" class="tablesorter">
+    <thead>
+      <tr>
+   	    <th>HPC Facility</th>
+   	    <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:forEach items="${projectWrapper.projectFacilities}" var="projectFacility">
+        <tr>
+          <td>${projectFacility.facilityName}</td>
+          <td>
+          	<button class="update" value="editprojectfacility?fid=${projectFacility.facilityId}&projectId=${projectWrapper.project.id}">Edit</button>
+            <button class="update delete" value="deleteprojectfacility?fid=${projectFacility.facilityId}&projectId=${projectWrapper.project.id}">Delete</button>
+          </td>
+        </tr>
+      </c:forEach>
+    </tbody>
+  </table>
+
+  <button class="update" value="editprojectfacility?projectId=${projectWrapper.project.id}">Add HPC facility</button><br>
+  <br>
+  
   <a id="kpis"></a>
   <h4>KPIs</h4>
   
@@ -433,31 +465,6 @@
 
   <button class="update" value="editadviseraction?projectId=${projectWrapper.project.id}">Add adviser action</button><br>
 
-  <br>
-  <a id="facilities"></a>
-  <h4>HPC Facilities</h4>
-
-  <table id="facilityTable" class="tablesorter">
-    <thead>
-      <tr>
-   	    <th>HPC Facility</th>
-   	    <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <c:forEach items="${projectWrapper.projectFacilities}" var="projectFacility">
-        <tr>
-          <td>${projectFacility.facilityName}</td>
-          <td>
-          	<button class="update" value="editprojectfacility?fid=${projectFacility.facilityId}&projectId=${projectWrapper.project.id}">Edit</button>
-            <button class="update delete" value="deleteprojectfacility?fid=${projectFacility.facilityId}&projectId=${projectWrapper.project.id}">Delete</button>
-          </td>
-        </tr>
-      </c:forEach>
-    </tbody>
-  </table>
-
-  <button class="update" value="editprojectfacility?projectId=${projectWrapper.project.id}">Add HPC facility</button><br>
   <br>
 
   <button class="saveAndFinishEditing" value="viewproject?id=${projectWrapper.project.id}">Save &amp; Finish Editing</button>
