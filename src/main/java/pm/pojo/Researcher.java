@@ -5,6 +5,8 @@ public class Researcher {
 	private Integer id;
 	private String fullName;
 	private String preferredName;
+	private Integer statusId;
+	private String statusName;
 	private String email;
 	private String phone;
 	private String institution;
@@ -127,6 +129,22 @@ public class Researcher {
 
 	public void setInstitutionalRoleName(String institutionalRoleName) {
 		this.institutionalRoleName = institutionalRoleName;
+	}
+
+	public Integer getStatusId() {
+		return statusId;
+	}
+
+	public void setStatusId(Integer statusId) {
+		this.statusId = statusId;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String string) {
+		this.statusName = string;
 	}
 
 }

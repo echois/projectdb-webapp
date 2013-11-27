@@ -52,6 +52,11 @@
       <td><form:input path="preferredName" size="120"/></td>
     </tr>
     <tr>
+      <td>Status</td>
+      <td>&nbsp;</td>
+      <td><form:select path="statusId" items="${statuses}"/></td>
+    </tr>
+    <tr>
       <td>Picture URL</td>
       <td>&nbsp;</td>
       <td><form:input path="pictureUrl" size="120"/></td>

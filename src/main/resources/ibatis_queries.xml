@@ -279,6 +279,18 @@
 	   FROM project_status
 	   WHERE id=#id#
    </select>
+   
+   <select id="getResearcherStatuses" resultClass="pm.pojo.ResearcherStatus">
+	   SELECT *
+	   FROM researcher_status
+	   ORDER BY id
+   </select>
+   
+   <select id="getResearcherStatusById" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	   SELECT name
+	   FROM researcher_status
+	   WHERE id=#id#
+   </select>
 
    <select id="getResearchOutput" parameterClass="java.lang.Integer" resultClass="pm.pojo.ResearchOutput">
        SELECT *
@@ -374,6 +386,7 @@
       INSERT INTO researcher (
         fullName,
         preferredName,
+        statusId,
         pictureUrl,
         email,
         phone,
@@ -387,6 +400,7 @@
       ) values (
         #fullName#,
         #preferredName#,
+        #statusId#,
         #pictureUrl#, 
         #email#, 
         #phone#, 
@@ -573,6 +587,7 @@
       UPDATE researcher set
         fullName = #fullName#,
         preferredName = #preferredName#,
+        statusId = #statusId#,
         pictureUrl = #pictureUrl#,
         email = #email#,
         phone = #phone#,

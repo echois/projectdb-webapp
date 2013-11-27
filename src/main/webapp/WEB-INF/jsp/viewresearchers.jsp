@@ -46,6 +46,7 @@
 	    <th>Institutional Role</th>
 	    <th>First Day</th>
 	    <th>Last Day</th>
+	    <th>Status</th>
       </tr>
     </thead>
     <tbody>
@@ -60,6 +61,7 @@
         <td>${researcher.institutionalRoleName}</td>
         <td>${researcher.startDate}</td>
         <td>${researcher.endDate}</td>
+        <td>${researcher.statusName}</td>
       </tr>
     </c:forEach>
     </tbody>

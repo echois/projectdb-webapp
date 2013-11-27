@@ -33,6 +33,7 @@ import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
+import pm.pojo.ResearcherStatus;
 import pm.pojo.Review;
 import pm.pojo.Site;
 
@@ -167,6 +168,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 			for (Researcher r: l) {
 				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
 				r.setInstitutionalRoleName(ir.getName());
+				r.setStatusName(getResearcherStatusById(r.getStatusId()));
 			}
 		}
 		return l;
@@ -211,6 +213,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		Researcher r = (Researcher) getSqlMapClientTemplate().queryForObject("getResearcherById", id);
 		InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
 		r.setInstitutionalRoleName(ir.getName());
+		r.setStatusName(getResearcherStatusById(r.getStatusId()));
 		return r;
 	}
 
@@ -289,6 +292,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 			for (Researcher r: l) {
 				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
 				r.setInstitutionalRoleName(ir.getName());
+				r.setStatusName(getResearcherStatusById(r.getStatusId()));
 			}
 		}
 		return l;
@@ -334,6 +338,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 			for (Researcher r: tmp) {
 				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
 				r.setInstitutionalRoleName(ir.getName());
+				r.setStatusName(getResearcherStatusById(r.getStatusId()));
 			}
 		}
 		return tmp;
@@ -699,6 +704,14 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	
 	public List<ProjectStatus> getProjectStatuses() {
 		return (List<ProjectStatus>) getSqlMapClientTemplate().queryForList("getProjectStatuses");
+	}
+	
+	public String getResearcherStatusById(Integer id) {
+		return (String) getSqlMapClientTemplate().queryForObject("getResearcherStatusById", id);
+	}
+	
+	public List<ResearcherStatus> getResearcherStatuses() {
+		return (List<ResearcherStatus>) getSqlMapClientTemplate().queryForList("getResearcherStatuses");
 	}
 	
 	public String getProjectStatusById(Integer id) {

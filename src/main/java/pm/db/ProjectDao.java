@@ -18,6 +18,7 @@ import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
+import pm.pojo.ResearcherStatus;
 import pm.pojo.Site;
 
 public interface ProjectDao {
@@ -73,6 +74,8 @@ public interface ProjectDao {
 	
 	public List<ProjectStatus> getProjectStatuses();
 	public String getProjectStatusById(Integer id);
+	public List<ResearcherStatus> getResearcherStatuses();
+	public String getResearcherStatusById(Integer id);
 	public String getLinuxUsername(Integer id);
 	
 }

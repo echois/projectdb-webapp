@@ -35,6 +35,10 @@
       <td>${researcher.preferredName}</td>
     </tr>
     <tr>
+      <td valign="top">Status:</td>
+      <td>${researcher.statusName}</td>
+    </tr>
+    <tr>
       <td valign="top">Email:</td>
       <td>${researcher.email}</td>
     </tr>

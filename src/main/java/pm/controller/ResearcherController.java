@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
+import pm.pojo.ResearcherStatus;
 
 @Controller
 public class ResearcherController extends GlobalController {
@@ -63,6 +65,14 @@ public class ResearcherController extends GlobalController {
 			r.setStartDate(df.format(new Date()));
 			r.setPictureUrl(this.profileDefaultPicture);
 		}
+		List<ResearcherStatus> st = projectDao.getResearcherStatuses();
+		Map<Integer,String> statuses = new LinkedHashMap<Integer,String>();
+        if (st != null) {
+            for (ResearcherStatus rs : st) {
+            	statuses.put(rs.getId(), rs.getName());
+            }    
+        }
+        mav.addObject("statuses",statuses);
 		mav.addObject("researcher",r);
 		mav.addObject("affiliations", this.affiliationUtil.getAffiliationStrings());
 		mav.addObject("institutionalRoles", iRoles);

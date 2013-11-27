@@ -111,6 +111,14 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | select     | adviserRoleId            | 1                              |
     Then I press "Submit"
     Then I wait until I see "Delete adviser from project"
+    Then I wait until I see "Add HPC facility"
+    And I press "Add HPC facility"
+    Then I wait until I see "Pan"
+    Then I fill in the following <formdetails>
+      | field_type | form_id                  | value                                                                               |
+      | select     | facilityId               | Pan                                                                                 |
+    Then I press "Submit"
+    Then I wait until I see "Pan"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
     
@@ -202,23 +210,6 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
   
-  @javascript @project @edit @hpc
-  Scenario: Edit the project and add a HPC Facility
-    When I go to "/viewprojects"
-    And I follow "`Save the world"
-    Then I wait until I see "Edit"
-    And I follow "Edit"
-    Then I wait until I see "Add HPC facility"
-    And I press "Add HPC facility"
-    Then I wait until I see "Pan"
-    Then I fill in the following <formdetails>
-      | field_type | form_id                  | value                                                                               |
-      | select     | facilityId               | Pan                                                                                 |
-    Then I press "Submit"
-    Then I wait until I see "Pan"
-    Then I press "Save & Finish Editing"
-    Then I wait until I see "Edit"
-    
   @nojs @project @authz
   Scenario: Attempt to a edit a project that I don't own, when I'm not admin
     When I'm logged in as adviser2
