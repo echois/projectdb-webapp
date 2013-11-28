@@ -42,7 +42,7 @@ if (!isset($_GET['inst'])) {
     while ($row = $institutions->fetch_row()) {
       $i = $row[0];
       if (in_array($i,$blacklist)) continue;
-      echo "<div class='instBlock'><div style='margin:15px'><a href='?inst=$i'><h2 style='display:inline'>$i</h2></a></div>";
+      echo "<div class='instBlock'><a href='?inst=$i'><h2 style='display:inline'>$i</h2></a>";
       // Then print departments under that institution
       if ($departments = $db->query("SELECT DISTINCT r.division FROM project
                                      INNER JOIN researcher_project rp ON rp.projectId=project.id
@@ -79,17 +79,19 @@ if (!isset($_GET['inst'])) {
     $d = $db->real_escape_string($_GET['dept']);
     $deptCondition = " AND r.division='$d'";
   } else {
+    // Picked inst but not dept - level 2 select page
     echo "<button class='backButton' onclick='history.back()'>Back</button>";
     if ($departments = $db->query("SELECT DISTINCT r.division FROM project
                                      INNER JOIN researcher_project rp ON rp.projectId=project.id
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                                      INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
+                                     AND project.statusId<3
                                      AND institution='$i'  
                                      AND division!='' ORDER BY division")) {
       if ($departments->num_rows>1) {
         //include('header.php');
-        echo "<h1>$i</h1><div class='instBlock'><ul>";
+        echo "<h1 style='margin-bottom:50px'>$i</h1><div class='instBlock'><ul>";
         // If there's a result, enumerate through it
         while ($row = $departments->fetch_row()) {
           $d = $row[0];
@@ -113,6 +115,7 @@ if (!isset($_GET['inst'])) {
                               INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                               INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                               WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
+                              AND project.statusId<3
                               AND hostInstitution='$i'$deptCondition")) {
     if ($projects->num_rows==0) {
       print "No projects";
