@@ -54,8 +54,20 @@
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="prefix" value="/WEB-INF/jsp/pm/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+
+    <bean id="PMAuditFilter" class="pm.filter.AuditFilter">
+        <property name="proxyIp" value="${proxyIp}"/>
+        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
+        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
+    </bean>
+
+    <bean id="PMTestFilter" class="pm.filter.TestFilter">
+        <property name="proxyIp" value="${proxyIp}"/>
+        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
+        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
+    </bean>
 
 </beans>

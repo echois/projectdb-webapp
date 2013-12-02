@@ -16,6 +16,8 @@
  
  <context:annotation-config />
  <context:component-scan base-package="pm.controller" />
+ <context:component-scan base-package="signup.controller" />
+ <context:component-scan base-package="signup.pojo" />
  <mvc:annotation-driven />
  
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -51,16 +53,4 @@
         <property name="sqlMapClient" ref="ibatisSqlMapClient"/>
     </bean>
     
-    <bean id="AuditFilter" class="pm.filter.AuditFilter">
-        <property name="proxyIp" value="${proxyIp}"/>
-        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
-        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
-    </bean>
-
-    <bean id="TestFilter" class="pm.filter.TestFilter">
-        <property name="proxyIp" value="${proxyIp}"/>
-        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
-        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
-    </bean>
-
 </beans>
