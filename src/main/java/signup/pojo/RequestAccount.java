@@ -20,6 +20,8 @@ public class RequestAccount {
 	private String preferredName;
 	@NotEmpty(message = "Affiliation is compulsory")
 	private String institution;
+	@Size(max = 200, message = "Affiliation must contain max 200 characters")
+	@Pattern(regexp = "^[a-zA-Z0-9 \\(\\)_\\-]*$", message = "Other institution contains invalid characters")
 	private String otherInstitution;
 	private String division;
 	private String department;
@@ -31,8 +33,8 @@ public class RequestAccount {
 	private String email;
 	@NotNull(message = "Institutional role is compulsory")
 	private Integer institutionalRoleId;
-	@Size(min = 1, max = 30, message = "Other institutional role must contain of 1-30 characters")
-	@Pattern(regexp = "^[a-zA-Z _\\-]*$", message = "Other institutional role contains invalid characters")
+	@Size(max = 100, message = "Institutional role must contain max 100 characters")
+	@Pattern(regexp = "^[a-zA-Z _\\-]*$", message = "Institutional role contains invalid characters")
 	private String otherInstitutionalRole;
 
 	public String getPreferredName() {
