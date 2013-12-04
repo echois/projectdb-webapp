@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nz.ac.auckland.eresearch</groupId>
     <artifactId>project_management</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>Project Management Prototype</name>
     <description>Prototype for the project and collaborator management app</description>
     <packaging>war</packaging>
