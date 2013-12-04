@@ -18,7 +18,7 @@
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 		<property name="exceptionMappings">
 			<props>
-				<prop key="pm.util.CustomException">customexception</prop>
+				<prop key="common.util.CustomException">customexception</prop>
 			</props>
 		</property>
 	</bean>
@@ -48,7 +48,7 @@
 		<property name="sessionDuration" value="${session.duration.seconds}" />
 	</bean>
 
-	<bean id="affiliationUtil" class="pm.util.AffiliationUtil">
+	<bean id="affiliationUtil" class="common.util.AffiliationUtil">
 		<property name="projectDao" ref="projectDao" />
 	</bean>
 
