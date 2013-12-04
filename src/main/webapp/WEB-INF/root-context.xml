@@ -11,10 +11,7 @@
       http://www.springframework.org/schema/jdbc
       http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-  <context:annotation-config />
-  <context:component-scan base-package="pm.controller" />
-  <context:component-scan base-package="signup.controller" />
-  <context:component-scan base-package="signup.pojo" />
+  <context:annotation-config/>
   <mvc:annotation-driven />
 
   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -46,8 +43,8 @@
     <property name="sqlMapClient" ref="ibatisSqlMapClient" />
   </bean>
 
-  <bean id="tempProjectDao" class="pm.db.IBatisTempProjectDao">
-    <property name="sqlMapClient" ref="ibatisSqlMapClient" />
+  <bean id="affiliationUtil" class="common.util.AffiliationUtil">
+    <property name="projectDao" ref="projectDao" />
   </bean>
 
 </beans>
