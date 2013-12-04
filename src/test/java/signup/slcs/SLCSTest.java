@@ -49,4 +49,19 @@ public class SLCSTest {
 		this.slcs.getIdpDnMap();
 	}
 
+	@Test
+	public void testCreateUser() throws Exception {
+	    String idpUrl = "http://iam.auckland.ac.nz/idp";
+	    String baseDn = "/DC=nz/DC=org/DC=bestgrid/DC=slcs/O=The University of Auckland";
+	    String fullName = "Test User";
+	    String token = "1234";
+	    String expectedDn = baseDn + "/CN=" + fullName + " " + token;
+	    assertEquals(expectedDn, this.slcs.createUserDn(idpUrl, fullName, token));
+	}
+	
+	@Test(expected = Exception.class)
+	public void testCreateUserDnUnknownIdp() throws Exception {
+		this.slcs.createUserDn("http://iam.auckland.ac.nz/does/not/exist", "Test User", "1234");
+	}
+	
 }
