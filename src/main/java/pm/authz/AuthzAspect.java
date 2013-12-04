@@ -9,9 +9,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import common.util.CustomException;
+
 import pm.db.ProjectDao;
 import pm.pojo.Adviser;
-import pm.util.CustomException;
 
 public class AuthzAspect {
 

@@ -11,9 +11,9 @@ import pm.db.ProjectDao;
 import pm.db.TempProjectDao;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.TempProject;
-import pm.util.CustomException;
 
 import com.thoughtworks.xstream.XStream;
+import common.util.CustomException;
 
 public class TempProjectManager {
 

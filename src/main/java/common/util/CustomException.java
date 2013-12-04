@@ -1,4 +1,4 @@
-package pm.util;
+package common.util;
 
 public class CustomException extends Exception {
 

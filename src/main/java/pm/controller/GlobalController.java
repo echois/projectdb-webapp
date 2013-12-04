@@ -12,10 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import common.util.AffiliationUtil;
+
 import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
 import pm.temp.TempProjectManager;
-import pm.util.AffiliationUtil;
 
 @Controller
 public class GlobalController {
