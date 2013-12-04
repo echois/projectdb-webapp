@@ -1,29 +1,39 @@
 package signup.pojo;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import signup.validation.NotEmptyIfOtherFieldHasValue;
+
+@NotEmptyIfOtherFieldHasValue.List({
+  @NotEmptyIfOtherFieldHasValue(fieldName = "institution", fieldValue = "Other", dependFieldName = "otherInstitution", message="Affiliation is compulsory"),
+  @NotEmptyIfOtherFieldHasValue(fieldName = "institutionalRoleId", fieldValue = "4", dependFieldName = "otherInstitutionalRole", message = "Institutional role is compulsory"),
+})
 public class RequestAccount {
 
-	@Size(min = 5, max = 50, message="Full name must contain of 5-50 characters")
 	private String fullName;
+	@Size(min = 1, max = 40, message = "Preferred name must contain of 1-40 characters")
+	@Pattern(regexp = "^((?![<>{}\\[\\]\":\\.]).)*$", message = "Preferred name contains invalid characters")
 	private String preferredName;
-	@NotNull
-	@NotEmpty
+	@NotEmpty(message = "Affiliation is compulsory")
 	private String institution;
+	private String otherInstitution;
 	private String division;
 	private String department;
-	@Size(min = 4, max = 30, message="Contact phone number must contain between 4-30 characters")
+	@Size(min = 4, max = 30, message = "Phone number must contain of 4-30 characters")
+	@Pattern(regexp = "^((?![<>{}\\[\\]\":\\.]).)*$", message = "Phone number contains invalid characters")
 	private String phone;
-	@NotNull
-	@NotEmpty
-	@Email
+	@NotEmpty(message = "E-mail address is compulsory")
+	@Email(message = "Email Address is not a valid format")
 	private String email;
-	@NotNull
-	@NotEmpty
-	private String institutionalRole;
+	@NotNull(message = "Institutional role is compulsory")
+	private Integer institutionalRoleId;
+	@Size(min = 1, max = 30, message = "Other institutional role must contain of 1-30 characters")
+	@Pattern(regexp = "^[a-zA-Z _\\-]*$", message = "Other institutional role contains invalid characters")
+	private String otherInstitutionalRole;
 
 	public String getPreferredName() {
 		return preferredName;
@@ -81,12 +91,28 @@ public class RequestAccount {
 		this.email = email;
 	}
 
-	public String getInstitutionalRole() {
-		return institutionalRole;
+	public Integer getInstitutionalRoleId() {
+		return institutionalRoleId;
 	}
 
-	public void setInstitutionalRole(String institutionalRole) {
-		this.institutionalRole = institutionalRole;
+	public void setInstitutionalRoleId(Integer institutionalRoleId) {
+		this.institutionalRoleId = institutionalRoleId;
+	}
+
+	public String getOtherInstitution() {
+		return otherInstitution;
+	}
+
+	public void setOtherInstitution(String otherInstitution) {
+		this.otherInstitution = otherInstitution;
+	}
+
+	public String getOtherInstitutionalRole() {
+		return otherInstitutionalRole;
+	}
+
+	public void setOtherInstitutionalRole(String otherInstitutionalRole) {
+		this.otherInstitutionalRole = otherInstitutionalRole;
 	}
 
 }
