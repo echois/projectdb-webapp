@@ -1,4 +1,5 @@
 *.class
+**~
 
 # Package Files #
 *.jar
@@ -13,6 +14,10 @@ target
 .metadata
 .project
 .settings
+
+# IntelliJ
+.idea
+*.iml
 
 configuration.properties
 configuration.properties.bevan
