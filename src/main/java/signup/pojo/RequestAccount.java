@@ -1,17 +1,16 @@
 package signup.pojo;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import signup.validation.NotEmptyIfOtherFieldHasValue;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import signup.validation.NotEmptyIfOtherFieldHasValue;
 
 @NotEmptyIfOtherFieldHasValue.List({
   @NotEmptyIfOtherFieldHasValue(fieldName = "institution", fieldValue = "Other", dependFieldName = "otherInstitution", message="Affiliation is compulsory"),
-  @NotEmptyIfOtherFieldHasValue(fieldName = "institutionalRoleId", fieldValue = "4", dependFieldName = "otherInstitutionalRole", message = "Institutional role is compulsory"),
-})
+  @NotEmptyIfOtherFieldHasValue(fieldName = "institutionalRoleId", fieldValue = "4", dependFieldName = "otherInstitutionalRole", message = "Institutional role is compulsory")})
 public class RequestAccount {
 
 	private String fullName;
