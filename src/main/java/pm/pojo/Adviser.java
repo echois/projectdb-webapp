@@ -129,4 +129,25 @@ public class Adviser {
 		this.isAdmin = isAdmin;
 	}
 
+
+    @Override
+    public String toString() {
+        return "Adviser{" +
+                "numProjects=" + numProjects +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", institution='" + institution + '\'' +
+                ", division='" + division + '\'' +
+                ", department='" + department + '\'' +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", notes='" + notes + '\'' +
+                ", tuakiriUniqueId='" + tuakiriUniqueId + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", id=" + id +
+                '}';
+    }
+
 }

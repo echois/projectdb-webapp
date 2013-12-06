@@ -1,9 +1,6 @@
 package pm.controller;
 
-import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
-
+import common.util.AffiliationUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import common.util.AffiliationUtil;
-
 import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
 import pm.temp.TempProjectManager;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Random;
 
 @Controller
 public class GlobalController {
@@ -42,7 +39,7 @@ public class GlobalController {
 	protected String jobauditBaseProjectUrl;
 	protected Log log = LogFactory.getLog(this.getClass().getName());
 	protected Random random = new Random();
-	
+
 	protected String getTuakiriUniqueIdFromRequest() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String user = (String) request.getAttribute(this.remoteUserHeader);
