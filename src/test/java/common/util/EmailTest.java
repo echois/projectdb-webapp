@@ -12,20 +12,14 @@ import javax.mail.internet.InternetAddress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/EmailTest-context.xml"})
 public class EmailTest {
 	
-	@Autowired
 	private Email email;
     private GreenMail testSmtp;
 	private String from = "from@test.org";
@@ -37,6 +31,11 @@ public class EmailTest {
 
     @Before
     public void testSmtpInit(){
+    	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    	mailSender.setHost("localhost");
+    	mailSender.setPort(3025);
+    	email = new Email();
+    	email.setMailSender(mailSender);
         testSmtp = new GreenMail(ServerSetupTest.SMTP);
         testSmtp.start();
     }
