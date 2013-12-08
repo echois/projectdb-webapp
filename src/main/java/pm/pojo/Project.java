@@ -150,4 +150,26 @@ public class Project {
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
 	}
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", projectCode='" + projectCode + '\'' +
+                ", projectTypeId=" + projectTypeId +
+                ", statusId=" + statusId +
+                ", statusName='" + statusName + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", hostInstitution='" + hostInstitution + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", nextReviewDate='" + nextReviewDate + '\'' +
+                ", nextFollowUpDate='" + nextFollowUpDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", notes='" + notes + '\'' +
+                ", todo='" + todo + '\'' +
+                ", requirements='" + requirements + '\'' +
+                ", projectTypeName='" + projectTypeName + '\'' +
+                '}';
+    }
 }

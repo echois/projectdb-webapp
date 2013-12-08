@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import pm.db.ProjectDao;
-import pm.temp.TempProjectManager;
 
 import java.util.Random;
 
@@ -23,8 +22,8 @@ public class AbstractControl {
 
     @Autowired
 	protected ProjectDao projectDao;
-	@Autowired
-	protected TempProjectManager tempProjectManager;
+//	@Autowired
+//	protected TempProjectManager tempProjectManager;
 //	@Autowired
 //	protected AuthzAspect authzAspect;
 	@Autowired
