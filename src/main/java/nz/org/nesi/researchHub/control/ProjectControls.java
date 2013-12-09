@@ -6,6 +6,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pm.pojo.*;
 
 import java.util.LinkedList;
@@ -19,21 +23,24 @@ import java.util.List;
  * Time: 9:38 AM
  */
 @Controller
+@RequestMapping(value = "/projects")
 public class ProjectControls extends AbstractControl {
 
-        public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
         ApplicationContext context =
-                new ClassPathXmlApplicationContext( "pm-servlet.xml", "signup-servlet.xml", "root-context.xml");
+                new ClassPathXmlApplicationContext("rest-servlet.xml", "pm-servlet.xml", "signup-servlet.xml", "root-context.xml");
 
 
         AdviserControls ac = (AdviserControls) context.getBean("adviserControls");
 
-        ProjectControls pc = (ProjectControls)context.getBean("projectControls");
+        ProjectControls pc = (ProjectControls) context.getBean("projectControls");
 
-        for ( Project p : pc.getProjects() ) {
-            System.out.println(p);
-        }
+//        for (Project p : pc.getProjects()) {
+//            System.out.println(p);
+//        }
+
+        System.out.println(pc.getProjectWrapper("uoa00155"));
 
     }
 
@@ -79,26 +86,53 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Gets the project (with associted objects) with the specified id.
+     * Gets the project (with associted objects) with the specified id or project code.
      *
-     * @param projectId the project id
+     * @param projectIdOrCode the project id or project code
      * @return the Project
      */
-    public ProjectWrapper getProjectWrapper(Integer projectId) {
+    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
 
         try {
-            ProjectWrapper pw = projectDao.getProjectWrapperById(projectId);
-            return pw;
+            int i = Integer.parseInt(projectIdOrCode);
+            try {
+                ProjectWrapper pw = projectDao.getProjectWrapperById(i);
+                return pw;
+            } catch (Exception e) {
+                throw new DatabaseException("Could not retrieve project with id: " + projectIdOrCode, e);
+            }
         } catch (Exception e) {
-            throw new DatabaseException("Could not retrieve project with id: " + projectId, e);
+            try {
+            ProjectWrapper pw = projectDao.getProjectWrapperByProjectCode(projectIdOrCode);
+            return pw;
+            } catch (Exception e2) {
+                throw new DatabaseException("Could not retrieve project with code: "+ projectIdOrCode, e2);
+            }
         }
+
+    }
+
+    /**
+     * Utility method that forwards to {@link #getProjectWrapper(String)}.
+     * @param id the id of the project
+     * @return the projectWrapper object
+     */
+    public ProjectWrapper getProjectWrapper(Integer id) {
+        return getProjectWrapper(id.toString());
     }
 
     /**
      * Get all projects in the database.
      *
+     * Mind, this doesn't return project wrapper objects, just the plain objects. We could change that, not sure about
+     * performance in that case.
+     *
      * @return all projects
      */
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
     public List<Project> getProjects() {
         try {
             List<Project> ps = projectDao.getProjects();
@@ -111,10 +145,14 @@ public class ProjectControls extends AbstractControl {
     /**
      * Get all projects that contain the specified filter string (case-insensitive) in one or more of the project properties.
      *
+     * Mind, this returns only the Project object, not the ProjectWrapper ones (see: {@link #getProjects()}.
+     *
      * @param filter the filter string, can't be empty
      * @return all projects matching the filter
      */
-    public List<Project> filterProjects(String filter) {
+    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<Project> filterProjects(@PathVariable String filter) {
 
         if (StringUtils.isEmpty(filter)) {
             throw new IllegalArgumentException("Can't filter projects using empty string, use getProjects method instead.");
@@ -141,23 +179,26 @@ public class ProjectControls extends AbstractControl {
      * @param project the updated project wrapper
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
      */
-    public void editProjectWrapper(ProjectWrapper project) throws InvalidEntityException {
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException {
 
         validateProject(project);
-        if (project.getProject() != null && project.getProject().getId() != null) {
-            int projectId = project.getProject().getId();
+        if (project.getProject() != null) {
             // might throw database exception if project does not already exist
-            ProjectWrapper temp = getProjectWrapper(projectId);
+            ProjectWrapper temp = getProjectWrapper(id.toString());
+
+            project.getProject().setId(id);
 
             // great, no exception, means an project with this id does already exist,
             //TODO maybe compare timestamps?
             try {
-                projectDao.updateProjectWrapper(projectId, project);
+                projectDao.updateProjectWrapper(id, project);
             } catch (Exception e) {
-                throw new DatabaseException("Can't update project with id " + projectId, e);
+                throw new DatabaseException("Can't update project with id " + id, e);
             }
         } else {
-            throw new InvalidEntityException("Can't edit project. No id provided.", Adviser.class, "id");
+            throw new InvalidEntityException("Can't edit project. No project object provided.", Adviser.class, "id");
         }
 
     }
@@ -167,7 +208,9 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    public void delete(Integer id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void delete(@PathVariable Integer id) {
 
         try {
             this.projectDao.deleteProjectWrapper(id);
@@ -183,6 +226,8 @@ public class ProjectControls extends AbstractControl {
      * @param pw the projectWrapper object
      * @return the id of the new project
      */
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @ResponseBody
     public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
 
         Project p = pw.getProject();
