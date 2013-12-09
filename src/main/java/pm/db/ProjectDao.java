@@ -1,29 +1,13 @@
 package pm.db;
 
-import java.util.List;
+import pm.pojo.*;
 
-import pm.pojo.Adviser;
-import pm.pojo.AdviserRole;
-import pm.pojo.Affiliation;
-import pm.pojo.Facility;
-import pm.pojo.InstitutionalRole;
-import pm.pojo.Kpi;
-import pm.pojo.KpiCode;
-import pm.pojo.Project;
-import pm.pojo.ProjectKpi;
-import pm.pojo.ProjectStatus;
-import pm.pojo.ProjectType;
-import pm.pojo.ProjectWrapper;
-import pm.pojo.ResearchOutput;
-import pm.pojo.ResearchOutputType;
-import pm.pojo.Researcher;
-import pm.pojo.ResearcherRole;
-import pm.pojo.ResearcherStatus;
-import pm.pojo.Site;
+import java.util.List;
 
 public interface ProjectDao {
 
-	public ProjectWrapper getProjectWrapperById(Integer id) throws Exception;
+    public ProjectWrapper getProjectWrapperById(Integer id) throws Exception;
+    public ProjectWrapper getProjectWrapperByProjectCode(String projectCode) throws Exception;
 	public Researcher getResearcherById(Integer id) throws Exception;
 	public Adviser getAdviserById(Integer id) throws Exception;
 	public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
@@ -55,27 +39,27 @@ public interface ProjectDao {
     public Kpi getKpiById(Integer id) throws Exception;
 	public ResearchOutputType getResearchOutputTypeById(Integer id) throws Exception;
 	public Facility getFacilityById(Integer id) throws Exception;
-    
+
 	public Integer createProjectWrapper(ProjectWrapper pw) throws Exception;
 	public Integer createResearcher(Researcher r) throws Exception;
 	public Integer createAdviser(Adviser a) throws Exception;
-	
+
 	public void updateProjectWrapper(int projectId, ProjectWrapper pw) throws Exception;
 	public void updateResearcher(Researcher r) throws Exception;
 	public void updateAdviser(Adviser a) throws Exception;
-	
+
 	public void deleteProjectWrapper(Integer projectId) throws Exception;
 	public void deleteResearcher(Integer id) throws Exception;
 	public void deleteAdviser(Integer id) throws Exception;
-	
+
 	public String getNextProjectCode(String hostInstitution);
 	public List<KpiCode> getKpiCodes();
 	public String getKpiCodeNameById(Integer codeId);
-	
+
 	public List<ProjectStatus> getProjectStatuses();
 	public String getProjectStatusById(Integer id);
 	public List<ResearcherStatus> getResearcherStatuses();
 	public String getResearcherStatusById(Integer id);
 	public String getLinuxUsername(Integer id);
-	
+
 }

@@ -1,41 +1,16 @@
 package pm.db;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+import pm.authz.annotation.RequireAdmin;
+import pm.authz.annotation.RequireAdviser;
+import pm.authz.annotation.RequireAdviserOnProject;
+import pm.pojo.*;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
-
-import pm.authz.annotation.RequireAdmin;
-import pm.authz.annotation.RequireAdviser;
-import pm.authz.annotation.RequireAdviserOnProject;
-import pm.pojo.APLink;
-import pm.pojo.Adviser;
-import pm.pojo.AdviserAction;
-import pm.pojo.AdviserRole;
-import pm.pojo.Affiliation;
-import pm.pojo.Attachment;
-import pm.pojo.Facility;
-import pm.pojo.FollowUp;
-import pm.pojo.InstitutionalRole;
-import pm.pojo.Kpi;
-import pm.pojo.KpiCode;
-import pm.pojo.Project;
-import pm.pojo.ProjectFacility;
-import pm.pojo.ProjectKpi;
-import pm.pojo.ProjectStatus;
-import pm.pojo.ProjectType;
-import pm.pojo.ProjectWrapper;
-import pm.pojo.RPLink;
-import pm.pojo.ResearchOutput;
-import pm.pojo.ResearchOutputType;
-import pm.pojo.Researcher;
-import pm.pojo.ResearcherRole;
-import pm.pojo.ResearcherStatus;
-import pm.pojo.Review;
-import pm.pojo.Site;
 
 public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectDao {
 
@@ -50,7 +25,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
     	List<FollowUp> fus = pw.getFollowUps();
     	List<AdviserAction> aas = pw.getAdviserActions();
     	List<ProjectFacility> pfs = pw.getProjectFacilities();
-    	
+
 		for (RPLink l : rpLinks) {
 			l.setProjectId(pid);
 			this.createRPLink(l);
@@ -91,7 +66,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	public synchronized void updateProjectWrapper(int projectId, ProjectWrapper pw) throws Exception {
     	Integer pid = pw.getProject().getId();
     	this.updateProject(pid, pw.getProject());
-    	
+
     	List<RPLink> rpLinks = pw.getRpLinks();
     	List<APLink> apLinks = pw.getApLinks();
     	List<ResearchOutput> ros = pw.getResearchOutputs();
@@ -115,27 +90,27 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		for (ResearchOutput ro : ros) {
 			this.createResearchOutput(ro);
 		}
-    	
+
     	this.deleteProjectKpis(pid);
 		for (ProjectKpi pk : kpis) {
 			this.createProjectKpi(pk);
 		}
-    	
+
     	this.deleteReviews(pid);
 		for (Review r : reviews) {
 			this.createReview(r);
 		}
-    	
+
     	this.deleteFollowUps(pid);
 		for (FollowUp fu : fus) {
 			this.createFollowUp(fu);
 		}
-    	
+
     	this.deleteAdviserActions(pid);
 		for (AdviserAction aa : aas) {
 			this.createAdviserAction(aa);
 		}
-		
+
 		this.deleteProjectFacilities(pid);
 		for (ProjectFacility pf: pfs) {
 			this.createProjectFacility(pf);
@@ -173,7 +148,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return l;
 	}
-	
+
 	public List<Adviser> getAdvisers() throws Exception {
 		List<Adviser> list = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisers");
 		for (Adviser a: list) {
@@ -194,6 +169,23 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		pw.setAdviserActions(this.getAdviserActionsForProjectId(projectId));
 		pw.setProjectFacilities(this.getFacilitiesOnProject(projectId));
 		return pw;
+	}
+
+    public synchronized Project getProjectByProjectCode(String projectCode) {
+
+        Project p = (Project) getSqlMapClientTemplate().queryForObject("getProjectByProjectCode", projectCode);
+		ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+		p.setProjectTypeName(t.getName());
+		p.setStatusName(getProjectStatusById(p.getStatusId()));
+		return p;
+
+    }
+
+    public synchronized ProjectWrapper getProjectWrapperByProjectCode(String projectCode) throws Exception {
+
+        Project p = getProjectByProjectCode(projectCode);
+
+        return getProjectWrapperById(p.getId());
 	}
 
 	@RequireAdviserOnProject
@@ -229,11 +221,11 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public Integer getNumProjectsForAdviser(Integer adviserId) throws Exception {
-		return (Integer) getSqlMapClientTemplate().queryForObject("getNumProjectsForAdviser", adviserId);		
+		return (Integer) getSqlMapClientTemplate().queryForObject("getNumProjectsForAdviser", adviserId);
 	}
-	
+
 	public List<ResearchOutputType> getResearchOutputTypes() throws Exception {
-		return (List<ResearchOutputType>) getSqlMapClientTemplate().queryForList("getResearchOutputTypes");	
+		return (List<ResearchOutputType>) getSqlMapClientTemplate().queryForList("getResearchOutputTypes");
 	}
 
 	public ResearchOutputType getResearchOutputTypeById(Integer id) throws Exception {
@@ -245,24 +237,24 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public List<Affiliation> getAffiliations() throws Exception {
-		return (List<Affiliation>) getSqlMapClientTemplate().queryForList("getAffiliations");		
+		return (List<Affiliation>) getSqlMapClientTemplate().queryForList("getAffiliations");
 	}
 
 	public List<String> getInstitutions() throws Exception {
-		return (List<String>) getSqlMapClientTemplate().queryForList("getInstitutions");		
+		return (List<String>) getSqlMapClientTemplate().queryForList("getInstitutions");
 	}
 
 	public List<Kpi> getKpis() throws Exception {
 		return (List<Kpi>) getSqlMapClientTemplate().queryForList("getKpis");
 	}
-	
+
 	public List<ProjectKpi> getProjectKpis() throws Exception {
 		List<ProjectKpi> l = getSqlMapClientTemplate().queryForList("getProjectKpis");
 		for (ProjectKpi pk: l) {
 			Kpi kpi = (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", pk.getKpiId());
 			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", pk.getAdviserId());
 			if (tmp != null) {
-				pk.setAdviserName(tmp.getFullName());				
+				pk.setAdviserName(tmp.getFullName());
 			}
 			pk.setKpiType(kpi.getType());
 			pk.setKpiTitle(kpi.getTitle());
@@ -270,7 +262,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return l;
 	}
-	
+
 	public List<ResearchOutput> getResearchOutput() throws Exception {
 		List<ResearchOutput> l = (List<ResearchOutput>) getSqlMapClientTemplate().queryForList("getResearchOutput");
 		for (ResearchOutput ro: l) {
@@ -287,7 +279,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public List<Researcher> getResearchersOnProject(Integer pid) throws Exception {
-		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchersOnProject", pid);		
+		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchersOnProject", pid);
 		if (l != null) {
 			for (Researcher r: l) {
 				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
@@ -299,7 +291,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public List<Adviser> getAdvisersOnProject(Integer pid) throws Exception {
-		List<Adviser> list = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisersOnProject", pid);		
+		List<Adviser> list = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisersOnProject", pid);
 		for (Adviser a: list) {
 			a.setNumProjects(this.getNumProjectsForAdviser(a.getId()));
 		}
@@ -307,15 +299,15 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public Facility getFacilityById(Integer id) throws Exception {
-		return (Facility) getSqlMapClientTemplate().queryForObject("getFacilityById", id);		
+		return (Facility) getSqlMapClientTemplate().queryForObject("getFacilityById", id);
 	}
 
 	public List<Facility> getFacilities() throws Exception {
-		return (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilities");		
+		return (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilities");
 	}
 
 	public List<ProjectFacility> getFacilitiesOnProject(Integer pid) throws Exception {
-		List<Facility> fs = (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilitiesOnProject", pid);		
+		List<Facility> fs = (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilitiesOnProject", pid);
 	    List<ProjectFacility> pfs = new LinkedList<ProjectFacility>();
 	    for (Facility f: fs) {
 	    	ProjectFacility pf = new ProjectFacility();
@@ -332,7 +324,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		if (l.size() == 0) {
 			tmp = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchers");
 		} else {
-			tmp = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchersNotOnList", l);			
+			tmp = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchersNotOnList", l);
 		}
 		if (tmp != null) {
 			for (Researcher r: tmp) {
@@ -365,15 +357,15 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public List<ResearcherRole> getResearcherRoles() throws Exception {
-		return (List<ResearcherRole>) getSqlMapClientTemplate().queryForList("getResearcherRoles");		
+		return (List<ResearcherRole>) getSqlMapClientTemplate().queryForList("getResearcherRoles");
 	}
 
 	public List<AdviserRole> getAdviserRoles() throws Exception {
-		return (List<AdviserRole>) getSqlMapClientTemplate().queryForList("getAdviserRoles");		
+		return (List<AdviserRole>) getSqlMapClientTemplate().queryForList("getAdviserRoles");
 	}
 
 	public List<InstitutionalRole> getInstitutionalRoles() throws Exception {
-		return (List<InstitutionalRole>) getSqlMapClientTemplate().queryForList("getInstitutionalRoles");		
+		return (List<InstitutionalRole>) getSqlMapClientTemplate().queryForList("getInstitutionalRoles");
 	}
 
 	public InstitutionalRole getInstitutionalRoleById(final Integer id) throws Exception {
@@ -389,7 +381,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	public void updateAdviser(final Adviser a) throws Exception {
 		getSqlMapClientTemplate().update("updateAdviser", a);
 	}
- 
+
     @RequireAdmin
 	public void deleteResearcher(final Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteResearcher", id);
@@ -401,7 +393,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	public Kpi getKpiById(Integer id) throws Exception {
-		return (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", id);	
+		return (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", id);
 	}
 
     public List<Project> getProjectsForResearcherId(Integer id) throws Exception {
@@ -423,7 +415,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return ps;
     }
-	
+
     public AdviserRole getAdviserRoleById(Integer id) throws Exception {
     	return (AdviserRole) getSqlMapClientTemplate().queryForObject("getAdviserRoleById", id);
     }
@@ -431,7 +423,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
     public ResearcherRole getResearcherRoleById(Integer id) throws Exception {
     	return (ResearcherRole) getSqlMapClientTemplate().queryForObject("getResearcherRoleById", id);
     }
-    
+
 	private List<RPLink> getRPLinksForProject(Integer pid) throws Exception {
 		List<RPLink> l = (List<RPLink>) getSqlMapClientTemplate().queryForList("getRPLinksForProjectId", pid);
 		if (l != null) {
@@ -476,7 +468,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		return l;
 	}
 
-	
+
 	private List<ResearchOutput> getResearchOutputsForProjectId(Integer id) throws Exception {
 		List<ResearchOutput> l = (List<ResearchOutput>) getSqlMapClientTemplate().queryForList("getResearchOutputsForProjectId", id);
 		for (ResearchOutput ro: l) {
@@ -500,7 +492,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return l;
 	}
-	
+
 	private List<AdviserAction> getAdviserActionsForProjectId(Integer id) throws Exception {
 		List<AdviserAction> l = (List<AdviserAction>) getSqlMapClientTemplate().queryForList("getAdviserActionsForProjectId", id);
 		for (AdviserAction aa: l) {
@@ -512,15 +504,15 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
 	private List<Attachment> getAttachmentsForReviewId(Integer rid) throws Exception {
-		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForReviewId", rid);		
+		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForReviewId", rid);
 	}
 
 	private List<Attachment> getAttachmentsForFollowUpId(Integer rid) throws Exception {
-		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForFollowUpId", rid);		
+		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForFollowUpId", rid);
 	}
 
 	private List<Attachment> getAttachmentsForAdviserActionId(Integer rid) throws Exception {
-		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForAdviserActionId", rid);		
+		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForAdviserActionId", rid);
 	}
 
 	private Integer createProject(Project p) throws Exception {
@@ -530,11 +522,11 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	private void createRPLink(RPLink r) throws Exception {
 		getSqlMapClientTemplate().insert("createRPLink", r);
 	}
-	
+
     private void createAPLink(APLink a) throws Exception {
 		getSqlMapClientTemplate().insert("createAPLink", a);
 	}
-	
+
 	private Integer createReview(Review r) throws Exception {
 		Integer rid = (Integer) getSqlMapClientTemplate().insert("createReview", r);
 		List<Attachment> attachments = r.getAttachments();
@@ -553,7 +545,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return rid;
 	}
-	
+
 	private Integer createFollowUp(FollowUp f) throws Exception {
 		Integer fid = (Integer) getSqlMapClientTemplate().insert("createFollowUp", f);
 		List<Attachment> attachments = f.getAttachments();
@@ -572,15 +564,15 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return fid;
 	}
-	
+
 	private void createResearchOutput(ResearchOutput o) throws Exception {
 		getSqlMapClientTemplate().insert("createResearchOutput", o);
 	}
-	
+
 	private void createAttachment(Attachment a) throws Exception {
 		getSqlMapClientTemplate().insert("createAttachment", a);
 	}
-	
+
 	private Integer createAdviserAction(AdviserAction aa) throws Exception {
 		Integer aaid = (Integer) getSqlMapClientTemplate().insert("createAdviserAction", aa);
 		List<Attachment> attachments = aa.getAttachments();
@@ -599,16 +591,16 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		}
 		return aaid;
 	}
-	
+
 	// TODO: handle facilities on project
 	private void createProjectFacility(ProjectFacility f) throws Exception {
 		getSqlMapClientTemplate().insert("createProjectFacility", f);
 	}
-	
+
 	private void createProjectKpi(ProjectKpi pk) throws Exception {
 		getSqlMapClientTemplate().insert("createProjectKpi", pk);
 	}
-	
+
 	private void updateProject(Integer projectId, Project p) throws Exception {
 		getSqlMapClientTemplate().update("updateProject", p);
 	}
@@ -634,7 +626,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
         params.put("projectId", projectId);
         getSqlMapClientTemplate().update("deleteAPLink", params);
 	}
-	
+
 	private void deleteReviews(Integer pid) throws Exception {
 		getSqlMapClientTemplate().update("deleteReviews", pid);
 	}
@@ -654,36 +646,36 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	private void deleteResearchOutputs(Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteResearchOutputs", id);
 	}
-	
+
 	private void deleteResearchOutput(Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteResearchOutput", id);
 	}
-	
+
 	private void deleteAdviserActions(Integer pid) throws Exception {
-		getSqlMapClientTemplate().update("deleteAdviserActions", pid);		
+		getSqlMapClientTemplate().update("deleteAdviserActions", pid);
 	}
 
 	private void deleteProjectFacilities(Integer pid) throws Exception {
-		getSqlMapClientTemplate().update("deleteProjectFacilities", pid);		
+		getSqlMapClientTemplate().update("deleteProjectFacilities", pid);
 	}
 
 	private void deleteAdviserAction(Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteAdviserAction", id);		
+		getSqlMapClientTemplate().update("deleteAdviserAction", id);
 	}
 
 	private void deleteProjectKpis(Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteProjectKpis", id);		
+		getSqlMapClientTemplate().update("deleteProjectKpis", id);
 	}
 
 	private void deleteProjectKpi(Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteProjectKpi", id);		
+		getSqlMapClientTemplate().update("deleteProjectKpi", id);
 	}
 
 	private void deleteFacilityFromProject(Integer projectId, Integer facilityId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
         params.put("projectId", projectId);
         params.put("facilityId", facilityId);
-		getSqlMapClientTemplate().update("deleteFacilityFromProject", params);		
+		getSqlMapClientTemplate().update("deleteFacilityFromProject", params);
 	}
 
 	public String getNextProjectCode(String name) {
@@ -701,24 +693,24 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	public String getKpiCodeNameById(Integer codeId) {
 		return (String) getSqlMapClientTemplate().queryForObject("getKpiCodeNameById", codeId);
 	}
-	
+
 	public List<ProjectStatus> getProjectStatuses() {
 		return (List<ProjectStatus>) getSqlMapClientTemplate().queryForList("getProjectStatuses");
 	}
-	
+
 	public String getResearcherStatusById(Integer id) {
 		return (String) getSqlMapClientTemplate().queryForObject("getResearcherStatusById", id);
 	}
-	
+
 	public List<ResearcherStatus> getResearcherStatuses() {
 		return (List<ResearcherStatus>) getSqlMapClientTemplate().queryForList("getResearcherStatuses");
 	}
-	
+
 	public String getProjectStatusById(Integer id) {
 		return (String) getSqlMapClientTemplate().queryForObject("getProjectStatusById", id);
 	}
-	
+
 	public String getLinuxUsername(Integer id) {
-		return (String) getSqlMapClientTemplate().queryForObject("getLinuxUsername", id); 
+		return (String) getSqlMapClientTemplate().queryForObject("getLinuxUsername", id);
 	}
 }
