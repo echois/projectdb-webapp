@@ -9,6 +9,7 @@
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <context:component-scan base-package="nz.org.nesi.researchHub.control"/>
+    <bean id="documentationConfig" class="com.mangofactory.swagger.configuration.DocumentationConfig"/>
 
 	<!--<bean-->
 		<!--class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
