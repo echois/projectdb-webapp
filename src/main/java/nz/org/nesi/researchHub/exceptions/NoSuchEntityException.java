@@ -1,5 +1,7 @@
 package nz.org.nesi.researchHub.exceptions;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Project: project_management
  * <p/>
@@ -7,6 +9,7 @@ package nz.org.nesi.researchHub.exceptions;
  * Date: 6/12/13
  * Time: 9:31 AM
  */
+@Component
 public class NoSuchEntityException extends Exception {
 
     private final Class entityClass;

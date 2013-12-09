@@ -9,6 +9,7 @@
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <context:component-scan base-package="nz.org.nesi.researchHub.control"/>
+    <context:component-scan base-package="nz.org.nesi.researchHub.exceptions"/>
 
 	<!--<bean-->
 		<!--class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
