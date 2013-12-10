@@ -18,6 +18,7 @@ public class Researcher {
 	private String startDate;
 	private String endDate;
 	private String notes;
+	private Integer lastModified;
 
 	public Integer getId() {
 		return id;
@@ -145,6 +146,14 @@ public class Researcher {
 
 	public void setStatusName(String string) {
 		this.statusName = string;
+	}
+
+	public Integer getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(Integer lastModified) {
+		this.lastModified = lastModified;
 	}
 
 }

@@ -2,6 +2,8 @@ package nz.org.nesi.researchHub.control;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import pm.pojo.*;
 
 import java.util.LinkedList;
@@ -178,10 +181,11 @@ public class ProjectControls extends AbstractControl {
      *
      * @param project the updated project wrapper
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
+     * @throws OutOfDateException 
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException {
+    public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
 
         validateProject(project);
         if (project.getProject() != null) {
@@ -191,7 +195,11 @@ public class ProjectControls extends AbstractControl {
             project.getProject().setId(id);
 
             // great, no exception, means an project with this id does already exist,
-            //TODO maybe compare timestamps?
+            // Compare timestamps to prevent accidental overwrite
+            if (!project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp");
+            }
+            project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateProjectWrapper(id, project);
             } catch (Exception e) {
@@ -240,6 +248,7 @@ public class ProjectControls extends AbstractControl {
 
         String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         pw.getProject().setProjectCode(projectCode);
+        project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
         try {
             Integer pid = this.projectDao.createProjectWrapper(pw);
             return pid;

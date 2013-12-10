@@ -339,7 +339,8 @@
         endDate,
         notes,
         todo,
-        requirements
+        requirements,
+        lastModified
       ) values (
         #projectCode#,
         #projectTypeId#,
@@ -353,7 +354,8 @@
         #endDate#,
         #notes#,
         #todo#,
-        #requirements#
+        #requirements#,
+        #lastModified#
       )
    	  <selectKey keyProperty="id" resultClass="int">
         SELECT LAST_INSERT_ID() AS id
@@ -402,7 +404,8 @@
         institutionalRoleId,
         startDate,
         endDate,
-        notes
+        notes,
+        lastModified
       ) values (
         #fullName#,
         #preferredName#,
@@ -416,7 +419,8 @@
         #institutionalRoleId#,
         #startDate#,
         #endDate#,
-        #notes#
+        #notes#,
+        #lastModified#
       )
    	  <selectKey keyProperty="id" resultClass="int">
         SELECT LAST_INSERT_ID() AS id
@@ -434,7 +438,8 @@
         department,
         startDate,
         endDate,
-        notes
+        notes,
+        lastModified
       ) values (
         #fullName#,
         #pictureUrl#,
@@ -445,7 +450,8 @@
         #department#,
         #startDate#,
         #endDate#,
-        #notes#
+        #notes#,
+        #lastModified#
       )
    	  <selectKey keyProperty="id" resultClass="int">
         SELECT LAST_INSERT_ID() AS id
@@ -585,7 +591,8 @@
         endDate = #endDate#,
         requirements = #requirements#,
         notes = #notes#,
-        todo = #todo#
+        todo = #todo#,
+        lastModified = #lastModified#
       WHERE id = #id#
    </update>
 
@@ -603,7 +610,8 @@
         institutionalRoleId = #institutionalRoleId#,
         startDate = #startDate#,
         endDate = #endDate#,
-        notes = #notes#
+        notes = #notes#,
+        lastModified = #lastModified#
       WHERE id = #id#
    </update>
 
@@ -618,7 +626,8 @@
         department = #department#,
         startDate = #startDate#,
         endDate = #endDate#,
-        notes = #notes#
+        notes = #notes#,
+        lastModified = #lastModified#
       WHERE id = #id#
   </update>
 

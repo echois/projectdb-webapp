@@ -1,8 +1,15 @@
 package nz.org.nesi.researchHub.control;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
+import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -11,13 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import pm.pojo.Adviser;
 import pm.pojo.Project;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Project: project_management
@@ -159,17 +162,22 @@ public class AdviserControls extends AbstractControl {
      * @param adviser the updated adviser object
      * @throws NoSuchEntityException if no Adviser with the specified
      * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
+     * @throws OutOfDateException 
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
-	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException {
+	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         //TODO validate adviser
 		if (id != null) {
             // check whether an adviser with this id exists
             Adviser temp = getAdviser(adviser.getId());
             // great, no exception, means an adviser with this id does already exist, now let's merge those two
             adviser.setId(id);
-            //TODO maybe compare timestamps?
+            // Compare timestamps to prevent accidental overwrite
+            if (!adviser.getLastModified().equals(temp.getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp");
+            }
+            adviser.setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateAdviser(adviser);
             } catch (Exception e) {
@@ -198,6 +206,7 @@ public class AdviserControls extends AbstractControl {
             if (StringUtils.isEmpty(adviser.getStartDate()) ) {
                 adviser.setStartDate(df.format(new Date()));
             }
+            adviser.setLastModified((int) (System.currentTimeMillis() / 1000));
             this.projectDao.createAdviser(adviser);
         } catch (Exception e) {
             throw new DatabaseException("Can't create Adviser '"+ adviser.getFullName()+"'", e);

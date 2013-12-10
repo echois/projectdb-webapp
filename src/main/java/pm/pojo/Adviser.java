@@ -16,6 +16,7 @@ public class Adviser {
 	private String notes;
 	private String tuakiriUniqueId;
 	private Integer isAdmin;
+	private Integer lastModified;
 
 	public Integer getId() {
 		return id;
@@ -149,5 +150,13 @@ public class Adviser {
                 ", id=" + id +
                 '}';
     }
+
+	public Integer getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(Integer lastModified) {
+		this.lastModified = lastModified;
+	}
 
 }
