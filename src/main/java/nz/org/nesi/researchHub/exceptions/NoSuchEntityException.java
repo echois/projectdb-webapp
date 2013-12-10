@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class NoSuchEntityException extends Exception {
 
-    private final Class entityClass;
-    private final Integer id;
+    private Class entityClass;
+    private Integer id;
+
+    public NoSuchEntityException() {
+        super();
+    }
 
     public NoSuchEntityException(String msg, Class entityClass, Integer id) {
         super(msg);
@@ -25,7 +29,15 @@ public class NoSuchEntityException extends Exception {
         return entityClass;
     }
 
+    public void setEntityClass(Class entityClass) {
+        this.entityClass = entityClass;
+    }
+
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

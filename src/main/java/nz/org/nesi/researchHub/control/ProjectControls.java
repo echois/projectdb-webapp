@@ -5,6 +5,7 @@ import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,7 +92,8 @@ public class ProjectControls extends AbstractControl {
      * @param projectIdOrCode the project id or project code
      * @return the Project
      */
-    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('customer')")
     @ResponseBody
     public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
 
@@ -131,7 +133,7 @@ public class ProjectControls extends AbstractControl {
      *
      * @return all projects
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public List<Project> getProjects() {
         try {
@@ -150,7 +152,7 @@ public class ProjectControls extends AbstractControl {
      * @param filter the filter string, can't be empty
      * @return all projects matching the filter
      */
-    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
     @ResponseBody
     public List<Project> filterProjects(@PathVariable String filter) {
 
@@ -179,7 +181,7 @@ public class ProjectControls extends AbstractControl {
      * @param project the updated project wrapper
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
     public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException {
 

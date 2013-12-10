@@ -23,7 +23,7 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DatabaseException.class)
     @ResponseBody
-    public DatabaseException handleConflict(DatabaseException ex) {
+    public DatabaseException handleDatabaseConflict(DatabaseException ex) {
 
         log.debug("DatabaseException: "+ex.getLocalizedMessage());
 
@@ -31,9 +31,9 @@ public class RestExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(DatabaseException.class)
+    @ExceptionHandler(InvalidEntityException.class)
     @ResponseBody
-    public InvalidEntityException handleConflict(InvalidEntityException ex) {
+    public InvalidEntityException handleInvalidEntityConflict(InvalidEntityException ex) {
 
         log.debug("InvalidEntityException: "+ex.getLocalizedMessage());
 
@@ -41,9 +41,9 @@ public class RestExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(DatabaseException.class)
+    @ExceptionHandler(NoSuchEntityException.class)
     @ResponseBody
-    public NoSuchEntityException handleConflict(NoSuchEntityException ex) {
+    public NoSuchEntityException handleNoEntityConflict(NoSuchEntityException ex) {
 
         log.debug("NoSuchEntityException: "+ex.getLocalizedMessage());
 

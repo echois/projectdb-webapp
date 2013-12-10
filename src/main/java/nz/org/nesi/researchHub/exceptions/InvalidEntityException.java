@@ -12,8 +12,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class InvalidEntityException extends Exception {
 
-    private final Class entityClass;
-    private final String invalidProperty;
+    private Class entityClass;
+    private String invalidProperty;
+
+    public InvalidEntityException() {
+        super();
+    }
+
+    public void setEntityClass(Class entityClass) {
+        this.entityClass = entityClass;
+    }
+
+    public void setInvalidProperty(String invalidProperty) {
+        this.invalidProperty = invalidProperty;
+    }
 
     public InvalidEntityException(String msg, Class entityClass, String invalidProperty) {
         super(msg);
