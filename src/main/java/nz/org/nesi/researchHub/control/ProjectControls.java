@@ -248,7 +248,7 @@ public class ProjectControls extends AbstractControl {
 
         String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         pw.getProject().setProjectCode(projectCode);
-        project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
+        pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
         try {
             Integer pid = this.projectDao.createProjectWrapper(pw);
             return pid;
