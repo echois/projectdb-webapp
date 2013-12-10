@@ -69,6 +69,23 @@ public class AdviserControls extends AbstractControl {
 //    public AdviserControls(ProjectDao o) {
 //        this.projectDao = o;
 //    }
+    
+    /**
+     * Validates the adviser object.
+     *
+     * @param a the project wrapper
+     * @throws InvalidEntityException if there is something wrong with the adviser object
+     */
+    private void validateAdviser(Adviser a) throws InvalidEntityException {
+		if (a.getFullName().trim().equals("")) {
+			throw new InvalidEntityException("Adviser name cannot be empty", Adviser.class, "name");
+		}
+		for (Adviser other:getAllAdvisers()) {
+			if (a.getFullName().equals(other.getFullName()) && (a.getId()==null || !a.getId().equals(other.getId()))) {
+				throw new InvalidEntityException(a.getFullName() + " already exists in the database", Adviser.class, "name");
+			}
+		}
+	}
 
     /**
      * Returns the adviser with the specified id.
@@ -167,7 +184,7 @@ public class AdviserControls extends AbstractControl {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
 	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
-        //TODO validate adviser
+        validateAdviser(adviser);
 		if (id != null) {
             // check whether an adviser with this id exists
             Adviser temp = getAdviser(adviser.getId());
@@ -198,7 +215,7 @@ public class AdviserControls extends AbstractControl {
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
     public void createAdviser(Adviser adviser) throws InvalidEntityException {
-        //TODO validate adviser
+    	validateAdviser(adviser);
         if ( adviser.getId() != null ) {
             throw new InvalidEntityException("Adviser can't have id, this property will be auto-generated.", Adviser.class, "id");
         }
