@@ -229,9 +229,9 @@ public class ProjectControls extends AbstractControl {
      * @throws NoSuchMethodException 
      * @throws ClassNotFoundException 
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/{id}/{object}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, String object, String field, String data, Integer timestamp) throws InvalidEntityException, OutOfDateException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+    public void editProjectWrapper(@PathVariable Integer id, String object, String field, String data, Integer timestamp) throws InvalidEntityException, OutOfDateException {
 
         if (id != null) {
             // might throw database exception if project does not already exist
@@ -242,12 +242,22 @@ public class ProjectControls extends AbstractControl {
             	throw new OutOfDateException("Incorrect timestamp");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
-            Class<ProjectWrapper> c = ProjectWrapper.class;
-            Method getPojo = c.getDeclaredMethod ("get" + object);
-            Object pojo = getPojo.invoke (pw);
-            Class<?> pojoClass = Class.forName(object);
-            Method set = c.getDeclaredMethod ("set" + field);
-            set.invoke (pw, data);
+            try {
+            	Class<ProjectWrapper> c = ProjectWrapper.class;
+            	Method getPojo = c.getDeclaredMethod ("get" + object);
+            	Object pojo = getPojo.invoke (pw);
+	            Class<?> pojoClass = Class.forName(object);
+	            Method set = c.getDeclaredMethod ("set" + field);
+	            set.invoke (pw, data);
+            } catch (NoSuchMethodException e) {
+            	throw new InvalidEntityException(object + " does not exist within a ProjectWrapper", ProjectWrapper.class, object);
+            } catch (InvocationTargetException e) {
+            	throw new InvalidEntityException("Unable to fetch " + object + " for " + pw.getProject().getProjectCode(), ProjectWrapper.class, object);
+            } catch (IllegalAccessException e) {
+            	throw new InvalidEntityException("It is illegal to fetch " + object, ProjectWrapper.class, object);
+            } catch (ClassNotFoundException e) {
+            	throw new InvalidEntityException(object + " is not a valid POJO", ProjectWrapper.class, object);
+			}
             try {
                 projectDao.updateProjectWrapper(id, pw);
             } catch (Exception e) {
