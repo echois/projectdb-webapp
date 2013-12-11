@@ -1,5 +1,10 @@
 package nz.org.nesi.researchHub.control;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
+
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
@@ -13,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import pm.pojo.*;
-
-import java.util.LinkedList;
-import java.util.List;
+import pm.pojo.APLink;
+import pm.pojo.Project;
+import pm.pojo.ProjectWrapper;
+import pm.pojo.RPLink;
 
 /**
  * Project: project_management
@@ -206,7 +211,50 @@ public class ProjectControls extends AbstractControl {
                 throw new DatabaseException("Can't update project with id " + id, e);
             }
         } else {
-            throw new InvalidEntityException("Can't edit project. No project object provided.", Adviser.class, "id");
+            throw new InvalidEntityException("Can't edit project. No project object provided.", Project.class, "id");
+        }
+
+    }
+    
+    /**
+     * Edit one field of a project wrapper object.
+     *
+     * @param project the updated project wrapper
+     * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
+     * @throws OutOfDateException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalAccessException 
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     * @throws ClassNotFoundException 
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    public void editProjectWrapper(@PathVariable Integer id, String object, String field, String data, Integer timestamp) throws InvalidEntityException, OutOfDateException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+
+        if (id != null) {
+            // might throw database exception if project does not already exist
+            ProjectWrapper pw = getProjectWrapper(id.toString());
+            // great, no exception, means an project with this id does already exist,
+            // Compare timestamps to prevent accidental overwrite
+            if (timestamp.equals(pw.getProject().getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp");
+            }
+            pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
+            Class<ProjectWrapper> c = ProjectWrapper.class;
+            Method getPojo = c.getDeclaredMethod ("get" + object);
+            Object pojo = getPojo.invoke (pw);
+            Class<?> pojoClass = Class.forName(object);
+            Method set = c.getDeclaredMethod ("set" + field);
+            set.invoke (pw, data);
+            try {
+                projectDao.updateProjectWrapper(id, pw);
+            } catch (Exception e) {
+                throw new DatabaseException("Can't update project with id " + id, e);
+            }
+        } else {
+            throw new InvalidEntityException("Can't edit project. No id provided.", Project.class, "id");
         }
 
     }
