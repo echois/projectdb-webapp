@@ -15,12 +15,14 @@
     </listener>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/root-context.xml, /WEB-INF/rest-servlet.xml, /WEB-INF/pm-servlet.xml, /WEB-INF/signup-servlet.xml</param-value>
+        <param-value>/WEB-INF/root-context.xml, /WEB-INF/rest-servlet.xml, /WEB-INF/pm-servlet.xml,
+            /WEB-INF/signup-servlet.xml
+        </param-value>
     </context-param>
 
     <!-- Spring-enabled servlet filter -->
     <filter>
-        <filter-name>PMAuditFilter</filter-name>
+        <filter-name>PMTestFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <filter>
@@ -39,9 +41,18 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
 
     <filter-mapping>
-        <filter-name>PMAuditFilter</filter-name>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <!--<url-pattern>/rest/*</url-pattern>-->
+        <servlet-name>rest</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>PMTestFilter</filter-name>
         <servlet-name>pm</servlet-name>
     </filter-mapping>
     <filter-mapping>
