@@ -229,7 +229,7 @@ public class ProjectControls extends AbstractControl {
      * @throws NoSuchMethodException 
      * @throws ClassNotFoundException 
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/{id}/{object}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     public void editProjectWrapper(@PathVariable Integer id, String object, String field, String data, Integer timestamp) throws InvalidEntityException, OutOfDateException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
 
