@@ -15,6 +15,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -203,7 +204,7 @@ public class ProjectControls extends AbstractControl {
 
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
-            if (!project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
+            if (project.getProject().getLastModified() != temp.getProject().getLastModified() || !project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
             project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
@@ -231,16 +232,17 @@ public class ProjectControls extends AbstractControl {
      * @throws NoSuchMethodException 
      * @throws ClassNotFoundException 
      */
-    @RequestMapping(value = "/{id}/{object}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/{id}/{object}/{field}/{data}/{timestamp}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, String object, String field, String data, Integer timestamp) throws InvalidEntityException, OutOfDateException {
-
+    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String data, @PathVariable String timestamp) throws InvalidEntityException, OutOfDateException {
+    	Integer ts = null;
+    	if (!timestamp.equals("null")) ts = Integer.parseInt(timestamp);
         if (id != null) {
             // might throw database exception if project does not already exist
             ProjectWrapper pw = getProjectWrapper(id.toString());
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
-            if (timestamp.equals(pw.getProject().getLastModified())) {
+            if (ts != pw.getProject().getLastModified() && !ts.equals(pw.getProject().getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
@@ -248,9 +250,10 @@ public class ProjectControls extends AbstractControl {
             	Class<ProjectWrapper> c = ProjectWrapper.class;
             	Method getPojo = c.getDeclaredMethod ("get" + object);
             	Object pojo = getPojo.invoke (pw);
-	            Class<?> pojoClass = Class.forName(object);
-	            Method set = c.getDeclaredMethod ("set" + field);
-	            set.invoke (pw, data);
+	            Class<?> pojoClass = Class.forName("pm.pojo." + object);
+	            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
+	            set.invoke (pw.getProject(), data);
+	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
             	throw new InvalidEntityException(object + " does not exist within a ProjectWrapper", ProjectWrapper.class, object);
             } catch (InvocationTargetException e) {
@@ -259,10 +262,7 @@ public class ProjectControls extends AbstractControl {
             	throw new InvalidEntityException("It is illegal to fetch " + object, ProjectWrapper.class, object);
             } catch (ClassNotFoundException e) {
             	throw new InvalidEntityException(object + " is not a valid POJO", ProjectWrapper.class, object);
-			}
-            try {
-                projectDao.updateProjectWrapper(id, pw);
-            } catch (Exception e) {
+			} catch (Exception e) {
                 throw new DatabaseException("Can't update project with id " + id, e);
             }
         } else {
