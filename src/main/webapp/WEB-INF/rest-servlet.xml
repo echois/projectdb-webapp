@@ -35,7 +35,7 @@
 		<security:authentication-provider>
 			<security:user-service id="userService">
 				<security:user name="admin" password="password"
-					authorities="admin, adviser" />
+					authorities="admin, adviser, customer" />
 				<security:user name="johndoe" password="password"
 					authorities="researcher" />
 			</security:user-service>

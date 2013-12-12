@@ -19,7 +19,7 @@ public class TestFilter implements Filter {
 
 		try {
 			HttpServletRequest request = (HttpServletRequest) req;
-			String remoteUser = "mfel395@auckland.ac.nz";
+			String remoteUser = "nyou045@auckland.ac.nz";
 		    String remoteAddr = request.getHeader(this.remoteAddrHeader);			
 		    request.setAttribute(this.remoteUserHeader, remoteUser);
 
