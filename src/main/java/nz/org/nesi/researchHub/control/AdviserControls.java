@@ -1,21 +1,15 @@
 package nz.org.nesi.researchHub.control;
 
+import nz.org.nesi.researchHub.Constants;
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pm.pojo.Adviser;
 import pm.pojo.Project;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +20,6 @@ import java.util.List;
  * Date: 5/12/13
  * Time: 11:33 AM
  */
-@Controller
-@RequestMapping(value = "/advisers")
 public class AdviserControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -56,16 +48,11 @@ public class AdviserControls extends AbstractControl {
 
     }
 
-    public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
 
     public AdviserControls() {
 
     }
-
-//    public AdviserControls(ProjectDao o) {
-//        this.projectDao = o;
-//    }
 
     /**
      * Returns the adviser with the specified id.
@@ -75,9 +62,7 @@ public class AdviserControls extends AbstractControl {
      * @throws NoSuchEntityException if the adviser or his projects can't be found
      * @throws DatabaseException if there is adviser problem with the database
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-	public Adviser getAdviser(@PathVariable Integer id) throws NoSuchEntityException {
+	public Adviser getAdviser(Integer id) throws NoSuchEntityException {
 
     	if (id==null) {
             throw new IllegalArgumentException("No adviser id provided");
@@ -104,9 +89,7 @@ public class AdviserControls extends AbstractControl {
      * @return the list of projects
      * @throws DatabaseException if there is adviser problem retrieving the projects
      */
-    @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Project> getProjectsForAdviser(@PathVariable int advisorId) {
+    public List<Project> getProjectsForAdviser(int advisorId) {
         List<Project> ps = null;
         try {
             ps = projectDao.getProjectsForAdviserId(advisorId);
@@ -121,8 +104,6 @@ public class AdviserControls extends AbstractControl {
      *
      * @return all advisors in the project database
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
 	public List<Adviser> getAllAdvisers() {
 
         List<Adviser> al = null;
@@ -141,9 +122,7 @@ public class AdviserControls extends AbstractControl {
      *
      * @param id the advisers' id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-	public void delete(@PathVariable Integer id) {
+	public void delete(Integer id) {
         try {
             this.projectDao.deleteAdviser(id);
         } catch (Exception e) {
@@ -160,9 +139,7 @@ public class AdviserControls extends AbstractControl {
      * @throws NoSuchEntityException if no Adviser with the specified
      * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    @ResponseBody
-	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException {
+	public void editAdviser(Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException {
         //TODO validate adviser
 		if (id != null) {
             // check whether an adviser with this id exists
@@ -187,8 +164,6 @@ public class AdviserControls extends AbstractControl {
      * @param adviser the new Adviser
      * @throws InvalidEntityException if the new Adviser object has already an id specified
      */
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    @ResponseBody
     public void createAdviser(Adviser adviser) throws InvalidEntityException {
         //TODO validate adviser
         if ( adviser.getId() != null ) {
@@ -196,7 +171,7 @@ public class AdviserControls extends AbstractControl {
         }
         try {
             if (StringUtils.isEmpty(adviser.getStartDate()) ) {
-                adviser.setStartDate(df.format(new Date()));
+                adviser.setStartDate(Constants.DATE_FORMAT.format(new Date()));
             }
             this.projectDao.createAdviser(adviser);
         } catch (Exception e) {

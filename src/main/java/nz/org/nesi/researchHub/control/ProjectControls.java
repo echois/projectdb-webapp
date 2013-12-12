@@ -5,12 +5,6 @@ import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pm.pojo.*;
 
 import java.util.LinkedList;
@@ -23,8 +17,6 @@ import java.util.List;
  * Date: 9/12/13
  * Time: 9:38 AM
  */
-@Controller
-@RequestMapping(value = "/projects")
 public class ProjectControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -92,10 +84,7 @@ public class ProjectControls extends AbstractControl {
      * @param projectIdOrCode the project id or project code
      * @return the Project
      */
-    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('customer')")
-    @ResponseBody
-    public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
+    public ProjectWrapper getProjectWrapper(String projectIdOrCode) {
 
         try {
             int i = Integer.parseInt(projectIdOrCode);
@@ -133,8 +122,6 @@ public class ProjectControls extends AbstractControl {
      *
      * @return all projects
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
     public List<Project> getProjects() {
         try {
             List<Project> ps = projectDao.getProjects();
@@ -152,9 +139,7 @@ public class ProjectControls extends AbstractControl {
      * @param filter the filter string, can't be empty
      * @return all projects matching the filter
      */
-    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Project> filterProjects(@PathVariable String filter) {
+    public List<Project> filterProjects(String filter) {
 
         if (StringUtils.isEmpty(filter)) {
             throw new IllegalArgumentException("Can't filter projects using empty string, use getProjects method instead.");
@@ -181,9 +166,7 @@ public class ProjectControls extends AbstractControl {
      * @param project the updated project wrapper
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException {
+    public void editProjectWrapper(Integer id, ProjectWrapper project) throws InvalidEntityException {
 
         validateProject(project);
         if (project.getProject() != null) {
@@ -210,9 +193,7 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void delete(@PathVariable Integer id) {
+    public void delete(Integer id) {
 
         try {
             this.projectDao.deleteProjectWrapper(id);
@@ -228,8 +209,6 @@ public class ProjectControls extends AbstractControl {
      * @param pw the projectWrapper object
      * @return the id of the new project
      */
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    @ResponseBody
     public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
 
         Project p = pw.getProject();

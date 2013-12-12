@@ -15,10 +15,33 @@ public class Group {
 
     private Integer id;
     private String groupName;
-
     private Set<Role> availableRoles = Sets.newHashSet();
+
+    public Group() {
+    }
+
+    public Group(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public boolean isAllowedRole(Role role) {
+        if ( availableRoles.size() == 0 ) {
+            return true;
+        }
+        return allowedRoles().contains(role);
+    }
 
     private Set<Role> allowedRoles() {
         return availableRoles;
     }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+
 }
