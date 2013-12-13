@@ -2,6 +2,7 @@ package pm.db;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+
 import pm.authz.annotation.RequireAdmin;
 import pm.authz.annotation.RequireAdviser;
 import pm.authz.annotation.RequireAdviserOnProject;
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({"unused", "unchecked"})
 public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectDao {
 
     @RequireAdviser

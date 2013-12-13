@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
        xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
        xmlns:security="http://www.springframework.org/schema/security"
@@ -11,8 +10,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
     http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
     http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
-    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"
-      >
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
     <mvc:annotation-driven
             content-negotiation-manager="contentNegotiationManager">
@@ -23,80 +21,33 @@
     </mvc:annotation-driven>
 
     <context:annotation-config/>
-    <context:component-scan base-package="nz.org.nesi.researchHub.view.rest"/>
+    <context:component-scan base-package="nz.org.nesi.researchHub.control"/>
+    <bean id="documentationConfig" class="com.mangofactory.swagger.configuration.DocumentationConfig"/>
     <context:component-scan base-package="nz.org.nesi.researchHub.exceptions"/>
     <!--<context:component-scan base-package="nz.org.nesi.researchHub.auth"/>-->
 
 
-    <bean id="projectControls" class="nz.org.nesi.researchHub.control.ProjectControls">
-    </bean>
-    <bean id="adviserControls" class="nz.org.nesi.researchHub.control.AdviserControls">
-    </bean>
+   	<!-- Allows us to use @PreAuthorize family of security authorization annotations. -->
+	<security:global-method-security
+		pre-post-annotations="enabled" />
 
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:user-service id="userService">
+				<security:user name="admin" password="password"
+					authorities="admin, adviser, customer" />
+				<security:user name="johndoe" password="password"
+					authorities="researcher" />
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
 
-    <!-- Allows us to use @PreAuthorize family of security authorization annotations. -->
-    <security:global-method-security pre-post-annotations="enabled">
-        <security:expression-handler ref="expressionHandler"/>
-    </security:global-method-security>
-
-    <bean id="expressionHandler"
-          class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator" ref="permissionEvaluator"/>
-    </bean>
-
-    <bean id="permissionEvaluator" class="nz.org.nesi.researchHub.auth.NeSIPermissionEvaluator">
-    </bean>
-
-    <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider ref="daoAuthenticationProvider">
-        </security:authentication-provider>
-    </security:authentication-manager>
-
-
-    <bean id="nesiUserDetailsService" class="nz.org.nesi.researchHub.auth.NeSIUserDetailsServiceImpl"/>
-
-    <!--<bean id="cacheManager"-->
-    <!--class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
-    <!--<property name="configLocation" value="classpath:grisu-ehcache.xml" />-->
-    <!--<property name="cacheManagerName" value="grisu" />-->
-    <!--</bean>-->
-
-    <!--<bean id="userCacheBackend"-->
-    <!--class="org.springframework.cache.ehcache.EhCacheFactoryBean">-->
-    <!--<property name="cacheManager" ref="cacheManager" />-->
-    <!--<property name="cacheName" value="userCache" />-->
-    <!--</bean>-->
-
-    <!--<bean id="userCache"-->
-    <!--class="org.springframework.security.core.userdetails.cache.EhCacheBasedUserCache">-->
-    <!--<property name="cache" ref="userCacheBackend" />-->
-    <!--</bean>-->
-
-    <bean id="daoAuthenticationProvider" class="nz.org.nesi.researchHub.auth.NeSIAuthenticationProvider">
-        <property name="userDetailsService" ref="nesiUserDetailsService"/>
-        <!--<property name="userCache" ref="userCache" />-->
-    </bean>
-
-
-    <!--<security:authentication-manager>-->
-    <!--<security:authentication-provider>-->
-    <!--<security:user-service id="userService">-->
-    <!--<security:user name="admin" password="password"-->
-    <!--authorities="admin, adviser" />-->
-    <!--<security:user name="johndoe" password="password"-->
-    <!--authorities="researcher" />-->
-    <!--</security:user-service>-->
-    <!--</security:authentication-provider>-->
-    <!--</security:authentication-manager>-->
-
-    <security:http create-session="stateless" >
-        <security:intercept-url pattern="/**" />
-        <!--<security:access="isAuthenticated()" />-->
-        <security:http-basic/>
-    </security:http>
-
-    <!--hook up the spring security filter chain -->
-    <!--<alias name="springSecurityFilterChain" alias="securityFilter" />-->
+	<security:http create-session="stateless"
+		use-expressions="true">
+		<security:intercept-url pattern="/service/**"
+			access="isAuthenticated()" />
+		<security:http-basic />
+	</security:http>
 
     <!-- Simple strategy: json is preferred. -->
     <bean id="contentNegotiationManager"

@@ -64,7 +64,7 @@ public class AuthzAspect {
 		} catch (Exception e) {
 			throw new CustomException(e.getMessage());
 		}
-		throw new CustomException("Only an adviser of this project or an admin can perform this operation.");
+		throw new CustomException(this.getTuakiriUniqueIdFromRequest() + " is unauthorised. Only an adviser of this project or an admin can perform this operation.");
 	}
 
 	public void verifyUserIsAdmin() throws CustomException {		
@@ -101,7 +101,7 @@ public class AuthzAspect {
 
 	private String getTuakiriUniqueIdFromRequest() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String user = (String) request.getAttribute(this.remoteUserHeader);
+		String user = request.getHeader(remoteUserHeader);
 		if (user == null) {
 			user = "NULL";
 		}

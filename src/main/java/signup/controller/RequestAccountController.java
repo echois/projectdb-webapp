@@ -7,6 +7,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,14 +15,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import pm.controller.GlobalController;
+import common.util.AffiliationUtil;
+import pm.db.ProjectDao;
 import pm.pojo.InstitutionalRole;
 import signup.pojo.RequestAccount;
 
 @Controller
-public class RequestAccountController extends GlobalController {
+public class RequestAccountController {
 	
 	private Logger log = Logger.getLogger(RequestAccountController.class.getName());
+	@Autowired
+	private ProjectDao projectDao;
+	@Autowired
+	private AffiliationUtil affiliationUtil;
 
 	@RequestMapping(value = "requestaccount", method = RequestMethod.GET)
 	public String edit(Model m) throws Exception {

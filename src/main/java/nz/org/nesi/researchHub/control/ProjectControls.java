@@ -1,14 +1,29 @@
 package nz.org.nesi.researchHub.control;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
+
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import pm.pojo.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.LinkedList;
-import java.util.List;
+import pm.pojo.APLink;
+import pm.pojo.Project;
+import pm.pojo.ProjectWrapper;
+import pm.pojo.RPLink;
 
 /**
  * Project: project_management
@@ -17,6 +32,8 @@ import java.util.List;
  * Date: 9/12/13
  * Time: 9:38 AM
  */
+@Controller
+@RequestMapping(value = "/projects")
 public class ProjectControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -84,7 +101,10 @@ public class ProjectControls extends AbstractControl {
      * @param projectIdOrCode the project id or project code
      * @return the Project
      */
-    public ProjectWrapper getProjectWrapper(String projectIdOrCode) {
+    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('customer')")
+    @ResponseBody
+    public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
 
         try {
             int i = Integer.parseInt(projectIdOrCode);
@@ -122,6 +142,8 @@ public class ProjectControls extends AbstractControl {
      *
      * @return all projects
      */
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ResponseBody
     public List<Project> getProjects() {
         try {
             List<Project> ps = projectDao.getProjects();
@@ -139,7 +161,9 @@ public class ProjectControls extends AbstractControl {
      * @param filter the filter string, can't be empty
      * @return all projects matching the filter
      */
-    public List<Project> filterProjects(String filter) {
+    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Project> filterProjects(@PathVariable String filter) {
 
         if (StringUtils.isEmpty(filter)) {
             throw new IllegalArgumentException("Can't filter projects using empty string, use getProjects method instead.");
@@ -165,8 +189,11 @@ public class ProjectControls extends AbstractControl {
      *
      * @param project the updated project wrapper
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
+     * @throws OutOfDateException 
      */
-    public void editProjectWrapper(Integer id, ProjectWrapper project) throws InvalidEntityException {
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
 
         validateProject(project);
         if (project.getProject() != null) {
@@ -176,14 +203,70 @@ public class ProjectControls extends AbstractControl {
             project.getProject().setId(id);
 
             // great, no exception, means an project with this id does already exist,
-            //TODO maybe compare timestamps?
+            // Compare timestamps to prevent accidental overwrite
+            if (project.getProject().getLastModified() != temp.getProject().getLastModified() || !project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp");
+            }
+            project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateProjectWrapper(id, project);
             } catch (Exception e) {
                 throw new DatabaseException("Can't update project with id " + id, e);
             }
         } else {
-            throw new InvalidEntityException("Can't edit project. No project object provided.", Adviser.class, "id");
+            throw new InvalidEntityException("Can't edit project. No project object provided.", Project.class, "id");
+        }
+
+    }
+    
+    /**
+     * Edit one field of a project wrapper object.
+     *
+     * @param project the updated project wrapper
+     * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
+     * @throws OutOfDateException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalAccessException 
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     * @throws ClassNotFoundException 
+     */
+    @RequestMapping(value = "/{id}/{object}/{field}/{data}/{timestamp}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String data, @PathVariable String timestamp) throws InvalidEntityException, OutOfDateException {
+    	Integer ts = null;
+    	if (!timestamp.equals("null")) ts = Integer.parseInt(timestamp);
+        if (id != null) {
+            // might throw database exception if project does not already exist
+            ProjectWrapper pw = getProjectWrapper(id.toString());
+            // great, no exception, means an project with this id does already exist,
+            // Compare timestamps to prevent accidental overwrite
+            if (ts != pw.getProject().getLastModified() && !ts.equals(pw.getProject().getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp");
+            }
+            pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
+            try {
+            	Class<ProjectWrapper> c = ProjectWrapper.class;
+            	Method getPojo = c.getDeclaredMethod ("get" + object);
+            	Object pojo = getPojo.invoke (pw);
+	            Class<?> pojoClass = Class.forName("pm.pojo." + object);
+	            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
+	            set.invoke (pw.getProject(), data);
+	            projectDao.updateProjectWrapper(id, pw);
+            } catch (NoSuchMethodException e) {
+            	throw new InvalidEntityException(object + " does not exist within a ProjectWrapper", ProjectWrapper.class, object);
+            } catch (InvocationTargetException e) {
+            	throw new InvalidEntityException("Unable to fetch " + object + " for " + pw.getProject().getProjectCode(), ProjectWrapper.class, object);
+            } catch (IllegalAccessException e) {
+            	throw new InvalidEntityException("It is illegal to fetch " + object, ProjectWrapper.class, object);
+            } catch (ClassNotFoundException e) {
+            	throw new InvalidEntityException(object + " is not a valid POJO", ProjectWrapper.class, object);
+			} catch (Exception e) {
+                throw new DatabaseException("Can't update project with id " + id, e);
+            }
+        } else {
+            throw new InvalidEntityException("Can't edit project. No id provided.", Project.class, "id");
         }
 
     }
@@ -193,7 +276,9 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    public void delete(Integer id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void delete(@PathVariable Integer id) {
 
         try {
             this.projectDao.deleteProjectWrapper(id);
@@ -209,6 +294,8 @@ public class ProjectControls extends AbstractControl {
      * @param pw the projectWrapper object
      * @return the id of the new project
      */
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @ResponseBody
     public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
 
         Project p = pw.getProject();
@@ -221,6 +308,7 @@ public class ProjectControls extends AbstractControl {
 
         String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         pw.getProject().setProjectCode(projectCode);
+        pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
         try {
             Integer pid = this.projectDao.createProjectWrapper(pw);
             return pid;

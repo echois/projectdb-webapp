@@ -18,6 +18,7 @@ public class Project {
 	private String todo;
 	private String requirements;
 	private String projectTypeName;
+	private Integer lastModified;
 
 	public Integer getId() {
 		return id;
@@ -172,4 +173,12 @@ public class Project {
                 ", projectTypeName='" + projectTypeName + '\'' +
                 '}';
     }
+
+	public Integer getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(Integer lastModified) {
+		this.lastModified = lastModified;
+	}
 }

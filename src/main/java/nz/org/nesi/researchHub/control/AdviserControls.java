@@ -1,17 +1,26 @@
 package nz.org.nesi.researchHub.control;
 
-import nz.org.nesi.researchHub.Constants;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
+import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import pm.pojo.Adviser;
 import pm.pojo.Project;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Project: project_management
@@ -20,6 +29,8 @@ import java.util.List;
  * Date: 5/12/13
  * Time: 11:33 AM
  */
+@Controller
+@RequestMapping(value = "/advisers")
 public class AdviserControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -48,11 +59,33 @@ public class AdviserControls extends AbstractControl {
 
     }
 
+    public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
 
     public AdviserControls() {
 
     }
+
+//    public AdviserControls(ProjectDao o) {
+//        this.projectDao = o;
+//    }
+    
+    /**
+     * Validates the adviser object.
+     *
+     * @param a the project wrapper
+     * @throws InvalidEntityException if there is something wrong with the adviser object
+     */
+    private void validateAdviser(Adviser a) throws InvalidEntityException {
+		if (a.getFullName().trim().equals("")) {
+			throw new InvalidEntityException("Adviser name cannot be empty", Adviser.class, "name");
+		}
+		for (Adviser other:getAllAdvisers()) {
+			if (a.getFullName().equals(other.getFullName()) && (a.getId()==null || !a.getId().equals(other.getId()))) {
+				throw new InvalidEntityException(a.getFullName() + " already exists in the database", Adviser.class, "name");
+			}
+		}
+	}
 
     /**
      * Returns the adviser with the specified id.
@@ -62,7 +95,9 @@ public class AdviserControls extends AbstractControl {
      * @throws NoSuchEntityException if the adviser or his projects can't be found
      * @throws DatabaseException if there is adviser problem with the database
      */
-	public Adviser getAdviser(Integer id) throws NoSuchEntityException {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+	public Adviser getAdviser(@PathVariable Integer id) throws NoSuchEntityException {
 
     	if (id==null) {
             throw new IllegalArgumentException("No adviser id provided");
@@ -89,7 +124,9 @@ public class AdviserControls extends AbstractControl {
      * @return the list of projects
      * @throws DatabaseException if there is adviser problem retrieving the projects
      */
-    public List<Project> getProjectsForAdviser(int advisorId) {
+    @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Project> getProjectsForAdviser(@PathVariable int advisorId) {
         List<Project> ps = null;
         try {
             ps = projectDao.getProjectsForAdviserId(advisorId);
@@ -104,6 +141,8 @@ public class AdviserControls extends AbstractControl {
      *
      * @return all advisors in the project database
      */
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ResponseBody
 	public List<Adviser> getAllAdvisers() {
 
         List<Adviser> al = null;
@@ -122,7 +161,9 @@ public class AdviserControls extends AbstractControl {
      *
      * @param id the advisers' id
      */
-	public void delete(Integer id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+	public void delete(@PathVariable Integer id) {
         try {
             this.projectDao.deleteAdviser(id);
         } catch (Exception e) {
@@ -138,15 +179,22 @@ public class AdviserControls extends AbstractControl {
      * @param adviser the updated adviser object
      * @throws NoSuchEntityException if no Adviser with the specified
      * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
+     * @throws OutOfDateException 
      */
-	public void editAdviser(Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException {
-        //TODO validate adviser
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @ResponseBody
+	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+        validateAdviser(adviser);
 		if (id != null) {
             // check whether an adviser with this id exists
             Adviser temp = getAdviser(adviser.getId());
             // great, no exception, means an adviser with this id does already exist, now let's merge those two
             adviser.setId(id);
-            //TODO maybe compare timestamps?
+            // Compare timestamps to prevent accidental overwrite
+            if (!adviser.getLastModified().equals(temp.getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp");
+            }
+            adviser.setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateAdviser(adviser);
             } catch (Exception e) {
@@ -164,15 +212,18 @@ public class AdviserControls extends AbstractControl {
      * @param adviser the new Adviser
      * @throws InvalidEntityException if the new Adviser object has already an id specified
      */
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @ResponseBody
     public void createAdviser(Adviser adviser) throws InvalidEntityException {
-        //TODO validate adviser
+    	validateAdviser(adviser);
         if ( adviser.getId() != null ) {
             throw new InvalidEntityException("Adviser can't have id, this property will be auto-generated.", Adviser.class, "id");
         }
         try {
             if (StringUtils.isEmpty(adviser.getStartDate()) ) {
-                adviser.setStartDate(Constants.DATE_FORMAT.format(new Date()));
+                adviser.setStartDate(df.format(new Date()));
             }
+            adviser.setLastModified((int) (System.currentTimeMillis() / 1000));
             this.projectDao.createAdviser(adviser);
         } catch (Exception e) {
             throw new DatabaseException("Can't create Adviser '"+ adviser.getFullName()+"'", e);
