@@ -4,16 +4,20 @@ import com.mangofactory.swagger.annotations.ApiErrors;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import nz.org.nesi.researchHub.control.AdviserControls;
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
+import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import pm.pojo.Adviser;
 import pm.pojo.Project;
 
@@ -66,7 +70,7 @@ public class AdviserControllerRest {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
-	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException {
+	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         adviserControls.editAdviser(id, adviser);
     }
 
