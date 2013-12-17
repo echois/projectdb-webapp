@@ -252,10 +252,10 @@ public class ProjectControls extends AbstractControl {
             	Object pojo = getPojo.invoke (pw);
 	            Class<?> pojoClass = Class.forName("pm.pojo." + object);
 	            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
-	            set.invoke (pw.getProject(), data);
+	            set.invoke (pojo, data);
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
-            	throw new InvalidEntityException(object + " does not exist within a ProjectWrapper", ProjectWrapper.class, object);
+            	throw new InvalidEntityException(field + " does not exist within " + object, ProjectWrapper.class, object);
             } catch (InvocationTargetException e) {
             	throw new InvalidEntityException("Unable to fetch " + object + " for " + pw.getProject().getProjectCode(), ProjectWrapper.class, object);
             } catch (IllegalAccessException e) {
