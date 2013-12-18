@@ -62,6 +62,9 @@ public class ProjectControls extends AbstractControl {
      * @throws InvalidEntityException if there is something wrong with the projectwrapper object or one of the associated objects
      */
     public static void validateProject(ProjectWrapper pw) throws InvalidEntityException {
+    	if (pw.getProject().getName()==null) {
+    		throw new InvalidEntityException("Project does not have a title", Project.class, "name");
+    	}
         if (pw.getProject().getName().trim().equals("")) {
             pw.setErrorMessage("A project must have a title");
             throw new InvalidEntityException("Project does not have a title", Project.class, "name");
@@ -193,7 +196,7 @@ public class ProjectControls extends AbstractControl {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
+    public void editProjectWrapper(@PathVariable Integer id, @RequestBody ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
 
         validateProject(project);
         if (project.getProject() != null) {
@@ -232,11 +235,11 @@ public class ProjectControls extends AbstractControl {
      * @throws NoSuchMethodException 
      * @throws ClassNotFoundException 
      */
-    @RequestMapping(value = "/{id}/{object}/{field}/{data}/{timestamp}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String data, @PathVariable String timestamp) throws InvalidEntityException, OutOfDateException {
+    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws InvalidEntityException, OutOfDateException {
     	Integer ts = null;
-    	if (!timestamp.equals("null")) ts = Integer.parseInt(timestamp);
+    	if (timestamp!="null") ts = Integer.parseInt(timestamp);
         if (id != null) {
             // might throw database exception if project does not already exist
             ProjectWrapper pw = getProjectWrapper(id.toString());
@@ -296,7 +299,7 @@ public class ProjectControls extends AbstractControl {
      */
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
-    public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
+    public synchronized Integer createProjectWrapper(@RequestBody ProjectWrapper pw) throws InvalidEntityException {
 
         Project p = pw.getProject();
 
