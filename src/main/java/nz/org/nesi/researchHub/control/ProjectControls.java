@@ -246,7 +246,7 @@ public class ProjectControls extends AbstractControl {
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
             if (ts != pw.getProject().getLastModified() && !ts.equals(pw.getProject().getLastModified())) {
-            	throw new OutOfDateException("Incorrect timestamp");
+            	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
