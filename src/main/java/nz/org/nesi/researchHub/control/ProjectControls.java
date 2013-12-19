@@ -239,13 +239,14 @@ public class ProjectControls extends AbstractControl {
     @ResponseBody
     public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws InvalidEntityException, OutOfDateException {
     	Integer ts = null;
-    	if (timestamp!="null") ts = Integer.parseInt(timestamp);
+    	if (!timestamp.equals("null") && !timestamp.equals("force")) ts = Integer.parseInt(timestamp);
         if (id != null) {
             // might throw database exception if project does not already exist
             ProjectWrapper pw = getProjectWrapper(id.toString());
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
-            if (ts != pw.getProject().getLastModified() && !ts.equals(pw.getProject().getLastModified())) {
+            // Covers the case where timestamps don't match, and where the correct timestamp is null, and force=true
+            if (ts != pw.getProject().getLastModified() && !ts.equals(pw.getProject().getLastModified()) && !timestamp.equals("force")) {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
