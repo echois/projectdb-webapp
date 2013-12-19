@@ -35,11 +35,21 @@ public class ProjectController extends GlobalController {
 			boolean expired = now.after(df.parse(pw.getProject().getEndDate()));
 			mav.addObject("expired",expired);
 		}
+		String poEmail = "";
+		String poName = "";
+		String othersEmails = "";
 		for (RPLink r:pw.getRpLinks()) {
 			if (!r.getResearcher().getEndDate().trim().equals("")) {
 				if (now.after(df.parse(r.getResearcher().getEndDate()))) {
 					r.getResearcher().setFullName(r.getResearcher().getFullName() + " (expired)");
 				}
+			}
+			if (r.getResearcherRoleId().equals(1)) {
+				poEmail = r.getResearcher().getEmail();
+				poName = r.getResearcher().getFullName().split(" ")[0];
+			}
+			else {
+				othersEmails += r.getResearcher().getEmail() + ',';
 			}
 		}
 		for (APLink a:pw.getApLinks()) {
@@ -49,6 +59,8 @@ public class ProjectController extends GlobalController {
 				}
 			}
 		}
+		String mailto = "mailto:" + poEmail + "?subject=" + pw.getProject().getProjectCode() + "&cc=" + othersEmails + "&body=Dear " + poName + ",";
+		mav.addObject("mailto", mailto);
 		mav.addObject("jobauditBaseProjectUrl",this.jobauditBaseProjectUrl);
 		return mav;
 	}
