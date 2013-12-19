@@ -164,13 +164,18 @@ public class ProjectController extends GlobalController {
 		Integer pid = newPw.getProject().getId();
 		this.authzAspect.verifyUserIsAdviserOnProject(pid);
 		ProjectWrapper pw = tempProjectManager.get(pid);
-		newPw.getProject().setProjectCode(pw.getProject().getProjectCode());
+		//newPw.getProject().setProjectCode(pw.getProject().getProjectCode());
 		pw.setProject(newPw.getProject());
 		pw.setRedirect(newPw.getRedirect());
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
 		if (pw.getProject().getStatusId().equals(4)) {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			pw.getProject().setEndDate(df.format(new Date()));
+		}
+
+		if (pw.getProject().getProjectCode()==null || pw.getProject().getProjectCode().equals("")) {
+			String projectCode = this.projectDao.getNextProjectCode(pw.getProject().getHostInstitution());
+			pw.getProject().setProjectCode(projectCode);
 		}
 
 		if (op.equals("CANCEL")) {
@@ -224,8 +229,6 @@ public class ProjectController extends GlobalController {
 			pw = this.tempProjectManager.get(pid);
 			pw.setProject(p);
 			if (pid < 0) {
-				String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
-				pw.getProject().setProjectCode(projectCode);
 				pid = this.projectDao.createProjectWrapper(pw);
 			} else {
 				this.projectDao.updateProjectWrapper(pid, pw);
@@ -247,8 +250,6 @@ public class ProjectController extends GlobalController {
 		if (this.isProjectValid(pwNew)) {
 			pwNew.setErrorMessage("");
 			if (pidOld < 0) {
-				String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
-				pw.getProject().setProjectCode(projectCode);
 				pid = this.projectDao.createProjectWrapper(pwNew);
 				pwNew.getProject().setId(pid);
 				this.tempProjectManager.register(pwNew);
