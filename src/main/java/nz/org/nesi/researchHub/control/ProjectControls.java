@@ -249,7 +249,7 @@ public class ProjectControls extends AbstractControl {
             boolean nullMatch = pw.getProject().getLastModified()==null && ts==null;
             boolean match = pw.getProject().getLastModified()!=null && ts!=null && pw.getProject().getLastModified().equals(ts);
             boolean force = timestamp.equals("force");
-            if (!force && (!nullMatch || !match)) {
+            if (!force && !(nullMatch || match)) {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
