@@ -32,8 +32,6 @@ import pm.pojo.RPLink;
  * Date: 9/12/13
  * Time: 9:38 AM
  */
-@Controller
-@RequestMapping(value = "/projects")
 public class ProjectControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -104,10 +102,7 @@ public class ProjectControls extends AbstractControl {
      * @param projectIdOrCode the project id or project code
      * @return the Project
      */
-    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('customer')")
-    @ResponseBody
-    public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
+    public ProjectWrapper getProjectWrapper(String projectIdOrCode) {
 
         try {
             int i = Integer.parseInt(projectIdOrCode);
@@ -145,8 +140,6 @@ public class ProjectControls extends AbstractControl {
      *
      * @return all projects
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
     public List<Project> getProjects() {
         try {
             List<Project> ps = projectDao.getProjects();
@@ -164,9 +157,7 @@ public class ProjectControls extends AbstractControl {
      * @param filter the filter string, can't be empty
      * @return all projects matching the filter
      */
-    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Project> filterProjects(@PathVariable String filter) {
+    public List<Project> filterProjects(String filter) {
 
         if (StringUtils.isEmpty(filter)) {
             throw new IllegalArgumentException("Can't filter projects using empty string, use getProjects method instead.");
@@ -194,8 +185,6 @@ public class ProjectControls extends AbstractControl {
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
      * @throws OutOfDateException 
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    @ResponseBody
     public void editProjectWrapper(@PathVariable Integer id, @RequestBody ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
 
         validateProject(project);
@@ -235,9 +224,7 @@ public class ProjectControls extends AbstractControl {
      * @throws NoSuchMethodException 
      * @throws ClassNotFoundException 
      */
-    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws InvalidEntityException, OutOfDateException {
+    public void editProjectWrapper(Integer id, String object, String field, String timestamp, String data) throws InvalidEntityException, OutOfDateException {
     	Integer ts = null;
     	if (!timestamp.equals("null") && !timestamp.equals("force")) ts = Integer.parseInt(timestamp);
         if (id != null) {
@@ -283,9 +270,7 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void delete(@PathVariable Integer id) {
+    public void delete( Integer id) {
 
         try {
             this.projectDao.deleteProjectWrapper(id);
@@ -301,9 +286,7 @@ public class ProjectControls extends AbstractControl {
      * @param pw the projectWrapper object
      * @return the id of the new project
      */
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    @ResponseBody
-    public synchronized Integer createProjectWrapper(@RequestBody ProjectWrapper pw) throws InvalidEntityException {
+    public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
 
         Project p = pw.getProject();
 
@@ -323,5 +306,15 @@ public class ProjectControls extends AbstractControl {
             throw new DatabaseException("Could not create Project in database.", e);
         }
 
+    }
+    
+    /**
+     * Returns a list of institutions.
+     *
+     * @return a list of institutions
+     * @throws Exception 
+     */
+    public List<String> getInstitutions() throws Exception {
+    	return this.projectDao.getInstitutions();
     }
 }

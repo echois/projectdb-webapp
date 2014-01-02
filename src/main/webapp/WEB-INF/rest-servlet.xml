@@ -21,9 +21,10 @@
     </mvc:annotation-driven>
 
     <context:annotation-config/>
-    <context:component-scan base-package="nz.org.nesi.researchHub.control"/>
+    <context:component-scan base-package="nz.org.nesi.researchHub.view.rest"/>
     <bean id="documentationConfig" class="com.mangofactory.swagger.configuration.DocumentationConfig"/>
-    <context:component-scan base-package="nz.org.nesi.researchHub.exceptions"/>
+    <bean id="adviserControls" class="nz.org.nesi.researchHub.control.AdviserControls"/>
+    <bean id="projectControls" class="nz.org.nesi.researchHub.control.ProjectControls"/>
     <!--<context:component-scan base-package="nz.org.nesi.researchHub.auth"/>-->
 
 
