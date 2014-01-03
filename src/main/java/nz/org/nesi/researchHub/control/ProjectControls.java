@@ -264,8 +264,14 @@ public class ProjectControls extends AbstractControl {
 	            	Method getPojo = c.getDeclaredMethod ("get" + object);
 	            	Object pojo = getPojo.invoke (pw);
 		            Class<?> pojoClass = Class.forName("pm.pojo." + object);
-		            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
-		            set.invoke (pojo, data);
+		            try {
+		            	Integer.valueOf(data);
+		            	Method set = pojoClass.getDeclaredMethod ("set" + field, Integer.class);
+			            set.invoke (pojo, data);
+		            } catch (NumberFormatException e) {
+		            	Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
+			            set.invoke (pojo, data);
+		            }
             	}
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
