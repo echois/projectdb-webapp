@@ -21,7 +21,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
+import pm.pojo.Affiliation;
+import pm.pojo.Facility;
+import pm.pojo.InstitutionalRole;
+import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.Project;
+import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 
@@ -316,5 +323,55 @@ public class ProjectControls extends AbstractControl {
      */
     public List<String> getInstitutions() throws Exception {
     	return this.projectDao.getInstitutions();
+    }
+    
+    /**
+     * Returns a list of facilities.
+     *
+     * @return a list of facilities
+     * @throws Exception 
+     */
+    public List<Facility> getFacilities() throws Exception {
+    	return this.projectDao.getFacilities();
+    }
+    
+    /**
+     * Returns a list of ProjectStatuses.
+     *
+     * @return a list of ProjectStatuses
+     * @throws Exception 
+     */
+    public List<ProjectStatus> getProjectStatuses() throws Exception {
+    	return this.projectDao.getProjectStatuses();
+    }
+    
+    /**
+     * Returns a list of Kpis.
+     *
+     * @return a list of Kpis
+     * @throws Exception 
+     */
+    public List<Kpi> getKpis() throws Exception {
+    	return this.projectDao.getKpis();
+    }
+    
+    /**
+     * Returns a list of KpiCodes.
+     *
+     * @return a list of KpiCodes
+     * @throws Exception 
+     */
+    public List<KpiCode> getKpiCodes() throws Exception {
+    	return this.projectDao.getKpiCodes();
+    }
+    
+    /**
+     * Returns a list of all KPIS reported for all projects.
+     *
+     * @return a list of ProjectKpis
+     * @throws Exception 
+     */
+    public List<ProjectKpi> getProjectKpis() throws Exception {
+    	return this.projectDao.getProjectKpis();
     }
 }

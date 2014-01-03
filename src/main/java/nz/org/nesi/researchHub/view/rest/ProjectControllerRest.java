@@ -15,7 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pm.pojo.Facility;
+import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.Project;
+import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectWrapper;
 
 import com.wordnik.swagger.annotations.Api;
@@ -94,5 +99,40 @@ public class ProjectControllerRest {
     @ResponseBody
     public List<String> getInstitutions() throws Exception {
         return projectControls.getInstitutions();
+    }
+    
+    @RequestMapping(value = "/fac", method = RequestMethod.GET)
+    @ApiOperation( value = "Get facilities", notes = "Returns a list of possible project facilities" )
+    @ResponseBody
+    public List<Facility> getFacilities() throws Exception {
+        return projectControls.getFacilities();
+    }
+
+    @RequestMapping(value = "/kpis", method = RequestMethod.GET)
+    @ApiOperation( value = "Get KPIS", notes = "Returns a list of possible project KPIS" )
+    @ResponseBody
+    public List<Kpi> getKpis() throws Exception {
+        return projectControls.getKpis();
+    }
+    
+    @RequestMapping(value = "/kpic", method = RequestMethod.GET)
+    @ApiOperation( value = "Get KPI Codes", notes = "Returns a list of possible project KPI codes" )
+    @ResponseBody
+    public List<KpiCode> getKpiCodes() throws Exception {
+        return projectControls.getKpiCodes();
+    }
+    
+    @RequestMapping(value = "/akpis", method = RequestMethod.GET)
+    @ApiOperation( value = "Get Project KPIS", notes = "Returns a list of reported KPIs" )
+    @ResponseBody
+    public List<ProjectKpi> getProjectKpis() throws Exception {
+        return projectControls.getProjectKpis();
+    }
+    
+    @RequestMapping(value = "/stat", method = RequestMethod.GET)
+    @ApiOperation( value = "Get Project Statuses", notes = "Returns a list of possible project statuses" )
+    @ResponseBody
+    public List<ProjectStatus> getProjectStatuses() throws Exception {
+        return projectControls.getProjectStatuses();
     }
 }

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Adviser;
+import pm.pojo.Affiliation;
+import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 
 /**
@@ -211,6 +213,27 @@ public class AdviserControls extends AbstractControl {
             throw new DatabaseException("Can't create Adviser '"+ adviser.getFullName()+"'", e);
         }
     }
+    
 
+    
+    /**
+     * Returns a list of Affiliations.
+     *
+     * @return a list of Affiliations
+     * @throws Exception 
+     */
+    public List<Affiliation> getAffiliations() throws Exception {
+    	return this.projectDao.getAffiliations();
+    }
+    
+    /**
+     * Returns a list of InstitutionalRoles.
+     *
+     * @return a list of InstitutionalRoles
+     * @throws Exception 
+     */
+    public List<InstitutionalRole> getInstitutionalRoles() throws Exception {
+    	return this.projectDao.getInstitutionalRoles();
+    }
 
 }
