@@ -21,11 +21,10 @@
     </mvc:annotation-driven>
 
     <context:annotation-config/>
-    <context:component-scan base-package="nz.org.nesi.researchHub.view.rest"/>
+    <context:component-scan base-package="nz.org.nesi.researchHub"/>
     <bean id="documentationConfig" class="com.mangofactory.swagger.configuration.DocumentationConfig"/>
     <bean id="adviserControls" class="nz.org.nesi.researchHub.control.AdviserControls"/>
     <bean id="projectControls" class="nz.org.nesi.researchHub.control.ProjectControls"/>
-    <!--<context:component-scan base-package="nz.org.nesi.researchHub.auth"/>-->
 
 
    	<!-- Allows us to use @PreAuthorize family of security authorization annotations. -->
