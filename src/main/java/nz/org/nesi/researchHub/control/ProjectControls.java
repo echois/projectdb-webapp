@@ -27,6 +27,7 @@ import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
+import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectWrapper;
@@ -248,12 +249,23 @@ public class ProjectControls extends AbstractControl {
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
-            	Class<ProjectWrapper> c = ProjectWrapper.class;
-            	Method getPojo = c.getDeclaredMethod ("get" + object);
-            	Object pojo = getPojo.invoke (pw);
-	            Class<?> pojoClass = Class.forName("pm.pojo." + object);
-	            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
-	            set.invoke (pojo, data);
+            	if (object.equals("projectFacilities")) {
+            		List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
+            		for (String facId : data.split(",")) {
+            			ProjectFacility pf = new ProjectFacility();
+            			pf.setProjectId(id);
+            			pf.setFacilityId(Integer.valueOf(facId));
+            			projectFacilities.add(pf);
+            		}
+					pw.setProjectFacilities(projectFacilities);
+            	} else {
+	            	Class<ProjectWrapper> c = ProjectWrapper.class;
+	            	Method getPojo = c.getDeclaredMethod ("get" + object);
+	            	Object pojo = getPojo.invoke (pw);
+		            Class<?> pojoClass = Class.forName("pm.pojo." + object);
+		            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
+		            set.invoke (pojo, data);
+            	}
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
             	throw new InvalidEntityException(field + " does not exist within " + object, ProjectWrapper.class, object);
