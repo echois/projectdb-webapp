@@ -38,7 +38,7 @@ public class ProjectControllerRest {
 
     @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET)
     // this is an example how we'll do authorization later on, at the moment it won't actually enforce anything
-    @PreAuthorize("hasPermission(#projectIdOrCode, 'read_project' )")
+    //@PreAuthorize("hasPermission(#projectIdOrCode, 'read_project' )")
     @ApiOperation( value = "Get project wrapper", notes = "Returns a complete project wrapper object upon input of a id or code" )
     @ResponseBody
     public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
