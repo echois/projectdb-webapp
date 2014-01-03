@@ -21,6 +21,7 @@ import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectStatus;
+import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 
 import com.wordnik.swagger.annotations.Api;
@@ -134,5 +135,12 @@ public class ProjectControllerRest {
     @ResponseBody
     public List<ProjectStatus> getProjectStatuses() throws Exception {
         return projectControls.getProjectStatuses();
+    }
+    
+    @RequestMapping(value = "/type", method = RequestMethod.GET)
+    @ApiOperation( value = "Get Project Types", notes = "Returns a list of possible project types" )
+    @ResponseBody
+    public List<ProjectType> getProjectTypes() throws Exception {
+        return projectControls.getProjectTypes();
     }
 }

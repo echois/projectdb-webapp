@@ -30,6 +30,7 @@ import pm.pojo.Project;
 import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectStatus;
+import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 
@@ -355,6 +356,16 @@ public class ProjectControls extends AbstractControl {
      */
     public List<ProjectStatus> getProjectStatuses() throws Exception {
     	return this.projectDao.getProjectStatuses();
+    }
+    
+    /**
+     * Returns a list of ProjectTypes.
+     *
+     * @return a list of ProjectTypes
+     * @throws Exception 
+     */
+    public List<ProjectType> getProjectTypes() throws Exception {
+    	return this.projectDao.getProjectTypes();
     }
     
     /**
