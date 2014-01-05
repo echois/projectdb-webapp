@@ -32,6 +32,7 @@
         $("#project_notes").watermark("Other notes on the project");
         $("#project_hostInstitution").watermark("Institution that administers the research project. If in doubt, this is the institution where the PI is working.");
         $("#project_todo").watermark("Things that need to be done on this project");
+        $("#project_projectCode").watermark("Leave blank to autogenerate");
 
         $('.update').click(function() {
         	if ($(this).hasClass("delete")) {
@@ -146,6 +147,11 @@
       <td>Last Day:</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker4" path="project.endDate" size="20"/></td>
+    </tr>
+    <tr>
+      <td><nobr>Project Code:</nobr></td>
+      <td valign="top">&nbsp;</td>
+      <td><form:input id="project_projectCode" path="project.projectCode" size="30"/></td>
     </tr>
     <tr>
       <td valign="top">Requirements:</td>
