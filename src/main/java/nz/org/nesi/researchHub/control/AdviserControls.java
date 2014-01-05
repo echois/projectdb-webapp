@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Adviser;
+import pm.pojo.Affiliation;
+import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 
 /**
@@ -29,8 +31,6 @@ import pm.pojo.Project;
  * Date: 5/12/13
  * Time: 11:33 AM
  */
-@Controller
-@RequestMapping(value = "/advisers")
 public class AdviserControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -62,10 +62,6 @@ public class AdviserControls extends AbstractControl {
     public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
 
-    public AdviserControls() {
-
-    }
-
 //    public AdviserControls(ProjectDao o) {
 //        this.projectDao = o;
 //    }
@@ -95,9 +91,7 @@ public class AdviserControls extends AbstractControl {
      * @throws NoSuchEntityException if the adviser or his projects can't be found
      * @throws DatabaseException if there is adviser problem with the database
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-	public Adviser getAdviser(@PathVariable Integer id) throws NoSuchEntityException {
+	public Adviser getAdviser(Integer id) throws NoSuchEntityException {
 
     	if (id==null) {
             throw new IllegalArgumentException("No adviser id provided");
@@ -124,9 +118,7 @@ public class AdviserControls extends AbstractControl {
      * @return the list of projects
      * @throws DatabaseException if there is adviser problem retrieving the projects
      */
-    @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Project> getProjectsForAdviser(@PathVariable int advisorId) {
+    public List<Project> getProjectsForAdviser(int advisorId) {
         List<Project> ps = null;
         try {
             ps = projectDao.getProjectsForAdviserId(advisorId);
@@ -141,8 +133,6 @@ public class AdviserControls extends AbstractControl {
      *
      * @return all advisors in the project database
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
 	public List<Adviser> getAllAdvisers() {
 
         List<Adviser> al = null;
@@ -161,9 +151,7 @@ public class AdviserControls extends AbstractControl {
      *
      * @param id the advisers' id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-	public void delete(@PathVariable Integer id) {
+	public void delete(Integer id) {
         try {
             this.projectDao.deleteAdviser(id);
         } catch (Exception e) {
@@ -181,9 +169,7 @@ public class AdviserControls extends AbstractControl {
      * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
      * @throws OutOfDateException 
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    @ResponseBody
-	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+	public void editAdviser(Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         validateAdviser(adviser);
 		if (id != null) {
             // check whether an adviser with this id exists
@@ -212,8 +198,6 @@ public class AdviserControls extends AbstractControl {
      * @param adviser the new Adviser
      * @throws InvalidEntityException if the new Adviser object has already an id specified
      */
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    @ResponseBody
     public void createAdviser(Adviser adviser) throws InvalidEntityException {
     	validateAdviser(adviser);
         if ( adviser.getId() != null ) {
@@ -229,6 +213,27 @@ public class AdviserControls extends AbstractControl {
             throw new DatabaseException("Can't create Adviser '"+ adviser.getFullName()+"'", e);
         }
     }
+    
 
+    
+    /**
+     * Returns a list of Affiliations.
+     *
+     * @return a list of Affiliations
+     * @throws Exception 
+     */
+    public List<Affiliation> getAffiliations() throws Exception {
+    	return this.projectDao.getAffiliations();
+    }
+    
+    /**
+     * Returns a list of InstitutionalRoles.
+     *
+     * @return a list of InstitutionalRoles
+     * @throws Exception 
+     */
+    public List<InstitutionalRole> getInstitutionalRoles() throws Exception {
+    	return this.projectDao.getInstitutionalRoles();
+    }
 
 }

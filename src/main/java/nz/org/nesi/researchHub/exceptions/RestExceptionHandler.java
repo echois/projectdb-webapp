@@ -50,4 +50,13 @@ public class RestExceptionHandler {
         return ex;
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(OutOfDateException.class)
+    @ResponseBody
+    public OutOfDateException handleOutOfDateConflict(OutOfDateException ex) {
+
+        log.debug("OutOfDateException: "+ex.getLocalizedMessage());
+
+        return ex;
+    }
 }

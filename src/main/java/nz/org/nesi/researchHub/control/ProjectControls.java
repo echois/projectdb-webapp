@@ -21,7 +21,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
+import pm.pojo.Affiliation;
+import pm.pojo.Facility;
+import pm.pojo.InstitutionalRole;
+import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.Project;
+import pm.pojo.ProjectFacility;
+import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectStatus;
+import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 
@@ -32,8 +41,6 @@ import pm.pojo.RPLink;
  * Date: 9/12/13
  * Time: 9:38 AM
  */
-@Controller
-@RequestMapping(value = "/projects")
 public class ProjectControls extends AbstractControl {
 
     public static void main(String[] args) throws Exception {
@@ -104,10 +111,7 @@ public class ProjectControls extends AbstractControl {
      * @param projectIdOrCode the project id or project code
      * @return the Project
      */
-    @RequestMapping(value = "/{projectIdOrCode}", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('customer')")
-    @ResponseBody
-    public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
+    public ProjectWrapper getProjectWrapper(String projectIdOrCode) {
 
         try {
             int i = Integer.parseInt(projectIdOrCode);
@@ -145,8 +149,6 @@ public class ProjectControls extends AbstractControl {
      *
      * @return all projects
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
     public List<Project> getProjects() {
         try {
             List<Project> ps = projectDao.getProjects();
@@ -164,9 +166,7 @@ public class ProjectControls extends AbstractControl {
      * @param filter the filter string, can't be empty
      * @return all projects matching the filter
      */
-    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Project> filterProjects(@PathVariable String filter) {
+    public List<Project> filterProjects(String filter) {
 
         if (StringUtils.isEmpty(filter)) {
             throw new IllegalArgumentException("Can't filter projects using empty string, use getProjects method instead.");
@@ -194,8 +194,6 @@ public class ProjectControls extends AbstractControl {
      * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
      * @throws OutOfDateException 
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    @ResponseBody
     public void editProjectWrapper(@PathVariable Integer id, @RequestBody ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
 
         validateProject(project);
@@ -235,27 +233,46 @@ public class ProjectControls extends AbstractControl {
      * @throws NoSuchMethodException 
      * @throws ClassNotFoundException 
      */
-    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws InvalidEntityException, OutOfDateException {
+    public void editProjectWrapper(Integer id, String object, String field, String timestamp, String data) throws InvalidEntityException, OutOfDateException {
     	Integer ts = null;
-    	if (timestamp!="null") ts = Integer.parseInt(timestamp);
+    	if (!timestamp.equals("null") && !timestamp.equals("force")) ts = Integer.parseInt(timestamp);
         if (id != null) {
             // might throw database exception if project does not already exist
             ProjectWrapper pw = getProjectWrapper(id.toString());
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
-            if (ts != pw.getProject().getLastModified() && !ts.equals(pw.getProject().getLastModified())) {
-            	throw new OutOfDateException("Incorrect timestamp");
+            // Covers the case where timestamps don't match, and where the correct timestamp is null, and force=true
+            boolean nullMatch = pw.getProject().getLastModified()==null && ts==null;
+            boolean match = pw.getProject().getLastModified()!=null && ts!=null && pw.getProject().getLastModified().equals(ts);
+            boolean force = timestamp.equals("force");
+            if (!force && !(nullMatch || match)) {
+            	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
-            	Class<ProjectWrapper> c = ProjectWrapper.class;
-            	Method getPojo = c.getDeclaredMethod ("get" + object);
-            	Object pojo = getPojo.invoke (pw);
-	            Class<?> pojoClass = Class.forName("pm.pojo." + object);
-	            Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
-	            set.invoke (pojo, data);
+            	if (object.equals("projectFacilities")) {
+            		List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
+            		for (String facId : data.split(",")) {
+            			ProjectFacility pf = new ProjectFacility();
+            			pf.setProjectId(id);
+            			pf.setFacilityId(Integer.valueOf(facId));
+            			projectFacilities.add(pf);
+            		}
+					pw.setProjectFacilities(projectFacilities);
+            	} else {
+	            	Class<ProjectWrapper> c = ProjectWrapper.class;
+	            	Method getPojo = c.getDeclaredMethod ("get" + object);
+	            	Object pojo = getPojo.invoke (pw);
+		            Class<?> pojoClass = Class.forName("pm.pojo." + object);
+		            try {
+		            	Integer intData = Integer.valueOf(data);
+		            	Method set = pojoClass.getDeclaredMethod ("set" + field, Integer.class);
+			            set.invoke (pojo, intData);
+		            } catch (NumberFormatException e) {
+		            	Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
+			            set.invoke (pojo, data);
+		            }
+            	}
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
             	throw new InvalidEntityException(field + " does not exist within " + object, ProjectWrapper.class, object);
@@ -279,9 +296,7 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void delete(@PathVariable Integer id) {
+    public void delete( Integer id) {
 
         try {
             this.projectDao.deleteProjectWrapper(id);
@@ -297,9 +312,7 @@ public class ProjectControls extends AbstractControl {
      * @param pw the projectWrapper object
      * @return the id of the new project
      */
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    @ResponseBody
-    public synchronized Integer createProjectWrapper(@RequestBody ProjectWrapper pw) throws InvalidEntityException {
+    public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
 
         Project p = pw.getProject();
 
@@ -319,5 +332,75 @@ public class ProjectControls extends AbstractControl {
             throw new DatabaseException("Could not create Project in database.", e);
         }
 
+    }
+    
+    /**
+     * Returns a list of institutions.
+     *
+     * @return a list of institutions
+     * @throws Exception 
+     */
+    public List<String> getInstitutions() throws Exception {
+    	return this.projectDao.getInstitutions();
+    }
+    
+    /**
+     * Returns a list of facilities.
+     *
+     * @return a list of facilities
+     * @throws Exception 
+     */
+    public List<Facility> getFacilities() throws Exception {
+    	return this.projectDao.getFacilities();
+    }
+    
+    /**
+     * Returns a list of ProjectStatuses.
+     *
+     * @return a list of ProjectStatuses
+     * @throws Exception 
+     */
+    public List<ProjectStatus> getProjectStatuses() throws Exception {
+    	return this.projectDao.getProjectStatuses();
+    }
+    
+    /**
+     * Returns a list of ProjectTypes.
+     *
+     * @return a list of ProjectTypes
+     * @throws Exception 
+     */
+    public List<ProjectType> getProjectTypes() throws Exception {
+    	return this.projectDao.getProjectTypes();
+    }
+    
+    /**
+     * Returns a list of Kpis.
+     *
+     * @return a list of Kpis
+     * @throws Exception 
+     */
+    public List<Kpi> getKpis() throws Exception {
+    	return this.projectDao.getKpis();
+    }
+    
+    /**
+     * Returns a list of KpiCodes.
+     *
+     * @return a list of KpiCodes
+     * @throws Exception 
+     */
+    public List<KpiCode> getKpiCodes() throws Exception {
+    	return this.projectDao.getKpiCodes();
+    }
+    
+    /**
+     * Returns a list of all KPIS reported for all projects.
+     *
+     * @return a list of ProjectKpis
+     * @throws Exception 
+     */
+    public List<ProjectKpi> getProjectKpis() throws Exception {
+    	return this.projectDao.getProjectKpis();
     }
 }
