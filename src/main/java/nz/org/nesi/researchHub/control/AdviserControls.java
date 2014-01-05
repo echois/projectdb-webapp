@@ -225,15 +225,5 @@ public class AdviserControls extends AbstractControl {
     public List<Affiliation> getAffiliations() throws Exception {
     	return this.projectDao.getAffiliations();
     }
-    
-    /**
-     * Returns a list of InstitutionalRoles.
-     *
-     * @return a list of InstitutionalRoles
-     * @throws Exception 
-     */
-    public List<InstitutionalRole> getInstitutionalRoles() throws Exception {
-    	return this.projectDao.getInstitutionalRoles();
-    }
 
 }
