@@ -273,8 +273,15 @@ public class ProjectControls extends AbstractControl {
 	            	pojoClass = pojo.getClass();
 	            	if (deep) {
 	            		method = "get";
-	            		getPojo = pojoClass.getDeclaredMethod(method, int.class);
-	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
+	            		try {
+	            			Integer.parseInt(object.split("_")[1]);
+	            			getPojo = pojoClass.getDeclaredMethod(method, int.class);
+		            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
+	            		} catch (NumberFormatException e) {
+	            			method = "get" + object.split("_")[1];
+	            			getPojo = pojoClass.getDeclaredMethod(method);
+		            		pojo = getPojo.invoke(pojo);
+	            		}
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
