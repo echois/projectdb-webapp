@@ -249,6 +249,13 @@ public class ProjectControls extends AbstractControl {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
+            boolean deep = false;
+            String method = "get" + object;
+            Class<?> pojoClass = null;
+            if (object.contains("_")) {
+            	deep = true;
+            	method = "get" + object.split("_")[0];
+            }
             try {
             	if (object.equals("projectFacilities")) {
             		List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
@@ -261,29 +268,36 @@ public class ProjectControls extends AbstractControl {
 					pw.setProjectFacilities(projectFacilities);
             	} else {
 	            	Class<ProjectWrapper> c = ProjectWrapper.class;
-	            	Method getPojo = c.getDeclaredMethod ("get" + object);
+	            	Method getPojo = c.getDeclaredMethod (method);
 	            	Object pojo = getPojo.invoke (pw);
-		            Class<?> pojoClass = Class.forName("pm.pojo." + object);
+	            	pojoClass = pojo.getClass();
+	            	if (deep) {
+	            		method = "get";
+	            		getPojo = pojoClass.getDeclaredMethod(method, int.class);
+	            		pojo = getPojo.invoke(pojo, object.split("_")[1]);
+	            		pojoClass = pojo.getClass();
+	            	}
+		            method = "set" + field;
 		            try {
 		            	Integer intData = Integer.valueOf(data);
-		            	Method set = pojoClass.getDeclaredMethod ("set" + field, Integer.class);
+		            	Method set = pojoClass.getDeclaredMethod (method, Integer.class);
 			            set.invoke (pojo, intData);
 		            } catch (NumberFormatException e) {
-		            	Method set = pojoClass.getDeclaredMethod ("set" + field, String.class);
+		            	Method set = pojoClass.getDeclaredMethod (method, String.class);
 			            set.invoke (pojo, data);
 		            }
             	}
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
-            	throw new InvalidEntityException(field + " does not exist within " + object, ProjectWrapper.class, object);
+            	throw new InvalidEntityException(pojoClass.getName() + "." + method + " is not a valid method", ProjectWrapper.class, object);
             } catch (InvocationTargetException e) {
-            	throw new InvalidEntityException("Unable to fetch " + object + " for " + pw.getProject().getProjectCode(), ProjectWrapper.class, object);
+            	throw new InvalidEntityException("Unable to " + method + " for " + pw.getProject().getProjectCode(), ProjectWrapper.class, object);
             } catch (IllegalAccessException e) {
             	throw new InvalidEntityException("It is illegal to fetch " + object, ProjectWrapper.class, object);
             } catch (ClassNotFoundException e) {
             	throw new InvalidEntityException(object + " is not a valid POJO", ProjectWrapper.class, object);
 			} catch (Exception e) {
-                throw new DatabaseException("Can't update project with id " + id, e);
+                throw new DatabaseException(e.getMessage(), e);
             }
         } else {
             throw new InvalidEntityException("Can't edit project. No id provided.", Project.class, "id");
