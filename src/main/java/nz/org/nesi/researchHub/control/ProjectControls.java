@@ -274,7 +274,7 @@ public class ProjectControls extends AbstractControl {
 	            	if (deep) {
 	            		method = "get";
 	            		getPojo = pojoClass.getDeclaredMethod(method, int.class);
-	            		pojo = getPojo.invoke(pojo, object.split("_")[1]);
+	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
@@ -296,6 +296,8 @@ public class ProjectControls extends AbstractControl {
             	throw new InvalidEntityException("It is illegal to fetch " + object, ProjectWrapper.class, object);
             } catch (ClassNotFoundException e) {
             	throw new InvalidEntityException(object + " is not a valid POJO", ProjectWrapper.class, object);
+            } catch (IllegalArgumentException e) {
+            	throw new InvalidEntityException(data + " does not match " + pojoClass.getName() + "." + method + "'s expected parameter", ProjectWrapper.class, object);
 			} catch (Exception e) {
                 throw new DatabaseException(e.getMessage(), e);
             }
