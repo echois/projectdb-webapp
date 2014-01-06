@@ -87,6 +87,13 @@ public class ProjectControllerRest {
     public void delete(@PathVariable Integer id) {
         projectControls.delete(id);
     }
+    
+    @RequestMapping(value = "/{id}/{pid}/{adviser}", method = RequestMethod.DELETE)
+    @ApiOperation( value = "Remove adviser/researcher from project", notes = "Removes someone from a project" )
+    @ResponseBody
+    public void remove(@PathVariable Integer id, @PathVariable Integer pid, @PathVariable boolean adviser) {
+        projectControls.removeUser(id, pid, adviser);
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ApiOperation( value = "Create project", notes = "Creates a new project from the given object" )
