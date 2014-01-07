@@ -16,7 +16,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
     @RequireAdviser
 	public synchronized Integer createProjectWrapper(final ProjectWrapper pw) throws Exception {
-    	Integer pid = this.createProject(pw.getProject());
+    	this.createProject(pw.getProject());
+    	Integer pid = pw.getProject().getId();
     	List<RPLink> rpLinks = pw.getRpLinks();
     	List<APLink> apLinks = pw.getApLinks();
     	List<ResearchOutput> ros = pw.getResearchOutputs();
@@ -119,12 +120,14 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
     @RequireAdviser
 	public Integer createResearcher(final Researcher r) throws Exception {
-		return (Integer) getSqlSession().insert("pm.db.createResearcher", r);
+    	getSqlSession().insert("pm.db.createResearcher", r);
+		return r.getId();
 	}
 
     @RequireAdviser
 	public Integer createAdviser(final Adviser a) throws Exception {
-		return (Integer) getSqlSession().insert("pm.db.createAdviser", a);
+    	getSqlSession().insert("pm.db.createAdviser", a);
+    	return a.getId();
 	}
 
 	public List<Project> getProjects() throws Exception {
@@ -499,7 +502,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
 	private Integer createProject(Project p) throws Exception {
-		return (Integer) getSqlSession().insert("pm.db.createProject", p);
+		getSqlSession().insert("pm.db.createProject", p);
+		return p.getId();
 	}
 
 	private void createRPLink(RPLink r) throws Exception {
@@ -511,7 +515,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
 	private Integer createReview(Review r) throws Exception {
-		Integer rid = (Integer) getSqlSession().insert("pm.db.createReview", r);
+		getSqlSession().insert("pm.db.createReview", r);
+		Integer rid = r.getId();
 		List<Attachment> attachments = r.getAttachments();
 		if ((r.getAttachmentDescription() != null && r.getAttachmentDescription() != "") ||
 			(r.getAttachmentLink() != null && r.getAttachmentLink() != "")) {
@@ -530,7 +535,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
 	private Integer createFollowUp(FollowUp f) throws Exception {
-		Integer fid = (Integer) getSqlSession().insert("pm.db.createFollowUp", f);
+		getSqlSession().insert("pm.db.createFollowUp", f);
+		Integer fid = f.getId();
 		List<Attachment> attachments = f.getAttachments();
 		if ((f.getAttachmentDescription() != null && f.getAttachmentDescription() != "") ||
 			(f.getAttachmentLink() != null && f.getAttachmentLink() != "")) {
@@ -557,7 +563,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
 	private Integer createAdviserAction(AdviserAction aa) throws Exception {
-		Integer aaid = (Integer) getSqlSession().insert("pm.db.createAdviserAction", aa);
+		getSqlSession().insert("pm.db.createAdviserAction", aa);
+		Integer aaid = aa.getId();
 		List<Attachment> attachments = aa.getAttachments();
 		if ((aa.getAttachmentDescription() != null && aa.getAttachmentDescription() != "") ||
 			(aa.getAttachmentLink() != null && aa.getAttachmentLink() != "")) {
