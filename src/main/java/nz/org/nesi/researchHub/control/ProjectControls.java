@@ -287,6 +287,7 @@ public class ProjectControls extends AbstractControl {
 			            set.invoke (pojo, data);
 		            }
             	}
+            	this.validateProject(pw);
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
             	throw new InvalidEntityException(pojoClass.getName() + "." + method + " is not a valid method", ProjectWrapper.class, object);
