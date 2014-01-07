@@ -140,6 +140,8 @@
     </tbody>
   </table>
   
+  <a href="${mailto}">Mail all researchers on project</a>
+  
   <br>
   <h4>Advisers on project</h4>
 
