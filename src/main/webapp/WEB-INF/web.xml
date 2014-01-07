@@ -22,7 +22,7 @@
 
     <!-- Spring-enabled servlet filter -->
     <filter>
-        <filter-name>PMTestFilter</filter-name>
+        <filter-name>PMAuditFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <filter>
@@ -52,7 +52,7 @@
         <servlet-name>rest</servlet-name>
     </filter-mapping>
     <filter-mapping>
-        <filter-name>PMTestFilter</filter-name>
+        <filter-name>PMAuditFilter</filter-name>
         <servlet-name>pm</servlet-name>
     </filter-mapping>
     <filter-mapping>
