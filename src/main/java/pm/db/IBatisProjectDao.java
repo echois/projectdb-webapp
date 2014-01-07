@@ -646,7 +646,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
 	private void deleteProjectFacilities(Integer pid) throws Exception {
-		getSqlSession().update("dpm.db.eleteProjectFacilities", pid);
+		getSqlSession().update("pm.db.deleteProjectFacilities", pid);
 	}
 
 	private void deleteAdviserAction(Integer id) throws Exception {
