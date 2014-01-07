@@ -173,8 +173,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
     public synchronized Project getProjectByProjectCode(String projectCode) {
 
-        Project p = (Project) getSqlMapClientTemplate().queryForObject("getProjectByProjectCode", projectCode);
-		ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+        Project p = (Project) getSqlSession().selectOne("getProjectByProjectCode", projectCode);
+		ProjectType t = (ProjectType) getSqlSession().selectOne("getProjectTypeById", p.getProjectTypeId());
 		p.setProjectTypeName(t.getName());
 		p.setStatusName(getProjectStatusById(p.getStatusId()));
 		return p;
