@@ -44,7 +44,7 @@
 	</bean>
 
   <bean id="tempProjectDao" class="pm.db.IBatisTempProjectDao">
-    <property name="sqlMapClient" ref="ibatisSqlMapClient" />
+      <property name="sqlSessionFactory" ref="ibatisSqlMapClient"></property>
   </bean>
 
 	<bean id="viewResolver"
