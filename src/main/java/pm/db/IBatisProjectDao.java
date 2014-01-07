@@ -119,7 +119,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
     @RequireAdviser
 	public Integer createResearcher(final Researcher r) throws Exception {
-		return (Integer) getSqlSession().insert("pm.db.pm.db.createResearcher", r);
+		return (Integer) getSqlSession().insert("pm.db.createResearcher", r);
 	}
 
     @RequireAdviser
