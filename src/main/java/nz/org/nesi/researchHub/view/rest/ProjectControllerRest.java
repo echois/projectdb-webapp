@@ -7,7 +7,6 @@ import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pm.pojo.APLink;
 import pm.pojo.Facility;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
@@ -23,6 +23,7 @@ import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
+import pm.pojo.RPLink;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -86,6 +87,20 @@ public class ProjectControllerRest {
     @ResponseBody
     public void delete(@PathVariable Integer id) {
         projectControls.delete(id);
+    }
+    
+    @RequestMapping(value = "/ap", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add APLink", notes = "Add APLink (adviser) to project" )
+    @ResponseBody
+    public void addAPLink(@RequestBody APLink al) {
+        projectControls.addAdviser(al);
+    }
+    
+    @RequestMapping(value = "/rp", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add RPLink", notes = "Add RPLink (researcher) to project" )
+    @ResponseBody
+    public void addRPLink(@RequestBody RPLink rl) {
+        projectControls.addResearcher(rl);
     }
     
     @RequestMapping(value = "/{id}/{pid}/{adviser}", method = RequestMethod.DELETE)
