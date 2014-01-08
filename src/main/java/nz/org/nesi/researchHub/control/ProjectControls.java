@@ -12,18 +12,11 @@ import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
-import pm.pojo.Affiliation;
 import pm.pojo.Facility;
-import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
@@ -273,8 +266,15 @@ public class ProjectControls extends AbstractControl {
 	            	pojoClass = pojo.getClass();
 	            	if (deep) {
 	            		method = "get";
-	            		getPojo = pojoClass.getDeclaredMethod(method, int.class);
-	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
+	            		try {
+	            			Integer.parseInt(object.split("_")[1]);
+	            			getPojo = pojoClass.getDeclaredMethod(method, int.class);
+		            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
+	            		} catch (NumberFormatException e) {
+	            			method = "get" + object.split("_")[1];
+	            			getPojo = pojoClass.getDeclaredMethod(method);
+		            		pojo = getPojo.invoke(pojo);
+	            		}
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
@@ -287,6 +287,7 @@ public class ProjectControls extends AbstractControl {
 			            set.invoke (pojo, data);
 		            }
             	}
+            	this.validateProject(pw);
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
             	throw new InvalidEntityException(pojoClass.getName() + "." + method + " is not a valid method", ProjectWrapper.class, object);
@@ -320,6 +321,63 @@ public class ProjectControls extends AbstractControl {
             throw new DatabaseException("Can't delete ProjectWrapper with id " + id, e);
         }
 
+    }
+    
+    /**
+     * Remove the specified adviser or researcher from this project
+     *
+     * @param id the id
+     */
+    public void removeUser(Integer id, Integer pid, boolean adviser) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(id);
+			if (adviser) {
+				List<APLink> aTmp = new LinkedList<APLink>();
+				for (APLink a : pw.getApLinks()) {
+					if (!a.getAdviserId().equals(pid)) aTmp.add(a);
+				}
+				pw.setApLinks(aTmp);
+			} else {
+				List<RPLink> rTmp = new LinkedList<RPLink>();
+				for (RPLink r : pw.getRpLinks()) {
+					if (!r.getResearcherId().equals(pid)) rTmp.add(r);
+				}
+				pw.setRpLinks(rTmp);
+			}
+			this.projectDao.updateProjectWrapper(id, pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + id, e);
+		}
+    }
+    
+    /**
+     * Add the specified adviser to this project
+     *
+     * @param id the id
+     */
+    public void addAdviser(APLink al) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(al.getProjectId());
+			pw.getApLinks().add(al);
+			this.projectDao.updateProjectWrapper(al.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + al.getProjectId(), e);
+		}
+    }
+    
+    /**
+     * Add the specified researcher to this project
+     *
+     * @param id the id
+     */
+    public void addResearcher(RPLink rl) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(rl.getProjectId());
+			pw.getRpLinks().add(rl);
+			this.projectDao.updateProjectWrapper(rl.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + rl.getProjectId(), e);
+		}
     }
 
     /**

@@ -19,6 +19,7 @@
     <property name="locations">
       <list>
         <value>classpath:configuration.properties</value>
+        <value>classpath:common.properties</value>
       </list>
     </property>
   </bean>
@@ -35,13 +36,19 @@
     <property name="maxIdle" value="10" />
   </bean>
 
-  <bean id="ibatisSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+  <bean id="ibatisSqlMapClient" class="org.mybatis.spring.SqlSessionFactoryBean">
     <property name="configLocation" value="classpath:ibatisSqlMapConfig.xml" />
     <property name="dataSource" ref="dataSource" />
   </bean>
 
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="ibatisSqlMapClient" />
+    </bean>
+
+
   <bean id="projectDao" class="pm.db.IBatisProjectDao">
-    <property name="sqlMapClient" ref="ibatisSqlMapClient" />
+      <property name="sqlSessionFactory" ref="ibatisSqlMapClient"></property>
+    <!--<property name="sqlMapClient" ref="ibatisSqlMapClient" />-->
   </bean>
 
   <bean id="affiliationUtil" class="common.util.AffiliationUtil">
