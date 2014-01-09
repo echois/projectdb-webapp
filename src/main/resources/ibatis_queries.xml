@@ -588,7 +588,8 @@
         endDate = #{endDate},
         requirements = #{requirements},
         notes = #{notes},
-        todo = #{todo}
+        todo = #{todo},
+        lastModified = #{lastModified}
       WHERE id = #{id}
    </update>
 

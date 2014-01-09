@@ -344,6 +344,7 @@ public class ProjectControls extends AbstractControl {
 				}
 				pw.setRpLinks(rTmp);
 			}
+			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(id, pw);
 		} catch (Exception e) {
 			throw new DatabaseException("Can't fetch project with id " + id, e);
