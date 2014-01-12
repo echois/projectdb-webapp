@@ -95,6 +95,22 @@ public class ProjectControls extends AbstractControl {
         if (pw.getProjectFacilities().isEmpty()) {
             throw new InvalidEntityException("There must be at least one HPC facility associated with the project", ProjectWrapper.class, "projectFacilities");
         }
+        
+        for (RPLink rp : pw.getRpLinks()) {
+        	for (RPLink other :pw.getRpLinks()) {
+        		if (rp.getResearcherId().equals(other.getResearcherId()) && !rp.getResearcherRoleId().equals(other.getResearcherRoleId())) {
+        			throw new InvalidEntityException("A researcher can only have one role on a project", ProjectWrapper.class, "rpLinks");
+        		}
+        	}
+        }
+        
+        for (APLink ap : pw.getApLinks()) {
+        	for (APLink other :pw.getApLinks()) {
+        		if (ap.getAdviserId().equals(other.getAdviserId()) && !ap.getAdviserRoleId().equals(other.getAdviserRoleId())) {
+        			throw new InvalidEntityException("An adviser can only have one role on a project", ProjectWrapper.class, "apLinks");
+        		}
+        	}
+        }
 
     }
 
