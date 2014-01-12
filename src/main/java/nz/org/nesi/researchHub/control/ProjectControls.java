@@ -298,7 +298,7 @@ public class ProjectControls extends AbstractControl {
 		            	Integer intData = Integer.valueOf(data);
 		            	Method set = pojoClass.getDeclaredMethod (method, Integer.class);
 			            set.invoke (pojo, intData);
-		            } catch (NumberFormatException e) {
+		            } catch (Exception e) {
 		            	Method set = pojoClass.getDeclaredMethod (method, String.class);
 			            set.invoke (pojo, data);
 		            }
