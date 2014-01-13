@@ -13,15 +13,10 @@ import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Adviser;
+import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
-import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 
 /**
@@ -224,6 +219,16 @@ public class AdviserControls extends AbstractControl {
      */
     public List<Affiliation> getAffiliations() throws Exception {
     	return this.projectDao.getAffiliations();
+    }
+    
+    /**
+     * Returns a list of AdviserRoles.
+     *
+     * @return a list of AdviserRoles
+     * @throws Exception 
+     */
+    public List<AdviserRole> getAdviserRoles() throws Exception {
+    	return this.projectDao.getAdviserRoles();
     }
 
 }
