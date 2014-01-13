@@ -186,9 +186,9 @@ public class ProjectControls extends AbstractControl {
 
         for (Project p : getProjects()) {
             if (p.getName().toLowerCase().contains(filter) || p.getDescription().toLowerCase().contains(filter) ||
-                    p.getHostInstitution().toLowerCase().contains(filter) || p.getNotes().toLowerCase().contains(filter) ||
+                    p.getHostInstitution().toLowerCase().contains(filter) || p.getNotes() != null && p.getNotes().toLowerCase().contains(filter) ||
                     p.getProjectCode().toLowerCase().contains(filter) || p.getProjectTypeName().toLowerCase().contains(filter) ||
-                    p.getRequirements().toLowerCase().contains(filter) || p.getTodo() != null && p.getTodo().toLowerCase().contains(filter))
+                    p.getRequirements() != null && p.getRequirements().toLowerCase().contains(filter) || p.getTodo() != null && p.getTodo().toLowerCase().contains(filter))
                 filtered.add(p);
         }
 
