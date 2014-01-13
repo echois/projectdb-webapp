@@ -98,6 +98,7 @@ public class ProjectController extends GlobalController {
 			mav.addObject("projects", filtered);
 			mav.addObject("query", q);
 		}
+		mav.addObject("user", this.getTuakiriUniqueIdFromRequest());
 		return mav;
 	}
 	

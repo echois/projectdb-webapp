@@ -134,6 +134,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 		List<Project> ps =  getSqlSession().selectList("pm.db.getProjects");
 		for (Project p: ps) {
 			ProjectType t = (ProjectType) getSqlSession().selectOne("pm.db.getProjectTypeById", p.getProjectTypeId());
+			if (t==null) System.err.println(p.getProjectId() + " is invalid");
 			p.setProjectTypeName(t.getName());
 			p.setStatusName(getProjectStatusById(p.getStatusId()));
 		}

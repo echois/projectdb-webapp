@@ -1,9 +1,6 @@
 package nz.org.nesi.researchHub.view.rest;
 
-import com.mangofactory.swagger.annotations.ApiErrors;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import java.util.List;
 
 import nz.org.nesi.researchHub.control.AdviserControls;
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
@@ -19,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Adviser;
+import pm.pojo.AdviserRole;
 import pm.pojo.Project;
 
-import java.util.List;
+import com.mangofactory.swagger.annotations.ApiErrors;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Project: project_management
@@ -78,6 +79,12 @@ public class AdviserControllerRest {
     @ResponseBody
     public void createAdviser(Adviser adviser) throws InvalidEntityException {
         adviserControls.createAdviser(adviser);
+    }
+    
+    @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    @ResponseBody
+	public List<AdviserRole> getAdviserRoles() throws Exception {
+        return adviserControls.getAdviserRoles();
     }
 
 }

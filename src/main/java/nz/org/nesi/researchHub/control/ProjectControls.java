@@ -95,6 +95,22 @@ public class ProjectControls extends AbstractControl {
         if (pw.getProjectFacilities().isEmpty()) {
             throw new InvalidEntityException("There must be at least one HPC facility associated with the project", ProjectWrapper.class, "projectFacilities");
         }
+        
+        for (RPLink rp : pw.getRpLinks()) {
+        	for (RPLink other :pw.getRpLinks()) {
+        		if (rp.getResearcherId().equals(other.getResearcherId()) && !rp.getResearcherRoleId().equals(other.getResearcherRoleId())) {
+        			throw new InvalidEntityException("A researcher can only have one role on a project", ProjectWrapper.class, "rpLinks");
+        		}
+        	}
+        }
+        
+        for (APLink ap : pw.getApLinks()) {
+        	for (APLink other :pw.getApLinks()) {
+        		if (ap.getAdviserId().equals(other.getAdviserId()) && !ap.getAdviserRoleId().equals(other.getAdviserRoleId())) {
+        			throw new InvalidEntityException("An adviser can only have one role on a project", ProjectWrapper.class, "apLinks");
+        		}
+        	}
+        }
 
     }
 
@@ -282,7 +298,7 @@ public class ProjectControls extends AbstractControl {
 		            	Integer intData = Integer.valueOf(data);
 		            	Method set = pojoClass.getDeclaredMethod (method, Integer.class);
 			            set.invoke (pojo, intData);
-		            } catch (NumberFormatException e) {
+		            } catch (Exception e) {
 		            	Method set = pojoClass.getDeclaredMethod (method, String.class);
 			            set.invoke (pojo, data);
 		            }
@@ -344,6 +360,7 @@ public class ProjectControls extends AbstractControl {
 				}
 				pw.setRpLinks(rTmp);
 			}
+			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(id, pw);
 		} catch (Exception e) {
 			throw new DatabaseException("Can't fetch project with id " + id, e);
@@ -359,6 +376,7 @@ public class ProjectControls extends AbstractControl {
     	try {
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(al.getProjectId());
 			pw.getApLinks().add(al);
+			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(al.getProjectId(), pw);
 		} catch (Exception e) {
 			throw new DatabaseException("Can't fetch project with id " + al.getProjectId(), e);
@@ -374,6 +392,7 @@ public class ProjectControls extends AbstractControl {
     	try {
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(rl.getProjectId());
 			pw.getRpLinks().add(rl);
+			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(rl.getProjectId(), pw);
 		} catch (Exception e) {
 			throw new DatabaseException("Can't fetch project with id " + rl.getProjectId(), e);
