@@ -294,10 +294,17 @@ public class ProjectControls extends AbstractControl {
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
+		            // Try integers first, floats if that fails, then fallback to string
 		            try {
-		            	Integer intData = Integer.valueOf(data);
-		            	Method set = pojoClass.getDeclaredMethod (method, Integer.class);
-			            set.invoke (pojo, intData);
+		            	try {
+		            		Integer intData = Integer.valueOf(data);
+		            		Method set = pojoClass.getDeclaredMethod (method, Integer.class);
+				            set.invoke (pojo, intData);
+		            	} catch (Exception e) {
+		            		Float floatData = Float.valueOf(data);
+		            		Method set = pojoClass.getDeclaredMethod (method, Float.class);
+				            set.invoke (pojo, floatData);
+		            	}
 		            } catch (Exception e) {
 		            	Method set = pojoClass.getDeclaredMethod (method, String.class);
 			            set.invoke (pojo, data);
