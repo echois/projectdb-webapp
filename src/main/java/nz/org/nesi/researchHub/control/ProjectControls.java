@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import pm.pojo.APLink;
+import pm.pojo.AdviserAction;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
@@ -26,6 +28,8 @@ import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
+import pm.pojo.ResearchOutput;
+import pm.pojo.Review;
 
 /**
  * Project: project_management
@@ -405,6 +409,86 @@ public class ProjectControls extends AbstractControl {
 			this.projectDao.updateProjectWrapper(rl.getProjectId(), pw);
 		} catch (Exception e) {
 			throw new DatabaseException("Can't fetch project with id " + rl.getProjectId(), e);
+		}
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     */
+    public void addKpi(ProjectKpi pk) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(pk.getProjectId());
+			pw.getProjectKpis().add(pk);
+			this.validateProject(pw);
+			this.projectDao.updateProjectWrapper(pk.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + pk.getProjectId(), e);
+		}
+    }
+    
+    /**
+     * Add the specified research_output to this project
+     *
+     * @param id the id
+     */
+    public void addResearchOutput(ResearchOutput ro) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(ro.getProjectId());
+			pw.getResearchOutputs().add(ro);
+			this.validateProject(pw);
+			this.projectDao.updateProjectWrapper(ro.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + ro.getProjectId(), e);
+		}
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     */
+    public void addReview(Review r) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(r.getProjectId());
+			pw.getReviews().add(r);
+			this.validateProject(pw);
+			this.projectDao.updateProjectWrapper(r.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + r.getProjectId(), e);
+		}
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     */
+    public void addFollowUp(FollowUp f) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(f.getProjectId());
+			pw.getFollowUps().add(f);
+			this.validateProject(pw);
+			this.projectDao.updateProjectWrapper(f.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + f.getProjectId(), e);
+		}
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     */
+    public void addAdviserAction(AdviserAction aa) {
+    	try {
+			ProjectWrapper pw = this.projectDao.getProjectWrapperById(aa.getProjectId());
+			pw.getAdviserActions().add(aa);
+			this.validateProject(pw);
+			this.projectDao.updateProjectWrapper(aa.getProjectId(), pw);
+		} catch (Exception e) {
+			throw new DatabaseException("Can't fetch project with id " + aa.getProjectId(), e);
 		}
     }
 

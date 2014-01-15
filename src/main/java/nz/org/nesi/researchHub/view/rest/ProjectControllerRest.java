@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
+import pm.pojo.AdviserAction;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
@@ -24,6 +26,8 @@ import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
+import pm.pojo.ResearchOutput;
+import pm.pojo.Review;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -102,6 +106,41 @@ public class ProjectControllerRest {
     @ResponseBody
     public void addRPLink(@RequestBody RPLink rl) {
         projectControls.addResearcher(rl);
+    }
+    
+    @RequestMapping(value = "/kpi", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add project kpi", notes = "Add KPI to project" )
+    @ResponseBody
+    public void addKpi(@RequestBody ProjectKpi pk) {
+        projectControls.addKpi(pk);
+    }
+    
+    @RequestMapping(value = "/ro", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Research Output", notes = "Add research output to project" )
+    @ResponseBody
+    public void addResearchOutput(@RequestBody ResearchOutput ro) {
+        projectControls.addResearchOutput(ro);
+    }
+    
+    @RequestMapping(value = "/review", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Review", notes = "Add review to project" )
+    @ResponseBody
+    public void addReview(@RequestBody Review r) {
+        projectControls.addReview(r);
+    }
+    
+    @RequestMapping(value = "/followup", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Follow Up", notes = "Add followup to project" )
+    @ResponseBody
+    public void addFollowUp(@RequestBody FollowUp f) {
+        projectControls.addFollowUp(f);
+    }
+    
+    @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
+    @ResponseBody
+    public void addReview(@RequestBody AdviserAction aa) {
+        projectControls.addAdviserAction(aa);
     }
     
     @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
