@@ -27,6 +27,7 @@ import pm.pojo.RPLink;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Project: project_management
@@ -103,11 +104,11 @@ public class ProjectControllerRest {
         projectControls.addResearcher(rl);
     }
     
-    @RequestMapping(value = "/{id}/{pid}/{adviser}", method = RequestMethod.DELETE)
-    @ApiOperation( value = "Remove adviser/researcher from project", notes = "Removes someone from a project" )
+    @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
+    @ApiOperation( value = "Remove object link from project", notes = "Removes someone/something from a project" )
     @ResponseBody
-    public void remove(@PathVariable Integer id, @PathVariable Integer pid, @PathVariable boolean adviser) {
-        projectControls.removeUser(id, pid, adviser);
+    public void remove(@ApiParam( value = "Internal project id", required = true ) @PathVariable Integer id, @ApiParam( value = "Object id. Context specific - is either adviserId, researcherId or array index", required = true ) @PathVariable Integer oid, @ApiParam( value = "Object type. adviser, researcher, kpi etc", required = true ) @PathVariable String type) {
+        projectControls.removeObjectLink(id, oid, type);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)

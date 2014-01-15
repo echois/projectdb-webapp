@@ -351,21 +351,23 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    public void removeUser(Integer id, Integer pid, boolean adviser) {
+    public void removeObjectLink(Integer id, Integer oid, String type) {
     	try {
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(id);
-			if (adviser) {
+			if (type.equals("adviser")) {
 				List<APLink> aTmp = new LinkedList<APLink>();
 				for (APLink a : pw.getApLinks()) {
-					if (!a.getAdviserId().equals(pid)) aTmp.add(a);
+					if (!a.getAdviserId().equals(oid)) aTmp.add(a);
 				}
 				pw.setApLinks(aTmp);
-			} else {
+			} else if (type.equals("researcher")){
 				List<RPLink> rTmp = new LinkedList<RPLink>();
 				for (RPLink r : pw.getRpLinks()) {
-					if (!r.getResearcherId().equals(pid)) rTmp.add(r);
+					if (!r.getResearcherId().equals(oid)) rTmp.add(r);
 				}
 				pw.setRpLinks(rTmp);
+			} else if (type.equals("kpi")) {
+				pw.getProjectKpis().remove(oid);
 			}
 			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(id, pw);
