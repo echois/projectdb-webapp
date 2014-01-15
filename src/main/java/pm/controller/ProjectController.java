@@ -30,6 +30,7 @@ public class ProjectController extends GlobalController {
 		ProjectWrapper pw = projectDao.getProjectWrapperById(id);
 		mav.addObject("pw", pw);
 		Date now = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		if (pw.getProject().getStatusId().equals(4)) {
 			mav.addObject("expired",true);
 		}
