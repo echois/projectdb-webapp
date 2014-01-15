@@ -30,17 +30,15 @@ public class ProjectController extends GlobalController {
 		ProjectWrapper pw = projectDao.getProjectWrapperById(id);
 		mav.addObject("pw", pw);
 		Date now = new Date();
-    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		if (!pw.getProject().getEndDate().trim().equals("")) {
-			boolean expired = now.after(df.parse(pw.getProject().getEndDate()));
-			mav.addObject("expired",expired);
+		if (pw.getProject().getStatusId().equals(4)) {
+			mav.addObject("expired",true);
 		}
 		String poEmail = "";
 		String poName = "";
 		String othersEmails = "";
 		for (RPLink r:pw.getRpLinks()) {
 			if (!r.getResearcher().getEndDate().trim().equals("")) {
-				if (now.after(df.parse(r.getResearcher().getEndDate()))) {
+				if (r.getResearcher().getStatusId().equals(2)) {
 					r.getResearcher().setFullName(r.getResearcher().getFullName() + " (expired)");
 				}
 			}
