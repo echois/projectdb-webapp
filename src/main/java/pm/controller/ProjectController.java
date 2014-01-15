@@ -61,6 +61,7 @@ public class ProjectController extends GlobalController {
 		String mailto = "mailto:" + poEmail + "?subject=" + pw.getProject().getProjectCode() + "&cc=" + othersEmails + "&body=Dear " + poName + ",";
 		mav.addObject("mailto", mailto);
 		mav.addObject("jobauditBaseProjectUrl",this.jobauditBaseProjectUrl);
+		mav.addObject("user", this.getTuakiriUniqueIdFromRequest());
 		return mav;
 	}
 	// See a filterable list of all projects

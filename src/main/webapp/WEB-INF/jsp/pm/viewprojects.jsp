@@ -91,7 +91,7 @@
     </c:forEach>
     </tbody>
   </table>
-              
+  <p>Logged in as ${user}</p> 
   </div>
 </body>
 </html>
