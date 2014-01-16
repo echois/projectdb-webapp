@@ -25,6 +25,7 @@ import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
@@ -720,5 +721,25 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	
 	public String getLinuxUsername(Integer id) {
 		return (String) getSqlMapClientTemplate().queryForObject("getLinuxUsername", id); 
+	}
+	
+	public List<ProjectProperty> getProjectProperties(Integer id) {
+		return (List<ProjectProperty>) getSqlMapClientTemplate().queryForList("getPropertiesForProjectId", id);
+	}
+	
+	public List<String> getPropnames() {
+		return (List<String>) getSqlMapClientTemplate().queryForList("getPropnames");
+	}
+	
+	public void upsertProjectProperty(ProjectProperty p) {
+		getSqlMapClientTemplate().update("upsertProjectProperty", p);
+	}
+	
+	public void deleteProjectProperty(Integer id) {
+		getSqlMapClientTemplate().delete("deleteProjectProperty", id);
+	}
+
+	public ProjectProperty getProjectProperty(Integer id) {
+		return (ProjectProperty) getSqlMapClientTemplate().queryForObject("getProjectProperty", id); 
 	}
 }

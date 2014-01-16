@@ -302,6 +302,23 @@
        FROM project_kpi
        WHERE projectId = #id#
    </select>   
+   
+   <select id="getPropertiesForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectProperty">
+       SELECT *
+       FROM project_properties
+       WHERE projectId = #id#
+   </select>
+   
+   <select id="getProjectProperty" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectProperty">
+       SELECT *
+       FROM project_properties
+       WHERE id = #id#
+   </select>
+   
+   <select id="getPropnames" resultClass="java.lang.String">
+       SELECT DISTINCT propname
+       FROM project_properties
+   </select>
 
    <select id="getProjectsForResearcherId" parameterClass="java.lang.Integer" resultClass="pm.pojo.Project">
        SELECT *
@@ -461,6 +478,24 @@
    	  <selectKey keyProperty="id" resultClass="int">
         SELECT LAST_INSERT_ID() AS id
 	  </selectKey>
+   </insert>
+   
+   <insert id="upsertProjectProperty" parameterClass="pm.pojo.ProjectProperty">
+      REPLACE INTO project_properties (
+      	id,
+        projectId,
+        siteId,
+        facilityId,
+        propname,
+        propvalue
+      ) values (
+      	#id#,
+        #projectId#,
+        #siteId#,
+        #facilityId#,
+        #propname#,
+        #propvalue#
+      )
    </insert>
 
    <insert id="createFollowUp" parameterClass="pm.pojo.FollowUp">
@@ -715,6 +750,11 @@
   
   <delete id="deleteProjectKpi" parameterClass="java.lang.Integer">
       DELETE FROM project_kpi
+      WHERE id = #id#
+  </delete>
+  
+  <delete id="deleteProjectProperty" parameterClass="java.lang.Integer">
+      DELETE FROM project_properties
       WHERE id = #id#
   </delete>
   

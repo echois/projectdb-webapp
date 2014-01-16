@@ -11,6 +11,7 @@ import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
@@ -77,5 +78,11 @@ public interface ProjectDao {
 	public List<ResearcherStatus> getResearcherStatuses();
 	public String getResearcherStatusById(Integer id);
 	public String getLinuxUsername(Integer id);
+	
+	public List<ProjectProperty> getProjectProperties(Integer id);
+	public List<String> getPropnames();
+	public ProjectProperty getProjectProperty(Integer id);
+	public void upsertProjectProperty(ProjectProperty p);
+	public void deleteProjectProperty(Integer id);
 	
 }
