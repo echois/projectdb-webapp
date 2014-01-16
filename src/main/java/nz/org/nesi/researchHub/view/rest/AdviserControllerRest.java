@@ -62,6 +62,18 @@ public class AdviserControllerRest {
     public Adviser getAdviserByDrupalId(@ApiParam( value = "Advisers drupal id", required = true ) @PathVariable String drupalId) throws NoSuchEntityException {
         return adviserControls.getAdviserByDrupalId(drupalId);
     }
+    
+    @RequestMapping(value = "/{id}/drupal", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+    value = "Adviser id",
+    notes = "Returns the drupal id associated with this adviser id",
+    responseClass = "String"
+    )
+    @ApiErrors({NoSuchEntityException.class, DatabaseException.class})
+    public String getDrupalIdByAdviserId(@ApiParam( value = "Adviser id", required = true ) @PathVariable Integer id) throws NoSuchEntityException {
+        return adviserControls.getDrupalIdByAdviserId(id);
+    }
 
     @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
     @ResponseBody

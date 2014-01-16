@@ -29,11 +29,17 @@
        WHERE tuakiriUniqueId = #{id}
    </select>
    
-   <select id="getAdviserByDrupalId" parameterType="java.lang.Integer" resultType="pm.pojo.Adviser">
+   <select id="getAdviserByDrupalId" parameterType="java.lang.String" resultType="pm.pojo.Adviser">
        SELECT *
        FROM adviser
        WHERE id IN
          ( SELECT adviserId FROM adviser_properties WHERE propname='drupalId' AND propvalue=#{id} )
+   </select>
+   
+   <select id="getDrupalIdByAdviserId" parameterType="java.lang.Integer" resultType="pm.pojo.Adviser">
+       SELECT propvalue
+       FROM adviser_properties
+       WHERE propname='drupalId' AND adviserId=#{id}
    </select>
 
    <select id="getSiteById" parameterType="java.lang.Integer" resultType="pm.pojo.Site">

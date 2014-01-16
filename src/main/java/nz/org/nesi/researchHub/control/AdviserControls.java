@@ -129,6 +129,31 @@ public class AdviserControls extends AbstractControl {
 
         return a;
     }
+    
+    /**
+     * Returns the adviser with the specified drupal id.
+     *
+     * @param id the adviser id
+     * @return the drupal id
+     * @throws NoSuchEntityException if the adviser or his projects can't be found
+     * @throws DatabaseException if there is adviser problem with the database
+     */
+    
+    public String getDrupalIdByAdviserId(Integer id) throws NoSuchEntityException {
+    	if (id==null) {
+            throw new IllegalArgumentException("No adviser id provided");
+        }
+        String d = null;
+        try {
+            d = projectDao.getDrupalIdByAdviserId(id);
+        } catch (NullPointerException npe) {
+            throw new NoSuchEntityException("Can't find advisor with id "+id, Adviser.class, id);
+        } catch (Exception e) {
+            throw new DatabaseException("Can't find adviser with id "+id, e);
+        }
+
+        return d;
+    }
 
     /**
      * Returns adviser list of all projects for this adviser.
