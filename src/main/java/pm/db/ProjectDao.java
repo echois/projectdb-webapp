@@ -11,6 +11,7 @@ public interface ProjectDao {
 	public Researcher getResearcherById(Integer id) throws Exception;
 	public Adviser getAdviserById(Integer id) throws Exception;
 	public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
+	public Adviser getAdviserByDrupalId(String id) throws Exception;
 	public List<Researcher> getResearchers() throws Exception;
 	public List<ResearchOutputType> getResearchOutputTypes() throws Exception;
 	public List<Affiliation> getAffiliations() throws Exception;

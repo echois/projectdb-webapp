@@ -28,6 +28,13 @@
        FROM adviser
        WHERE tuakiriUniqueId = #{id}
    </select>
+   
+   <select id="getAdviserByDrupalId" parameterType="java.lang.Integer" resultType="pm.pojo.Adviser">
+       SELECT *
+       FROM adviser
+       WHERE id IN
+         ( SELECT adviserId FROM adviser_properties WHERE propname='drupalId' AND propvalue=#{id} )
+   </select>
 
    <select id="getSiteById" parameterType="java.lang.Integer" resultType="pm.pojo.Site">
        SELECT *

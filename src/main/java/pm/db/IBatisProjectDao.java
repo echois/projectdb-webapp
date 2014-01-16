@@ -223,6 +223,11 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 		Adviser a = (Adviser) getSqlSession().selectOne("pm.db.getAdviserByTuakiriUniqueId", id);
 		return a;
 	}
+	
+	public Adviser getAdviserByDrupalId(final String id) throws Exception {
+		Adviser a = (Adviser) getSqlSession().selectOne("pm.db.getAdviserByDrupalId", id);
+		return a;
+	}
 
 	public Integer getNumProjectsForAdviser(Integer adviserId) throws Exception {
 		return (Integer) getSqlSession().selectOne("pm.db.getNumProjectsForAdviser", adviserId);
