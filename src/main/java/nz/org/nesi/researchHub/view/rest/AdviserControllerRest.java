@@ -51,7 +51,7 @@ public class AdviserControllerRest {
         return adviserControls.getAdviser(id);
     }
     
-    @RequestMapping(value = "/drupal/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/drupal/{drupalId}", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(
     value = "Adviser drupal id",
