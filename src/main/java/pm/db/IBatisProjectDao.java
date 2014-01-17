@@ -6,6 +6,7 @@ import pm.authz.annotation.RequireAdmin;
 import pm.authz.annotation.RequireAdviser;
 import pm.authz.annotation.RequireAdviserOnProject;
 import pm.pojo.*;
+import pm.pojo.ProjectProperty;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -729,5 +730,25 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
 	public String getLinuxUsername(Integer id) {
 		return (String) getSqlSession().selectOne("pm.db.getLinuxUsername", id);
+	}
+	
+	public List<ProjectProperty> getProjectProperties(Integer id) {
+		return (List<ProjectProperty>) getSqlMapClientTemplate().queryForList("getPropertiesForProjectId", id);
+	}
+	
+	public List<String> getPropnames() {
+		return (List<String>) getSqlMapClientTemplate().queryForList("getPropnames");
+	}
+	
+	public void upsertProjectProperty(ProjectProperty p) {
+		getSqlMapClientTemplate().update("upsertProjectProperty", p);
+	}
+	
+	public void deleteProjectProperty(Integer id) {
+		getSqlMapClientTemplate().delete("deleteProjectProperty", id);
+	}
+
+	public ProjectProperty getProjectProperty(Integer id) {
+		return (ProjectProperty) getSqlMapClientTemplate().queryForObject("getProjectProperty", id); 
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import pm.pojo.APLink;
 import pm.pojo.Project;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
@@ -61,7 +62,7 @@ public class ProjectController extends GlobalController {
 		String mailto = "mailto:" + poEmail + "?subject=" + pw.getProject().getProjectCode() + "&cc=" + othersEmails + "&body=Dear " + poName + ",";
 		mav.addObject("mailto", mailto);
 		mav.addObject("jobauditBaseProjectUrl",this.jobauditBaseProjectUrl);
-		mav.addObject("user", this.getTuakiriUniqueIdFromRequest());
+		mav.addObject("properties", this.projectDao.getProjectProperties(id));
 		return mav;
 	}
 	// See a filterable list of all projects
@@ -156,6 +157,7 @@ public class ProjectController extends GlobalController {
         mav.addObject("projectTypes", pTypes);
         mav.addObject("statuses", statuses);
         mav.addObject("institutions", this.projectDao.getInstitutions());
+        mav.addObject("properties", this.projectDao.getProjectProperties(id));
         return mav;
     }
 	
