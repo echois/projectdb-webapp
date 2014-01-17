@@ -74,26 +74,12 @@ public class ProjectControls extends AbstractControl {
             pw.setErrorMessage("A project must have a title");
             throw new InvalidEntityException("Project does not have a title", Project.class, "name");
         }
-
         // Exactly one PI?
-        int count = 0;
-        for (RPLink rp : pw.getRpLinks()) {
-            if (rp.getResearcherRoleId() == 1) {
-                count += 1;
-            }
-        }
-        if (count != 1) {
+        if (pw.getRpLinks().isEmpty()) {
             throw new InvalidEntityException("There must be exactly 1 project owner on a project", ProjectWrapper.class, "rpLinks");
         }
-
         // Exactly one primary project?
-        count = 0;
-        for (APLink ap : pw.getApLinks()) {
-            if (ap.getAdviserRoleId() == 1) {
-                count += 1;
-            }
-        }
-        if (count != 1) {
+        if (pw.getApLinks().isEmpty()) {
             throw new InvalidEntityException("There must be exactly 1 primary project adviser on a project", ProjectWrapper.class, "apLinks");
         }
         // At least one HPC
