@@ -221,7 +221,6 @@ public class ProjectControls extends AbstractControl {
             if (project.getProject().getLastModified() != temp.getProject().getLastModified() || !project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
-            project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateProjectWrapper(id, project);
             } catch (Exception e) {
@@ -261,7 +260,6 @@ public class ProjectControls extends AbstractControl {
             if (!force && !(nullMatch || match)) {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
-            pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             boolean deep = false;
             String method = "get" + object;
             Class<?> pojoClass = null;
@@ -510,7 +508,6 @@ public class ProjectControls extends AbstractControl {
 
         String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         pw.getProject().setProjectCode(projectCode);
-        pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
         try {
             Integer pid = this.projectDao.createProjectWrapper(pw);
             return pid;

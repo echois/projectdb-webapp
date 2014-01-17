@@ -146,6 +146,7 @@ public class AdviserControls extends AbstractControl {
         String d = null;
         try {
             d = projectDao.getDrupalIdByAdviserId(id);
+            if (d==null) throw new NoSuchEntityException("Can't find drupal id for adviser id "+id, Adviser.class, id);
         } catch (NullPointerException npe) {
             throw new NoSuchEntityException("Can't find advisor with id "+id, Adviser.class, id);
         } catch (Exception e) {

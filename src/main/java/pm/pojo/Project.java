@@ -18,7 +18,7 @@ public class Project {
 	private String todo;
 	private String requirements;
 	private String projectTypeName;
-	private Integer lastModified;
+	private String lastModified;
 
 	public Integer getId() {
 		return id;
@@ -174,11 +174,11 @@ public class Project {
                 '}';
     }
 
-	public Integer getLastModified() {
+	public String getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(Integer lastModified) {
+	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
 	}
 }

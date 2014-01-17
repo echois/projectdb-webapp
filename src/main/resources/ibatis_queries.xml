@@ -637,7 +637,7 @@
         requirements = #{requirements},
         notes = #{notes},
         todo = #{todo},
-        lastModified = #{lastModified}
+        lastModified = now()
       WHERE id = #{id}
    </update>
 
