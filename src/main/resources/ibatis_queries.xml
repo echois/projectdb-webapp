@@ -36,7 +36,7 @@
          ( SELECT adviserId FROM adviser_properties WHERE propname='drupalId' AND propvalue=#{id} )
    </select>
    
-   <select id="getDrupalIdByAdviserId" parameterType="java.lang.Integer" resultType="pm.pojo.Adviser">
+   <select id="getDrupalIdByAdviserId" parameterType="java.lang.Integer" resultType="java.lang.String">
        SELECT propvalue
        FROM adviser_properties
        WHERE propname='drupalId' AND adviserId=#{id}
