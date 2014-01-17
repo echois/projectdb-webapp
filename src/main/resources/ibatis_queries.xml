@@ -325,24 +325,24 @@
        WHERE projectId = #{id}
    </select>
    
-   <select id="getPropertiesForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectProperty">
+   <select id="getPropertiesForProjectId" parameterType="java.lang.Integer" resultType="pm.pojo.ProjectProperty">
        SELECT *
        FROM project_properties
        WHERE projectId = #id#
    </select>
    
-   <select id="getProjectProperty" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectProperty">
+   <select id="getProjectProperty" parameterType="java.lang.Integer" resultType="pm.pojo.ProjectProperty">
        SELECT *
        FROM project_properties
        WHERE id = #id#
    </select>
    
-   <select id="getPropnames" resultClass="java.lang.String">
+   <select id="getPropnames" resultType="java.lang.String">
        SELECT DISTINCT propname
        FROM project_properties
    </select>
 
-   <select id="getProjectsForResearcherId" parameterClass="java.lang.Integer" resultClass="pm.pojo.Project">
+   <select id="getProjectsForResearcherId" parameterType="java.lang.Integer" resultType="pm.pojo.Project">
        SELECT *
        FROM project
        WHERE id IN
@@ -502,7 +502,7 @@
 	  </selectKey>
    </insert>
    
-   <insert id="upsertProjectProperty" parameterClass="pm.pojo.ProjectProperty">
+   <insert id="upsertProjectProperty" parameterType="pm.pojo.ProjectProperty">
       REPLACE INTO project_properties (
       	id,
         projectId,
@@ -520,7 +520,7 @@
       )
    </insert>
 
-   <insert id="createFollowUp" parameterClass="pm.pojo.FollowUp">
+   <insert id="createFollowUp" parameterType="pm.pojo.FollowUp">
       INSERT INTO projectfollowup (
         projectId,
         adviserId,
@@ -776,7 +776,7 @@
       WHERE id = #{id}
   </delete>
   
-  <delete id="deleteProjectProperty" parameterClass="java.lang.Integer">
+  <delete id="deleteProjectProperty" parameterType="java.lang.Integer">
       DELETE FROM project_properties
       WHERE id = #id#
   </delete>

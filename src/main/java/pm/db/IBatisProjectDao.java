@@ -733,22 +733,22 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 	
 	public List<ProjectProperty> getProjectProperties(Integer id) {
-		return (List<ProjectProperty>) getSqlMapClientTemplate().queryForList("getPropertiesForProjectId", id);
+		return getSqlSession().selectList("getPropertiesForProjectId", id);
 	}
 	
 	public List<String> getPropnames() {
-		return (List<String>) getSqlMapClientTemplate().queryForList("getPropnames");
+		return getSqlSession().selectList("getPropnames");
 	}
 	
 	public void upsertProjectProperty(ProjectProperty p) {
-		getSqlMapClientTemplate().update("upsertProjectProperty", p);
+		getSqlSession().update("upsertProjectProperty", p);
 	}
 	
 	public void deleteProjectProperty(Integer id) {
-		getSqlMapClientTemplate().delete("deleteProjectProperty", id);
+		getSqlSession().delete("deleteProjectProperty", id);
 	}
 
 	public ProjectProperty getProjectProperty(Integer id) {
-		return (ProjectProperty) getSqlMapClientTemplate().queryForObject("getProjectProperty", id); 
+		return (ProjectProperty) getSqlSession().selectOne("getProjectProperty", id); 
 	}
 }
