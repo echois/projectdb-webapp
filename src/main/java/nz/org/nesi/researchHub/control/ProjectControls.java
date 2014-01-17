@@ -12,6 +12,7 @@ import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -409,15 +410,16 @@ public class ProjectControls extends AbstractControl {
      * Add the specified project_kpi to this project
      *
      * @param id the id
+     * @throws InvalidEntityException 
      */
-    public void addKpi(ProjectKpi pk) {
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(pk.getProjectId());
-			pw.getProjectKpis().add(pk);
-			this.validateProject(pw);
+    public void addKpi(ProjectKpi pk) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(pk.getProjectId());
+		pw.getProjectKpis().add(pk);
+		this.validateProject(pw);
+		try {
 			this.projectDao.updateProjectWrapper(pk.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + pk.getProjectId(), e);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage(), e);
 		}
     }
     
@@ -425,64 +427,52 @@ public class ProjectControls extends AbstractControl {
      * Add the specified research_output to this project
      *
      * @param id the id
+     * @throws Exception 
      */
-    public void addResearchOutput(ResearchOutput ro) {
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(ro.getProjectId());
-			pw.getResearchOutputs().add(ro);
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(ro.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + ro.getProjectId(), e);
-		}
+    public void addResearchOutput(ResearchOutput ro) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(ro.getProjectId());
+		pw.getResearchOutputs().add(ro);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(ro.getProjectId(), pw);
     }
     
     /**
      * Add the specified project_kpi to this project
      *
      * @param id the id
+     * @throws Exception 
      */
-    public void addReview(Review r) {
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(r.getProjectId());
-			pw.getReviews().add(r);
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(r.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + r.getProjectId(), e);
-		}
+    public void addReview(Review r) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(r.getProjectId());
+		pw.getReviews().add(r);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(r.getProjectId(), pw);
     }
     
     /**
      * Add the specified project_kpi to this project
      *
      * @param id the id
+     * @throws Exception 
      */
-    public void addFollowUp(FollowUp f) {
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(f.getProjectId());
-			pw.getFollowUps().add(f);
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(f.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + f.getProjectId(), e);
-		}
+    public void addFollowUp(FollowUp f) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(f.getProjectId());
+		pw.getFollowUps().add(f);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(f.getProjectId(), pw);
     }
     
     /**
      * Add the specified project_kpi to this project
      *
      * @param id the id
+     * @throws Exception 
      */
-    public void addAdviserAction(AdviserAction aa) {
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(aa.getProjectId());
-			pw.getAdviserActions().add(aa);
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(aa.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + aa.getProjectId(), e);
-		}
+    public void addAdviserAction(AdviserAction aa) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(aa.getProjectId());
+		pw.getAdviserActions().add(aa);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(aa.getProjectId(), pw);
     }
 
     /**

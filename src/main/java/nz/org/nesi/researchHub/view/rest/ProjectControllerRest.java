@@ -111,35 +111,35 @@ public class ProjectControllerRest {
     @RequestMapping(value = "/kpi", method = RequestMethod.PUT)
     @ApiOperation( value = "Add project kpi", notes = "Add KPI to project" )
     @ResponseBody
-    public void addKpi(@RequestBody ProjectKpi pk) {
+    public void addKpi(@RequestBody ProjectKpi pk) throws Exception {
         projectControls.addKpi(pk);
     }
     
     @RequestMapping(value = "/ro", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Research Output", notes = "Add research output to project" )
     @ResponseBody
-    public void addResearchOutput(@RequestBody ResearchOutput ro) {
+    public void addResearchOutput(@RequestBody ResearchOutput ro) throws Exception {
         projectControls.addResearchOutput(ro);
     }
     
     @RequestMapping(value = "/review", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Review", notes = "Add review to project" )
     @ResponseBody
-    public void addReview(@RequestBody Review r) {
+    public void addReview(@RequestBody Review r) throws Exception {
         projectControls.addReview(r);
     }
     
     @RequestMapping(value = "/followup", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Follow Up", notes = "Add followup to project" )
     @ResponseBody
-    public void addFollowUp(@RequestBody FollowUp f) {
+    public void addFollowUp(@RequestBody FollowUp f) throws Exception {
         projectControls.addFollowUp(f);
     }
     
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
     @ResponseBody
-    public void addReview(@RequestBody AdviserAction aa) {
+    public void addReview(@RequestBody AdviserAction aa) throws Exception {
         projectControls.addAdviserAction(aa);
     }
     
