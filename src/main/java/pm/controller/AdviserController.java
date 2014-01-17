@@ -51,7 +51,7 @@ public class AdviserController extends GlobalController {
     	}
     	mav.addObject("adviserRole", ar);
     	mav.addObject("adviser", a);
-    	mav.addObject("projects", projectDao.getProjectsForAdviserId(a.getId()));
+    	mav.addObject("projects", ps);
 		return mav;
 	}
 	// See all advisers

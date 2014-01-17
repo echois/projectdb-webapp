@@ -85,6 +85,7 @@
 	    <th>Next Review</th>
 	    <th>Next Follow-up</th>
 	    <th>Last Day</th>
+	    <th>Todo</th>
       </tr>
     </thead>
     <tbody>
@@ -118,6 +119,7 @@
           </c:otherwise>
         </c:choose>
         <td>${project.endDate}</td>
+        <td>${project.todo}</td>
       </tr>
     </c:forEach>
     </tbody>
