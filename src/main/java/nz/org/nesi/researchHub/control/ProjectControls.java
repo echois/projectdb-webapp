@@ -31,6 +31,7 @@ import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
+import pm.pojo.ResearchOutputType;
 import pm.pojo.Review;
 
 /**
@@ -571,5 +572,15 @@ public class ProjectControls extends AbstractControl {
      */
     public List<ProjectKpi> getProjectKpis() throws Exception {
     	return this.projectDao.getProjectKpis();
+    }
+    
+    /**
+     * Returns a list of possible Research Output types.
+     *
+     * @return a list of Research Output types
+     * @throws Exception 
+     */
+    public List<ResearchOutputType> getROTypes() throws Exception {
+    	return this.projectDao.getResearchOutputTypes();
     }
 }

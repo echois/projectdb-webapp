@@ -28,6 +28,7 @@ import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
+import pm.pojo.ResearchOutputType;
 import pm.pojo.Review;
 
 import com.wordnik.swagger.annotations.Api;
@@ -212,5 +213,12 @@ public class ProjectControllerRest {
     @ResponseBody
     public List<ProjectType> getProjectTypes() throws Exception {
         return projectControls.getProjectTypes();
+    }
+    
+    @RequestMapping(value = "/rotype", method = RequestMethod.GET)
+    @ApiOperation( value = "Get Research Output Types", notes = "Returns a list of possible research output types" )
+    @ResponseBody
+    public List<ResearchOutputType> getROTypes() throws Exception {
+        return projectControls.getROTypes();
     }
 }
