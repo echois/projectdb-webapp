@@ -322,6 +322,26 @@
       </c:forEach>
     </tbody>
   </table>
+  
+  <br>
+  <h4>Project Properties</h4>
+  
+  <table id="propertyTable" class="tablesorter">
+    <thead>
+      <tr>
+	    <th>Property Name</th>
+	    <th>Property Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:forEach items="${properties}" var="property">
+        <tr>
+          <td>${property.propname}</td>
+          <td>${property.propvalue}</td>
+        </tr>
+      </c:forEach>
+    </tbody>
+  </table>
 
   </div>
 </body>

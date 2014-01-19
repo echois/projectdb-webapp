@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
+import pm.pojo.AdviserAction;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
@@ -24,9 +26,12 @@ import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
+import pm.pojo.ResearchOutput;
+import pm.pojo.Review;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Project: project_management
@@ -103,11 +108,46 @@ public class ProjectControllerRest {
         projectControls.addResearcher(rl);
     }
     
-    @RequestMapping(value = "/{id}/{pid}/{adviser}", method = RequestMethod.DELETE)
-    @ApiOperation( value = "Remove adviser/researcher from project", notes = "Removes someone from a project" )
+    @RequestMapping(value = "/kpi", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add project kpi", notes = "Add KPI to project" )
     @ResponseBody
-    public void remove(@PathVariable Integer id, @PathVariable Integer pid, @PathVariable boolean adviser) {
-        projectControls.removeUser(id, pid, adviser);
+    public void addKpi(@RequestBody ProjectKpi pk) throws Exception {
+        projectControls.addKpi(pk);
+    }
+    
+    @RequestMapping(value = "/ro", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Research Output", notes = "Add research output to project" )
+    @ResponseBody
+    public void addResearchOutput(@RequestBody ResearchOutput ro) throws Exception {
+        projectControls.addResearchOutput(ro);
+    }
+    
+    @RequestMapping(value = "/review", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Review", notes = "Add review to project" )
+    @ResponseBody
+    public void addReview(@RequestBody Review r) throws Exception {
+        projectControls.addReview(r);
+    }
+    
+    @RequestMapping(value = "/followup", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Follow Up", notes = "Add followup to project" )
+    @ResponseBody
+    public void addFollowUp(@RequestBody FollowUp f) throws Exception {
+        projectControls.addFollowUp(f);
+    }
+    
+    @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
+    @ResponseBody
+    public void addReview(@RequestBody AdviserAction aa) throws Exception {
+        projectControls.addAdviserAction(aa);
+    }
+    
+    @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
+    @ApiOperation( value = "Remove object link from project", notes = "Removes someone/something from a project" )
+    @ResponseBody
+    public void remove(@ApiParam( value = "Internal project id", required = true ) @PathVariable Integer id, @ApiParam( value = "Object id. Context specific - is either adviserId, researcherId or array index", required = true ) @PathVariable Integer oid, @ApiParam( value = "Object type. adviser, researcher, kpi etc", required = true ) @PathVariable String type) {
+        projectControls.removeObjectLink(id, oid, type);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)

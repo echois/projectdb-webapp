@@ -6,6 +6,7 @@ import pm.authz.annotation.RequireAdmin;
 import pm.authz.annotation.RequireAdviser;
 import pm.authz.annotation.RequireAdviserOnProject;
 import pm.pojo.*;
+import pm.pojo.ProjectProperty;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -222,6 +223,15 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	public Adviser getAdviserByTuakiriUniqueId(final String id) throws Exception {
 		Adviser a = (Adviser) getSqlSession().selectOne("pm.db.getAdviserByTuakiriUniqueId", id);
 		return a;
+	}
+	
+	public Adviser getAdviserByDrupalId(final String id) throws Exception {
+		Adviser a = (Adviser) getSqlSession().selectOne("pm.db.getAdviserByDrupalId", id);
+		return a;
+	}
+	
+	public String getDrupalIdByAdviserId(final Integer id) throws Exception {
+		return (String) getSqlSession().selectOne("pm.db.getDrupalIdByAdviserId", id);
 	}
 
 	public Integer getNumProjectsForAdviser(Integer adviserId) throws Exception {
@@ -720,5 +730,25 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
 	public String getLinuxUsername(Integer id) {
 		return (String) getSqlSession().selectOne("pm.db.getLinuxUsername", id);
+	}
+	
+	public List<ProjectProperty> getProjectProperties(Integer id) {
+		return getSqlSession().selectList("getPropertiesForProjectId", id);
+	}
+	
+	public List<String> getPropnames() {
+		return getSqlSession().selectList("getPropnames");
+	}
+	
+	public void upsertProjectProperty(ProjectProperty p) {
+		getSqlSession().update("upsertProjectProperty", p);
+	}
+	
+	public void deleteProjectProperty(Integer id) {
+		getSqlSession().delete("deleteProjectProperty", id);
+	}
+
+	public ProjectProperty getProjectProperty(Integer id) {
+		return (ProjectProperty) getSqlSession().selectOne("getProjectProperty", id); 
 	}
 }

@@ -12,11 +12,14 @@ import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import pm.pojo.APLink;
+import pm.pojo.AdviserAction;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
@@ -26,6 +29,8 @@ import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
+import pm.pojo.ResearchOutput;
+import pm.pojo.Review;
 
 /**
  * Project: project_management
@@ -69,26 +74,12 @@ public class ProjectControls extends AbstractControl {
             pw.setErrorMessage("A project must have a title");
             throw new InvalidEntityException("Project does not have a title", Project.class, "name");
         }
-
         // Exactly one PI?
-        int count = 0;
-        for (RPLink rp : pw.getRpLinks()) {
-            if (rp.getResearcherRoleId() == 1) {
-                count += 1;
-            }
-        }
-        if (count != 1) {
+        if (pw.getRpLinks().isEmpty()) {
             throw new InvalidEntityException("There must be exactly 1 project owner on a project", ProjectWrapper.class, "rpLinks");
         }
-
         // Exactly one primary project?
-        count = 0;
-        for (APLink ap : pw.getApLinks()) {
-            if (ap.getAdviserRoleId() == 1) {
-                count += 1;
-            }
-        }
-        if (count != 1) {
+        if (pw.getApLinks().isEmpty()) {
             throw new InvalidEntityException("There must be exactly 1 primary project adviser on a project", ProjectWrapper.class, "apLinks");
         }
         // At least one HPC
@@ -186,9 +177,9 @@ public class ProjectControls extends AbstractControl {
 
         for (Project p : getProjects()) {
             if (p.getName().toLowerCase().contains(filter) || p.getDescription().toLowerCase().contains(filter) ||
-                    p.getHostInstitution().toLowerCase().contains(filter) || p.getNotes().toLowerCase().contains(filter) ||
+                    p.getHostInstitution().toLowerCase().contains(filter) || p.getNotes() != null && p.getNotes().toLowerCase().contains(filter) ||
                     p.getProjectCode().toLowerCase().contains(filter) || p.getProjectTypeName().toLowerCase().contains(filter) ||
-                    p.getRequirements().toLowerCase().contains(filter) || p.getTodo() != null && p.getTodo().toLowerCase().contains(filter))
+                    p.getRequirements() != null && p.getRequirements().toLowerCase().contains(filter) || p.getTodo() != null && p.getTodo().toLowerCase().contains(filter))
                 filtered.add(p);
         }
 
@@ -217,7 +208,6 @@ public class ProjectControls extends AbstractControl {
             if (project.getProject().getLastModified() != temp.getProject().getLastModified() || !project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
-            project.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateProjectWrapper(id, project);
             } catch (Exception e) {
@@ -243,21 +233,15 @@ public class ProjectControls extends AbstractControl {
      * @throws ClassNotFoundException 
      */
     public void editProjectWrapper(Integer id, String object, String field, String timestamp, String data) throws InvalidEntityException, OutOfDateException {
-    	Integer ts = null;
-    	if (!timestamp.equals("null") && !timestamp.equals("force")) ts = Integer.parseInt(timestamp);
         if (id != null) {
             // might throw database exception if project does not already exist
             ProjectWrapper pw = getProjectWrapper(id.toString());
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
-            // Covers the case where timestamps don't match, and where the correct timestamp is null, and force=true
-            boolean nullMatch = pw.getProject().getLastModified()==null && ts==null;
-            boolean match = pw.getProject().getLastModified()!=null && ts!=null && pw.getProject().getLastModified().equals(ts);
             boolean force = timestamp.equals("force");
-            if (!force && !(nullMatch || match)) {
+            if (!force && timestamp.equals(pw.getProject().getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
-            pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
             boolean deep = false;
             String method = "get" + object;
             Class<?> pojoClass = null;
@@ -294,10 +278,17 @@ public class ProjectControls extends AbstractControl {
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
+		            // Try integers first, floats if that fails, then fallback to string
 		            try {
-		            	Integer intData = Integer.valueOf(data);
-		            	Method set = pojoClass.getDeclaredMethod (method, Integer.class);
-			            set.invoke (pojo, intData);
+		            	try {
+		            		Integer intData = Integer.valueOf(data);
+		            		Method set = pojoClass.getDeclaredMethod (method, Integer.class);
+				            set.invoke (pojo, intData);
+		            	} catch (Exception e) {
+		            		Float floatData = Float.valueOf(data);
+		            		Method set = pojoClass.getDeclaredMethod (method, Float.class);
+				            set.invoke (pojo, floatData);
+		            	}
 		            } catch (Exception e) {
 		            	Method set = pojoClass.getDeclaredMethod (method, String.class);
 			            set.invoke (pojo, data);
@@ -344,21 +335,23 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    public void removeUser(Integer id, Integer pid, boolean adviser) {
+    public void removeObjectLink(Integer id, Integer oid, String type) {
     	try {
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(id);
-			if (adviser) {
+			if (type.equals("adviser")) {
 				List<APLink> aTmp = new LinkedList<APLink>();
 				for (APLink a : pw.getApLinks()) {
-					if (!a.getAdviserId().equals(pid)) aTmp.add(a);
+					if (!a.getAdviserId().equals(oid)) aTmp.add(a);
 				}
 				pw.setApLinks(aTmp);
-			} else {
+			} else if (type.equals("researcher")){
 				List<RPLink> rTmp = new LinkedList<RPLink>();
 				for (RPLink r : pw.getRpLinks()) {
-					if (!r.getResearcherId().equals(pid)) rTmp.add(r);
+					if (!r.getResearcherId().equals(oid)) rTmp.add(r);
 				}
 				pw.setRpLinks(rTmp);
+			} else if (type.equals("kpi")) {
+				pw.getProjectKpis().remove(oid);
 			}
 			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(id, pw);
@@ -398,6 +391,75 @@ public class ProjectControls extends AbstractControl {
 			throw new DatabaseException("Can't fetch project with id " + rl.getProjectId(), e);
 		}
     }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     * @throws InvalidEntityException 
+     */
+    public void addKpi(ProjectKpi pk) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(pk.getProjectId());
+		pw.getProjectKpis().add(pk);
+		this.validateProject(pw);
+		try {
+			this.projectDao.updateProjectWrapper(pk.getProjectId(), pw);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		}
+    }
+    
+    /**
+     * Add the specified research_output to this project
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    public void addResearchOutput(ResearchOutput ro) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(ro.getProjectId());
+		pw.getResearchOutputs().add(ro);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(ro.getProjectId(), pw);
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    public void addReview(Review r) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(r.getProjectId());
+		pw.getReviews().add(r);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(r.getProjectId(), pw);
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    public void addFollowUp(FollowUp f) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(f.getProjectId());
+		pw.getFollowUps().add(f);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(f.getProjectId(), pw);
+    }
+    
+    /**
+     * Add the specified project_kpi to this project
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    public void addAdviserAction(AdviserAction aa) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(aa.getProjectId());
+		pw.getAdviserActions().add(aa);
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(aa.getProjectId(), pw);
+    }
 
     /**
      * Creates a new project in the database.
@@ -417,7 +479,6 @@ public class ProjectControls extends AbstractControl {
 
         String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         pw.getProject().setProjectCode(projectCode);
-        pw.getProject().setLastModified((int) (System.currentTimeMillis() / 1000));
         try {
             Integer pid = this.projectDao.createProjectWrapper(pw);
             return pid;

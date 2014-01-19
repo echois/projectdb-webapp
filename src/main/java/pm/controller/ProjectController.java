@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import pm.pojo.APLink;
 import pm.pojo.Project;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
@@ -30,17 +31,16 @@ public class ProjectController extends GlobalController {
 		ProjectWrapper pw = projectDao.getProjectWrapperById(id);
 		mav.addObject("pw", pw);
 		Date now = new Date();
-    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		if (!pw.getProject().getEndDate().trim().equals("")) {
-			boolean expired = now.after(df.parse(pw.getProject().getEndDate()));
-			mav.addObject("expired",expired);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		if (pw.getProject().getStatusId().equals(4)) {
+			mav.addObject("expired",true);
 		}
 		String poEmail = "";
 		String poName = "";
 		String othersEmails = "";
 		for (RPLink r:pw.getRpLinks()) {
 			if (!r.getResearcher().getEndDate().trim().equals("")) {
-				if (now.after(df.parse(r.getResearcher().getEndDate()))) {
+				if (r.getResearcher().getStatusId().equals(2)) {
 					r.getResearcher().setFullName(r.getResearcher().getFullName() + " (expired)");
 				}
 			}
@@ -62,6 +62,7 @@ public class ProjectController extends GlobalController {
 		String mailto = "mailto:" + poEmail + "?subject=" + pw.getProject().getProjectCode() + "&cc=" + othersEmails + "&body=Dear " + poName + ",";
 		mav.addObject("mailto", mailto);
 		mav.addObject("jobauditBaseProjectUrl",this.jobauditBaseProjectUrl);
+		mav.addObject("properties", this.projectDao.getProjectProperties(id));
 		return mav;
 	}
 	// See a filterable list of all projects
@@ -156,6 +157,7 @@ public class ProjectController extends GlobalController {
         mav.addObject("projectTypes", pTypes);
         mav.addObject("statuses", statuses);
         mav.addObject("institutions", this.projectDao.getInstitutions());
+        mav.addObject("properties", this.projectDao.getProjectProperties(id));
         return mav;
     }
 	

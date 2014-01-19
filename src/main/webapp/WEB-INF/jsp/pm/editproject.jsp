@@ -470,6 +470,34 @@
   </table>
 
   <button class="update" value="editadviseraction?projectId=${projectWrapper.project.id}">Add adviser action</button><br>
+  
+  <br>
+  <a id="projectproperties"></a>
+  <h4>Project Properties</h4>
+
+  <table id="projectPropertyTable" class="tablesorter">
+    <thead>
+      <tr>
+	    <th>Property Name</th>
+	    <th>Property Value</th>
+	    <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:forEach items="${properties}" var="property">
+        <tr>
+          <td>${property.propname}</td>
+          <td>${property.propvalue}</td>
+          <td>
+          	<button class="update" value="editprojectproperty?projectId=${projectWrapper.project.id}&id=${property.id}">Edit project property</button><br>
+            <button class="update delete" value="deleteprojectproperty?projectId=${projectWrapper.project.id}&id=${property.id}">Delete</button>
+          </td>
+        </tr>
+      </c:forEach>
+    </tbody>
+  </table>
+
+  <button class="update" value="editprojectproperty?projectId=${projectWrapper.project.id}">Add project property</button><br>
 
   <br>
 

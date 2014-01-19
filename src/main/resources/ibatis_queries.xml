@@ -28,6 +28,19 @@
        FROM adviser
        WHERE tuakiriUniqueId = #{id}
    </select>
+   
+   <select id="getAdviserByDrupalId" parameterType="java.lang.String" resultType="pm.pojo.Adviser">
+       SELECT *
+       FROM adviser
+       WHERE id IN
+         ( SELECT adviserId FROM adviser_properties WHERE propname='drupalId' AND propvalue=#{id} )
+   </select>
+   
+   <select id="getDrupalIdByAdviserId" parameterType="java.lang.Integer" resultType="java.lang.String">
+       SELECT propvalue
+       FROM adviser_properties
+       WHERE propname='drupalId' AND adviserId=#{id}
+   </select>
 
    <select id="getSiteById" parameterType="java.lang.Integer" resultType="pm.pojo.Site">
        SELECT *
@@ -311,6 +324,23 @@
        FROM project_kpi
        WHERE projectId = #{id}
    </select>
+   
+   <select id="getPropertiesForProjectId" parameterType="java.lang.Integer" resultType="pm.pojo.ProjectProperty">
+       SELECT *
+       FROM project_properties
+       WHERE projectId = #id#
+   </select>
+   
+   <select id="getProjectProperty" parameterType="java.lang.Integer" resultType="pm.pojo.ProjectProperty">
+       SELECT *
+       FROM project_properties
+       WHERE id = #id#
+   </select>
+   
+   <select id="getPropnames" resultType="java.lang.String">
+       SELECT DISTINCT propname
+       FROM project_properties
+   </select>
 
    <select id="getProjectsForResearcherId" parameterType="java.lang.Integer" resultType="pm.pojo.Project">
        SELECT *
@@ -471,6 +501,24 @@
         SELECT LAST_INSERT_ID() AS id
 	  </selectKey>
    </insert>
+   
+   <insert id="upsertProjectProperty" parameterType="pm.pojo.ProjectProperty">
+      REPLACE INTO project_properties (
+      	id,
+        projectId,
+        siteId,
+        facilityId,
+        propname,
+        propvalue
+      ) values (
+      	#id#,
+        #projectId#,
+        #siteId#,
+        #facilityId#,
+        #propname#,
+        #propvalue#
+      )
+   </insert>
 
    <insert id="createFollowUp" parameterType="pm.pojo.FollowUp">
       INSERT INTO projectfollowup (
@@ -589,7 +637,7 @@
         requirements = #{requirements},
         notes = #{notes},
         todo = #{todo},
-        lastModified = #{lastModified}
+        lastModified = now()
       WHERE id = #{id}
    </update>
 
@@ -726,6 +774,11 @@
   <delete id="deleteProjectKpi" parameterType="java.lang.Integer">
       DELETE FROM project_kpi
       WHERE id = #{id}
+  </delete>
+  
+  <delete id="deleteProjectProperty" parameterType="java.lang.Integer">
+      DELETE FROM project_properties
+      WHERE id = #id#
   </delete>
 
   <select id="getSites" resultType="pm.pojo.Site">

@@ -3,6 +3,7 @@ package pm.db;
 import pm.pojo.*;
 
 import java.util.List;
+import pm.pojo.ProjectProperty;
 
 public interface ProjectDao {
 
@@ -11,6 +12,8 @@ public interface ProjectDao {
 	public Researcher getResearcherById(Integer id) throws Exception;
 	public Adviser getAdviserById(Integer id) throws Exception;
 	public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
+	public Adviser getAdviserByDrupalId(String id) throws Exception;
+	public String getDrupalIdByAdviserId(Integer id) throws Exception;
 	public List<Researcher> getResearchers() throws Exception;
 	public List<ResearchOutputType> getResearchOutputTypes() throws Exception;
 	public List<Affiliation> getAffiliations() throws Exception;
@@ -61,5 +64,11 @@ public interface ProjectDao {
 	public List<ResearcherStatus> getResearcherStatuses();
 	public String getResearcherStatusById(Integer id);
 	public String getLinuxUsername(Integer id);
+	
+	public List<ProjectProperty> getProjectProperties(Integer id);
+	public List<String> getPropnames();
+	public ProjectProperty getProjectProperty(Integer id);
+	public void upsertProjectProperty(ProjectProperty p);
+	public void deleteProjectProperty(Integer id);
 
 }
