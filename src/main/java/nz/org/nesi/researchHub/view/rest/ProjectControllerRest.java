@@ -22,6 +22,7 @@ import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
@@ -55,6 +56,13 @@ public class ProjectControllerRest {
     @ResponseBody
     public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
         return projectControls.getProjectWrapper(projectIdOrCode);
+    }
+    
+    @RequestMapping(value = "/{id}/prop", method = RequestMethod.GET)
+    @ApiOperation( value = "Get project properties", notes = "Returns a list of project properties for a given project id" )
+    @ResponseBody
+    public List<ProjectProperty> getProjectProperties(@PathVariable Integer id) {
+        return projectControls.getProjectProperties(id);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

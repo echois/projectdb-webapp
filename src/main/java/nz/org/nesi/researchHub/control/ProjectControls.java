@@ -25,6 +25,7 @@ import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
@@ -139,6 +140,20 @@ public class ProjectControls extends AbstractControl {
      */
     public ProjectWrapper getProjectWrapper(Integer id) {
         return getProjectWrapper(id.toString());
+    }
+    
+    /**
+     * Gets the project properties associated with the specified project id.
+     *
+     * @param projectId the project
+     * @return the ProjectProperties
+     */
+    public List<ProjectProperty> getProjectProperties(Integer id) {
+    	try {
+    		return this.projectDao.getProjectProperties(id);
+    	} catch (Exception e) {
+            throw new DatabaseException("Could not retrieve properties", e);
+        }
     }
 
     /**
