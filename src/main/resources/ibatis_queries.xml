@@ -512,11 +512,11 @@
         propvalue
       ) values (
       	#{id},
-        #{projectId}#,
-        #{siteId}#,
-        #{facilityId}#,
-        #{propname}#,
-        #{propvalue}#
+        #{projectId},
+        #{siteId},
+        #{facilityId},
+        #{propname},
+        #{propvalue}
       )
    </insert>
 
