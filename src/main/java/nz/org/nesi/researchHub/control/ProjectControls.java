@@ -368,7 +368,18 @@ public class ProjectControls extends AbstractControl {
 				pw.setRpLinks(rTmp);
 			} else if (type.equals("kpi")) {
 				pw.getProjectKpis().remove(oid);
+			} else if (type.equals("researchoutput")) {
+				pw.getResearchOutputs().remove(oid);
+			} else if (type.equals("review")) {
+				pw.getReviews().remove(oid);
+			} else if (type.equals("followup")) {
+				pw.getFollowUps().remove(oid);
+			} else if (type.equals("adviseraction")) {
+				pw.getAdviserActions().remove(oid);
+			} else if (type.equals("property")) {
+				this.projectDao.deleteProjectProperty(oid);
 			}
+			
 			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(id, pw);
 		} catch (Exception e) {
