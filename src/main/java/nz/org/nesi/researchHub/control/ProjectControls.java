@@ -367,15 +367,15 @@ public class ProjectControls extends AbstractControl {
 				}
 				pw.setRpLinks(rTmp);
 			} else if (type.equals("kpi")) {
-				pw.getProjectKpis().remove(oid);
+				pw.getProjectKpis().remove(oid.intValue());
 			} else if (type.equals("researchoutput")) {
-				pw.getResearchOutputs().remove(oid);
+				pw.getResearchOutputs().remove(oid.intValue());
 			} else if (type.equals("review")) {
-				pw.getReviews().remove(oid);
+				pw.getReviews().remove(oid.intValue());
 			} else if (type.equals("followup")) {
-				pw.getFollowUps().remove(oid);
+				pw.getFollowUps().remove(oid.intValue());
 			} else if (type.equals("adviseraction")) {
-				pw.getAdviserActions().remove(oid);
+				pw.getAdviserActions().remove(oid.intValue());
 			} else if (type.equals("property")) {
 				this.projectDao.deleteProjectProperty(oid);
 			}
@@ -383,7 +383,7 @@ public class ProjectControls extends AbstractControl {
 			this.validateProject(pw);
 			this.projectDao.updateProjectWrapper(id, pw);
 		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + id, e);
+			throw new DatabaseException("Can't delete " + oid, e);
 		}
     }
     
