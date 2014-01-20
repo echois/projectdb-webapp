@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
 import pm.pojo.AdviserAction;
+import pm.pojo.Attachment;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
@@ -150,6 +151,13 @@ public class ProjectControllerRest {
     @ResponseBody
     public void addReview(@RequestBody AdviserAction aa) throws Exception {
         projectControls.addAdviserAction(aa);
+    }
+    
+    @RequestMapping(value = "/attachment/{oid}", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Attachment", notes = "Add attachment to object" )
+    @ResponseBody
+    public void addAttachment(@RequestBody Attachment a, @PathVariable Integer oid) throws Exception {
+        projectControls.addAttachment(a, oid);
     }
     
     @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)

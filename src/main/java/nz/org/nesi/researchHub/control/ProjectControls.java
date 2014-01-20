@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import pm.pojo.APLink;
 import pm.pojo.AdviserAction;
+import pm.pojo.Attachment;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
@@ -259,6 +260,7 @@ public class ProjectControls extends AbstractControl {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             boolean deep = false;
+            boolean attachment = object.contains("Attachments");
             String method = "get" + object;
             Class<?> pojoClass = null;
             if (object.contains("_")) {
@@ -291,6 +293,16 @@ public class ProjectControls extends AbstractControl {
 	            			getPojo = pojoClass.getDeclaredMethod(method);
 		            		pojo = getPojo.invoke(pojo);
 	            		}
+	            		pojoClass = pojo.getClass();
+	            	}
+	            	if (attachment) {
+	            		method = "getAttachments";
+	            		getPojo = pojoClass.getDeclaredMethod(method);
+	            		pojo = getPojo.invoke(pojo);
+	            		pojoClass = pojo.getClass();
+	            		method = "get";
+            			getPojo = pojoClass.getDeclaredMethod(method, int.class);
+	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
@@ -351,7 +363,7 @@ public class ProjectControls extends AbstractControl {
      *
      * @param id the id
      */
-    public void removeObjectLink(Integer id, Integer oid, String type) {
+    public void removeObjectLink(Integer id, int oid, String type) {
     	try {
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(id);
 			if (type.equals("adviser")) {
@@ -367,17 +379,37 @@ public class ProjectControls extends AbstractControl {
 				}
 				pw.setRpLinks(rTmp);
 			} else if (type.equals("kpi")) {
-				pw.getProjectKpis().remove(oid.intValue());
+				pw.getProjectKpis().remove(oid);
 			} else if (type.equals("researchoutput")) {
-				pw.getResearchOutputs().remove(oid.intValue());
+				pw.getResearchOutputs().remove(oid);
 			} else if (type.equals("review")) {
-				pw.getReviews().remove(oid.intValue());
+				pw.getReviews().remove(oid);
 			} else if (type.equals("followup")) {
-				pw.getFollowUps().remove(oid.intValue());
+				pw.getFollowUps().remove(oid);
 			} else if (type.equals("adviseraction")) {
-				pw.getAdviserActions().remove(oid.intValue());
+				pw.getAdviserActions().remove(oid);
 			} else if (type.equals("property")) {
-				this.projectDao.deleteProjectProperty(oid);
+				this.projectDao.deleteProjectProperty(Integer.valueOf(oid));
+			} else if (type.contains("Attachments")) {
+				//pw.getAdviserActions().get(0).getAttachments().remove(0);
+				String obj = type.split("_")[0];
+				int nid = Integer.parseInt(type.split("_")[2]);
+				Class<?> c = ProjectWrapper.class;
+            	Method m = c.getDeclaredMethod ("get" + obj);
+            	//pw.getAdviserActions()
+            	Object o = m.invoke (pw);
+            	c =  o.getClass();
+            	m = c.getDeclaredMethod("get", int.class);
+            	//.get(oid)
+            	o = m.invoke(o, oid);
+            	c = o.getClass();
+            	m = c.getDeclaredMethod("getAttachments");
+            	//.getAttachments()
+            	o = m.invoke(o);
+            	c = o.getClass();
+            	m = c.getDeclaredMethod("remove", int.class);
+            	//.remove(nid)
+            	m.invoke(o, nid);
 			}
 			
 			this.validateProject(pw);
@@ -486,6 +518,25 @@ public class ProjectControls extends AbstractControl {
 		pw.getAdviserActions().add(aa);
 		this.validateProject(pw);
 		this.projectDao.updateProjectWrapper(aa.getProjectId(), pw);
+    }
+    
+    /**
+     * Add the specified attachment to the project
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    public void addAttachment(Attachment a, Integer oid) throws Exception {
+		ProjectWrapper pw = this.projectDao.getProjectWrapperById(a.getProjectId());
+		if (a.getAdviserActionId()!=null) {
+			pw.getAdviserActions().get(oid).getAttachments().add(a);
+		} else if (a.getFollowUpId()!=null) {
+			pw.getFollowUps().get(oid).getAttachments().add(a);
+		} else if (a.getReviewId()!=null) {
+			pw.getReviews().get(oid).getAttachments().add(a);
+		}
+		this.validateProject(pw);
+		this.projectDao.updateProjectWrapper(a.getProjectId(), pw);
     }
 
     /**
