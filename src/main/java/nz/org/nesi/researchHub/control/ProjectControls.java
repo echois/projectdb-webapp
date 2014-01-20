@@ -526,13 +526,20 @@ public class ProjectControls extends AbstractControl {
      * @param id the id
      * @throws Exception 
      */
-    public void addAttachment(Attachment a, Integer oid) throws Exception {
+    public void addAttachment(Attachment a) throws Exception {
 		ProjectWrapper pw = this.projectDao.getProjectWrapperById(a.getProjectId());
+		Integer oid = 0;
 		if (a.getAdviserActionId()!=null) {
+			oid = a.getAdviserActionId();
+			a.setAdviserActionId(pw.getAdviserActions().get(oid).getId());
 			pw.getAdviserActions().get(oid).getAttachments().add(a);
 		} else if (a.getFollowUpId()!=null) {
+			oid = a.getFollowUpId();
+			a.setFollowUpId(pw.getFollowUps().get(oid).getId());
 			pw.getFollowUps().get(oid).getAttachments().add(a);
 		} else if (a.getReviewId()!=null) {
+			oid = a.getReviewId();
+			a.setReviewId(pw.getReviews().get(oid).getId());
 			pw.getReviews().get(oid).getAttachments().add(a);
 		}
 		this.validateProject(pw);

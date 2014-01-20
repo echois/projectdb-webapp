@@ -153,11 +153,11 @@ public class ProjectControllerRest {
         projectControls.addAdviserAction(aa);
     }
     
-    @RequestMapping(value = "/attachment/{oid}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/attachment", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Attachment", notes = "Add attachment to object" )
     @ResponseBody
-    public void addAttachment(@RequestBody Attachment a, @PathVariable Integer oid) throws Exception {
-        projectControls.addAttachment(a, oid);
+    public void addAttachment(@RequestBody Attachment a) throws Exception {
+        projectControls.addAttachment(a);
     }
     
     @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
