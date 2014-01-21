@@ -16,17 +16,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.APLink;
 import pm.pojo.AdviserAction;
+import pm.pojo.Attachment;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectStatus;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
+import pm.pojo.ResearchOutputType;
 import pm.pojo.Review;
 
 import com.wordnik.swagger.annotations.Api;
@@ -55,6 +58,13 @@ public class ProjectControllerRest {
     @ResponseBody
     public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
         return projectControls.getProjectWrapper(projectIdOrCode);
+    }
+    
+    @RequestMapping(value = "/{id}/prop", method = RequestMethod.GET)
+    @ApiOperation( value = "Get project properties", notes = "Returns a list of project properties for a given project id" )
+    @ResponseBody
+    public List<ProjectProperty> getProjectProperties(@PathVariable Integer id) {
+        return projectControls.getProjectProperties(id);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -136,11 +146,25 @@ public class ProjectControllerRest {
         projectControls.addFollowUp(f);
     }
     
+    @RequestMapping(value = "/prop", method = RequestMethod.PUT)
+    @ApiOperation( value = "Upsert Project Property", notes = "Add or edit project property" )
+    @ResponseBody
+    public void upsertProperty(@RequestBody ProjectProperty p) throws Exception {
+        projectControls.upsertProperty(p);
+    }
+    
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
     @ResponseBody
-    public void addReview(@RequestBody AdviserAction aa) throws Exception {
+    public void addAdviserAction(@RequestBody AdviserAction aa) throws Exception {
         projectControls.addAdviserAction(aa);
+    }
+    
+    @RequestMapping(value = "/attachment", method = RequestMethod.PUT)
+    @ApiOperation( value = "Add Attachment", notes = "Add attachment to object" )
+    @ResponseBody
+    public void addAttachment(@RequestBody Attachment a) throws Exception {
+        projectControls.addAttachment(a);
     }
     
     @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
@@ -204,5 +228,12 @@ public class ProjectControllerRest {
     @ResponseBody
     public List<ProjectType> getProjectTypes() throws Exception {
         return projectControls.getProjectTypes();
+    }
+    
+    @RequestMapping(value = "/rotype", method = RequestMethod.GET)
+    @ApiOperation( value = "Get Research Output Types", notes = "Returns a list of possible research output types" )
+    @ResponseBody
+    public List<ResearchOutputType> getROTypes() throws Exception {
+        return projectControls.getROTypes();
     }
 }

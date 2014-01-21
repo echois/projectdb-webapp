@@ -8,7 +8,7 @@ public class ProjectProperty {
 	private Integer facilityId;
 	private String propname;
 	private String propvalue;
-	private Integer timestamp;
+	private String timestamp;
 	
 	public Integer getId() {
 		return id;
@@ -46,10 +46,10 @@ public class ProjectProperty {
 	public void setPropvalue(String propvalue) {
 		this.propvalue = propvalue;
 	}
-	public Integer getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(Integer timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
