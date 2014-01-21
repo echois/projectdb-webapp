@@ -146,6 +146,13 @@ public class ProjectControllerRest {
         projectControls.addFollowUp(f);
     }
     
+    @RequestMapping(value = "/prop", method = RequestMethod.PUT)
+    @ApiOperation( value = "Upsert Project Property", notes = "Add or edit project property" )
+    @ResponseBody
+    public void upsertProperty(@RequestBody ProjectProperty p) throws Exception {
+        projectControls.upsertProperty(p);
+    }
+    
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
     @ResponseBody

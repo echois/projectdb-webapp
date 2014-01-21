@@ -545,6 +545,17 @@ public class ProjectControls extends AbstractControl {
 		this.validateProject(pw);
 		this.projectDao.updateProjectWrapper(a.getProjectId(), pw);
     }
+    
+    /**
+     * Add/Edit the specified project property
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    
+    public void upsertProperty(ProjectProperty p) throws Exception {
+		this.projectDao.upsertProjectProperty(p);
+    }
 
     /**
      * Creates a new project in the database.
