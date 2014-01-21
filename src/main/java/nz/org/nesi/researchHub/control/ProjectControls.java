@@ -302,7 +302,7 @@ public class ProjectControls extends AbstractControl {
 	            		pojoClass = pojo.getClass();
 	            		method = "get";
             			getPojo = pojoClass.getDeclaredMethod(method, int.class);
-	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
+	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[3]));
 	            		pojoClass = pojo.getClass();
 	            	}
 		            method = "set" + field;
