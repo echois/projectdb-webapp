@@ -149,7 +149,7 @@ public class ProjectControllerRest {
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
     @ResponseBody
-    public void addReview(@RequestBody AdviserAction aa) throws Exception {
+    public void addAdviserAction(@RequestBody AdviserAction aa) throws Exception {
         projectControls.addAdviserAction(aa);
     }
     
