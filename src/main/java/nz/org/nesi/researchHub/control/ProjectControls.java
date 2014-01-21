@@ -554,7 +554,13 @@ public class ProjectControls extends AbstractControl {
      */
     
     public void upsertProperty(ProjectProperty p) throws Exception {
-		this.projectDao.upsertProjectProperty(p);
+		if (p.getId()!=null) {
+			ProjectProperty old = this.projectDao.getProjectProperty(p.getId());
+			if (p.getPropname()!=null) old.setPropname(p.getPropname());
+			if (p.getPropvalue()!=null) old.setPropvalue(p.getPropvalue());
+			p = old;
+		}
+    	this.projectDao.upsertProjectProperty(p);
     }
 
     /**
