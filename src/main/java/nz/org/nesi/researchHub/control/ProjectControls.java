@@ -661,6 +661,16 @@ public class ProjectControls extends AbstractControl {
     }
     
     /**
+     * Returns a list of all Research Output reported for all projects.
+     *
+     * @return a list of ResearchOutput
+     * @throws Exception 
+     */
+    public List<ResearchOutput> getResearchOutput() throws Exception {
+    	return this.projectDao.getResearchOutput();
+    }
+    
+    /**
      * Returns a list of possible Research Output types.
      *
      * @return a list of Research Output types

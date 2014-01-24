@@ -216,6 +216,13 @@ public class ProjectControllerRest {
         return projectControls.getProjectKpis();
     }
     
+    @RequestMapping(value = "/aro", method = RequestMethod.GET)
+    @ApiOperation( value = "Get Research Outputs", notes = "Returns a list of reported Research Outputs" )
+    @ResponseBody
+    public List<ResearchOutput> getResearchOutput() throws Exception {
+        return projectControls.getResearchOutput();
+    }
+    
     @RequestMapping(value = "/stat", method = RequestMethod.GET)
     @ApiOperation( value = "Get Project Statuses", notes = "Returns a list of possible project statuses" )
     @ResponseBody
