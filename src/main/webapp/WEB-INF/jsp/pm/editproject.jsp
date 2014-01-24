@@ -61,6 +61,12 @@
         	$('#operation').val('CANCEL');
             $('#form').submit();
         });
+        
+        $('#project\\.statusId').change(function() {
+        	if ($(this).val()!=4 && confirm("Do you want to unset the end date as well?")) {
+        		$("#datepicker4").val("");
+        	}	
+        });
     });
   </script>
 </head>
