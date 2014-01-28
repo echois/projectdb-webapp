@@ -177,7 +177,7 @@ public class ProjectControllerRest {
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ApiOperation( value = "Create project", notes = "Creates a new project from the given object" )
     @ResponseBody
-    public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
+    public synchronized Integer createProjectWrapper(@RequestBody ProjectWrapper pw) throws InvalidEntityException {
         return projectControls.createProjectWrapper(pw);
     }
     
