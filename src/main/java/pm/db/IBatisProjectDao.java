@@ -723,8 +723,15 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		return (String) getSqlMapClientTemplate().queryForObject("getLinuxUsername", id); 
 	}
 	
-	public List<ProjectProperty> getProjectProperties(Integer id) {
-		return (List<ProjectProperty>) getSqlMapClientTemplate().queryForList("getPropertiesForProjectId", id);
+	public List<ProjectProperty> getProjectProperties(Integer id) throws Exception {
+		List<ProjectProperty> props = getSqlMapClientTemplate().queryForList("getPropertiesForProjectId", id);
+		for (int i=0;i<props.size();i++) {
+			props.get(i).setFacilityName(this.getFacilityById(props.get(i).getFacilityId()).getName());
+			for (Site s: this.getSites()) {
+				if (s.getId().equals(props.get(i).getSiteId())) props.get(i).setSiteName(s.getName());
+			}
+		}
+		return props;
 	}
 	
 	public List<String> getPropnames() {

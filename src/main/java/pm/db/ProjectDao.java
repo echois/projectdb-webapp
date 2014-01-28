@@ -79,7 +79,7 @@ public interface ProjectDao {
 	public String getResearcherStatusById(Integer id);
 	public String getLinuxUsername(Integer id);
 	
-	public List<ProjectProperty> getProjectProperties(Integer id);
+	public List<ProjectProperty> getProjectProperties(Integer id) throws Exception;
 	public List<String> getPropnames();
 	public ProjectProperty getProjectProperty(Integer id);
 	public void upsertProjectProperty(ProjectProperty p);
