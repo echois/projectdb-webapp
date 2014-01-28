@@ -78,7 +78,7 @@ public class ProjectControls extends AbstractControl {
             throw new InvalidEntityException("Project does not have a title", Project.class, "name");
         }
         // At least one HPC
-        if (pw.getProjectFacilities().isEmpty()) {
+        if (pw.getProject().getId()!=null && pw.getProjectFacilities().isEmpty()) {
             throw new InvalidEntityException("There must be at least one HPC facility associated with the project", ProjectWrapper.class, "projectFacilities");
         }
         
