@@ -106,4 +106,20 @@ foreach ($researchers as $r) {
   }
 }
 
+$pids = $db->query("SELECT id FROM project")->fetch_all();
+foreach ($pids as $pid) {
+  $pid = $pid[0];
+  $result = $db->query("SELECT * FROM adviser_project WHERE projectId=" . $pid);
+  if ($db->affected_rows==0) {
+    print "Setting pa for $pid\n";
+    if (!$db->query("INSERT INTO adviser_project VALUES (10, $pid, 1, '')")) die("Unable to set adviser");
+  }
+  $result = $db->query("SELECT * FROM project_facility WHERE projectId=" . $pid);
+  if ($db->affected_rows==0) {
+    print "Setting fac for $pid\n";
+    if (!$db->query("INSERT INTO project_facility VALUES ($pid, 7)\n")) die("Unable to set fac");
+  }
+}
+
+$db->query("UPDATE researcher SET statusId=6 WHERE startDate=''");
 ?>
