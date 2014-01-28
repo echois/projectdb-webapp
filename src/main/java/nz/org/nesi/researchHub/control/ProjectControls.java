@@ -34,6 +34,7 @@ import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.pojo.Review;
+import pm.pojo.Site;
 
 /**
  * Project: project_management
@@ -600,6 +601,16 @@ public class ProjectControls extends AbstractControl {
      */
     public List<Facility> getFacilities() throws Exception {
     	return this.projectDao.getFacilities();
+    }
+    
+    /**
+     * Returns a list of sites.
+     *
+     * @return a list of sites
+     * @throws Exception 
+     */
+    public List<Site> getSites() throws Exception {
+    	return this.projectDao.getSites();
     }
     
     /**

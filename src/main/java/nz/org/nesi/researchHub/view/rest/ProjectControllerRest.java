@@ -188,6 +188,13 @@ public class ProjectControllerRest {
         return projectControls.getInstitutions();
     }
     
+    @RequestMapping(value = "/sites", method = RequestMethod.GET)
+    @ApiOperation( value = "Get sites", notes = "Returns a list of possible cluster sites" )
+    @ResponseBody
+    public List<Site> getSites() throws Exception {
+        return projectControls.getSites();
+    }
+    
     @RequestMapping(value = "/fac", method = RequestMethod.GET)
     @ApiOperation( value = "Get facilities", notes = "Returns a list of possible project facilities" )
     @ResponseBody
