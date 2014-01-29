@@ -1,9 +1,6 @@
 package nz.org.nesi.researchHub.view.rest;
 
-import com.mangofactory.swagger.annotations.ApiErrors;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import java.util.List;
 
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
@@ -14,16 +11,20 @@ import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.InstitutionalRole;
-import pm.pojo.Researcher;
 import pm.pojo.Project;
+import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
 
-import java.util.List;
+import com.mangofactory.swagger.annotations.ApiErrors;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Project: project_management
@@ -54,8 +55,14 @@ public class ResearcherControllerRest {
 
     @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
     @ResponseBody
-    public List<Project> getProjectsForResearcher(@PathVariable int researcherId) {
-        return researcherControls.getProjectsForResearcher(researcherId);
+    public List<Project> getProjectsForResearcher(@PathVariable Integer id) {
+        return researcherControls.getProjectsForResearcher(id);
+    }
+    
+    @RequestMapping(value = "/{id}/linux", method = RequestMethod.GET)
+    @ResponseBody
+    public String getLinuxUsernameForResearcher(@PathVariable Integer id) throws Exception {
+        return researcherControls.getLinuxUsernameForResearcher(id);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -72,13 +79,13 @@ public class ResearcherControllerRest {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
-	public void editResearcher(@PathVariable Integer id, Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+	public void editResearcher(@PathVariable Integer id, @RequestBody Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         researcherControls.editResearcher(id, researcher);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
-    public void createResearcher(Researcher researcher) throws InvalidEntityException {
+    public void createResearcher(@RequestBody Researcher researcher) throws InvalidEntityException {
         researcherControls.createResearcher(researcher);
     }
     

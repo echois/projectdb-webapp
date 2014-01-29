@@ -231,5 +231,15 @@ public class ResearcherControls extends AbstractControl {
     public List<ResearcherRole> getResearcherRoles() throws Exception {
     	return this.projectDao.getResearcherRoles();
     }
+    
+    /**
+     * Returns the user's linux username.
+     *
+     * @return a string
+     * @throws Exception 
+     */
+    public String getLinuxUsernameForResearcher(Integer id) throws Exception {
+    	return this.projectDao.getLinuxUsername(id);
+    }
 
 }
