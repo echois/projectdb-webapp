@@ -551,6 +551,8 @@ public class ProjectControls extends AbstractControl {
 			ProjectProperty old = this.projectDao.getProjectProperty(p.getId());
 			if (p.getPropname()!=null) old.setPropname(p.getPropname());
 			if (p.getPropvalue()!=null) old.setPropvalue(p.getPropvalue());
+			if (p.getSiteId()!=null) old.setPropvalue(p.getPropvalue());
+			if (p.getFacilityId()!=null) old.setPropvalue(p.getPropvalue());
 			p = old;
 		}
     	this.projectDao.upsertProjectProperty(p);
