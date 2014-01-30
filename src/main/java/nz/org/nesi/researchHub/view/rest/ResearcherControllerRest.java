@@ -20,6 +20,7 @@ import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
+import pm.pojo.ResearcherStatus;
 
 import com.mangofactory.swagger.annotations.ApiErrors;
 import com.wordnik.swagger.annotations.Api;
@@ -105,6 +106,12 @@ public class ResearcherControllerRest {
     @ResponseBody
 	public List<String> getAffiliations() throws Exception {
         return researcherControls.getAffiliations();
+    }
+    
+    @RequestMapping(value = "/stat", method = RequestMethod.GET)
+    @ResponseBody
+	public List<ResearcherStatus> getStatuses() throws Exception {
+        return researcherControls.getStatuses();
     }
     
     @RequestMapping(value = "/iroles", method = RequestMethod.GET)
