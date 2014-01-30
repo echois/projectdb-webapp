@@ -21,6 +21,7 @@ public class Researcher {
 	private String endDate;
 	private String notes;
 	private String lastModified;
+	private String affiliation;
 
 	public Integer getId() {
 		return id;
@@ -156,6 +157,11 @@ public class Researcher {
 
 	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
+	}
+	
+	public String getAffiliation() {
+		AffiliationUtil af = new AffiliationUtil();
+		return af.createAffiliationString(institution, division, department);
 	}
 	
 	public void setAffiliation(String a) {
