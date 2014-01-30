@@ -92,8 +92,8 @@ public class ResearcherControllerRest {
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
-    public void createResearcher(@RequestBody Researcher researcher) throws InvalidEntityException {
-        researcherControls.createResearcher(researcher);
+    public Integer createResearcher(@RequestBody Researcher researcher) throws InvalidEntityException {
+        return researcherControls.createResearcher(researcher);
     }
     
     @RequestMapping(value = "/roles", method = RequestMethod.GET)

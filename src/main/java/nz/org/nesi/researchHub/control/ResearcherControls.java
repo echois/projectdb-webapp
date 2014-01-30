@@ -229,7 +229,7 @@ public class ResearcherControls extends AbstractControl {
      * @param researcher the new Researcher
      * @throws InvalidEntityException if the new Researcher object has already an id specified
      */
-    public void createResearcher(Researcher researcher) throws InvalidEntityException {
+    public Integer createResearcher(Researcher researcher) throws InvalidEntityException {
     	validateResearcher(researcher);
         if ( researcher.getId() != null ) {
             throw new InvalidEntityException("Researcher can't have id, this property will be auto-generated.", Researcher.class, "id");
@@ -238,7 +238,7 @@ public class ResearcherControls extends AbstractControl {
             if (StringUtils.isEmpty(researcher.getStartDate()) ) {
                 researcher.setStartDate(df.format(new Date()));
             }
-            this.projectDao.createResearcher(researcher);
+            return this.projectDao.createResearcher(researcher);
         } catch (Exception e) {
             throw new DatabaseException("Can't create Researcher '"+ researcher.getFullName()+"'", e);
         }
