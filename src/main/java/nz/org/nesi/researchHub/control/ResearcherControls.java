@@ -168,7 +168,6 @@ public class ResearcherControls extends AbstractControl {
             if (!researcher.getLastModified().equals(temp.getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
-            researcher.setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateResearcher(researcher);
             } catch (Exception e) {
@@ -238,7 +237,6 @@ public class ResearcherControls extends AbstractControl {
             if (StringUtils.isEmpty(researcher.getStartDate()) ) {
                 researcher.setStartDate(df.format(new Date()));
             }
-            researcher.setLastModified((int) (System.currentTimeMillis() / 1000));
             this.projectDao.createResearcher(researcher);
         } catch (Exception e) {
             throw new DatabaseException("Can't create Researcher '"+ researcher.getFullName()+"'", e);
