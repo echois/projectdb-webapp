@@ -1,5 +1,6 @@
 package nz.org.nesi.researchHub.control;
 
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +18,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import pm.pojo.Affiliation;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
+import pm.pojo.ProjectWrapper;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
 
@@ -171,6 +173,49 @@ public class ResearcherControls extends AbstractControl {
                 projectDao.updateResearcher(researcher);
             } catch (Exception e) {
                 throw new DatabaseException("Can't update researcher with id "+researcher.getId(), e);
+            }
+		} else {
+            throw new InvalidEntityException("Can't edit researcher. No id provided.", Researcher.class, "id");
+        }
+	}
+	
+	/**
+     * Edit one field of a researcher.
+     *
+     * The provided Researcher object needs to have an id, otherwise it can't be matched with an existing on in the database.
+     *
+     * @param researcher the updated researcher object
+     * @throws NoSuchEntityException if no Researcher with the specified
+     * @throws InvalidEntityException if updated Researcher object doesn't have an id specified
+     * @throws OutOfDateException 
+     */
+	public void editResearcher(Integer id, String field, String timestamp, String data) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+		if (id != null) {
+            // check whether an researcher with this id exists
+            Researcher temp = getResearcher(id);
+            // great, no exception, means an researcher with this id does already exist, now let's merge those two
+            // Compare timestamps to prevent accidental overwrite
+            boolean force = timestamp.equals("force");
+            if (!force && !timestamp.equals(temp.getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp. Researcher has been modified since you last loaded it.");
+            }
+            try {
+            	String method = "set" + field;
+            	Class<Researcher> c = Researcher.class;
+            	try {
+            		// Try use the parameter as an integer
+            		Integer intData = Integer.valueOf(data);
+            		Method set = c.getDeclaredMethod (method, Integer.class);
+		            set.invoke (temp, intData);
+            	} catch (Exception e) {
+            		// String fallback
+            		Method set = c.getDeclaredMethod (method, String.class);
+		            set.invoke (temp, data);
+            	}
+            	validateResearcher(temp);
+                projectDao.updateResearcher(temp);
+            } catch (Exception e) {
+                throw new DatabaseException("Can't update researcher with id "+id, e);
             }
 		} else {
             throw new InvalidEntityException("Can't edit researcher. No id provided.", Researcher.class, "id");

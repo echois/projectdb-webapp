@@ -82,6 +82,12 @@ public class ResearcherControllerRest {
 	public void editResearcher(@PathVariable Integer id, @RequestBody Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         researcherControls.editResearcher(id, researcher);
     }
+    
+    @RequestMapping(value = "/{id}/{field}/{timestamp}", method = RequestMethod.POST)
+    @ResponseBody
+	public void editResearcher(@PathVariable Integer id, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+        researcherControls.editResearcher(id, field, timestamp, data);
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
