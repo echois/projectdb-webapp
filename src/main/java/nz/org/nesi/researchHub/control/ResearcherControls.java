@@ -21,6 +21,7 @@ import pm.pojo.Project;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
+import pm.pojo.ResearcherStatus;
 
 /**
  * Project: project_management
@@ -243,16 +244,24 @@ public class ResearcherControls extends AbstractControl {
         }
     }
     
-
-    
     /**
      * Returns a list of Affiliations.
      *
      * @return a list of Affiliations
      * @throws Exception 
      */
-    public List<Affiliation> getAffiliations() throws Exception {
-    	return this.projectDao.getAffiliations();
+    public List<String> getAffiliations() throws Exception {
+    	return this.affiliationUtil.getAffiliationStrings();
+    }
+    
+    /**
+     * Returns a list of Researcher Statuses.
+     *
+     * @return a list of Researcher Statuses
+     * @throws Exception 
+     */
+    public List<ResearcherStatus> getStatuses() throws Exception {
+    	return this.projectDao.getResearcherStatuses();
     }
     
     /**

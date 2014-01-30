@@ -101,6 +101,12 @@ public class ResearcherControllerRest {
         return researcherControls.getResearcherRoles();
     }
     
+    @RequestMapping(value = "/affil", method = RequestMethod.GET)
+    @ResponseBody
+	public List<String> getAffiliations() throws Exception {
+        return researcherControls.getAffiliations();
+    }
+    
     @RequestMapping(value = "/iroles", method = RequestMethod.GET)
     @ResponseBody
 	public List<InstitutionalRole> getInstitutionalRoles() throws Exception {

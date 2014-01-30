@@ -1,5 +1,7 @@
 package pm.pojo;
 
+import common.util.AffiliationUtil;
+
 public class Researcher {
 
 	private Integer id;
@@ -154,6 +156,13 @@ public class Researcher {
 
 	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
+	}
+	
+	public void setAffiliation(String a) {
+		AffiliationUtil af = new AffiliationUtil();
+		this.department = af.getDepartmentFromAffiliationString(a);
+		this.division = af.getDivisionFromAffiliationString(a);
+		this.institution = af.getInstitutionFromAffiliationString(a);
 	}
 
 }
