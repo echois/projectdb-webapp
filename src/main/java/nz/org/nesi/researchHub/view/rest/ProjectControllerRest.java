@@ -91,7 +91,7 @@ public class ProjectControllerRest {
 //    }
     
 
-    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}/", method = RequestMethod.POST)
     @ApiOperation( value = "Edit field", notes = "Edits a single field in a project wrapper" )
     @ResponseBody
     public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws InvalidEntityException, OutOfDateException {
