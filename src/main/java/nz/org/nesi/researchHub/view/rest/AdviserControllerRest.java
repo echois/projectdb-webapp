@@ -110,7 +110,7 @@ public class AdviserControllerRest {
     @ApiOperation( value = "Create new adviser", notes = "Returns the generated adviser id, if successful" )
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
-    public Integer createAdviser(Adviser adviser) throws InvalidEntityException {
+    public Integer createAdviser(@RequestBody Adviser adviser) throws InvalidEntityException {
         return adviserControls.createAdviser(adviser);
     }
     
