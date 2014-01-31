@@ -1,5 +1,7 @@
 package pm.pojo;
 
+import common.util.AffiliationUtil;
+
 public class Adviser {
 
 	private Integer id;
@@ -16,7 +18,8 @@ public class Adviser {
 	private String notes;
 	private String tuakiriUniqueId;
 	private Integer isAdmin;
-	private Integer lastModified;
+	private String lastModified;
+	private String affiliation; 
 
 	public Integer getId() {
 		return id;
@@ -151,12 +154,24 @@ public class Adviser {
                 '}';
     }
 
-	public Integer getLastModified() {
+	public String getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(Integer lastModified) {
+	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
 	}
+	
+	public String getAffiliation() {
+		AffiliationUtil af = new AffiliationUtil();
+		return af.createAffiliationString(institution, division, department);
+	}
+	
+ 	public void setAffiliation(String a) {
+ 		AffiliationUtil af = new AffiliationUtil();
+ 		this.department = af.getDepartmentFromAffiliationString(a);
+ 		this.division = af.getDivisionFromAffiliationString(a);
+ 		this.institution = af.getInstitutionFromAffiliationString(a);
+ 	}
 
 }

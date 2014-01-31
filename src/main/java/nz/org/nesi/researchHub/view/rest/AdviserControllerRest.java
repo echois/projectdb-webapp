@@ -11,12 +11,14 @@ import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
+import pm.pojo.Affiliation;
 import pm.pojo.Project;
 
 import com.mangofactory.swagger.annotations.ApiErrors;
@@ -98,17 +100,30 @@ public class AdviserControllerRest {
 	public void editAdviser(@PathVariable Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         adviserControls.editAdviser(id, adviser);
     }
+    
+    @RequestMapping(value = "/{id}/{field}/{timestamp}/", method = RequestMethod.POST)
+    @ResponseBody
+	public void editAdviser(@PathVariable Integer id, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+    	adviserControls.editAdviser(id, field, timestamp, data);
+    }
 
+    @ApiOperation( value = "Create new adviser", notes = "Returns the generated adviser id, if successful" )
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
-    public void createAdviser(Adviser adviser) throws InvalidEntityException {
-        adviserControls.createAdviser(adviser);
+    public Integer createAdviser(Adviser adviser) throws InvalidEntityException {
+        return adviserControls.createAdviser(adviser);
     }
     
     @RequestMapping(value = "/roles", method = RequestMethod.GET)
     @ResponseBody
 	public List<AdviserRole> getAdviserRoles() throws Exception {
         return adviserControls.getAdviserRoles();
+    }
+    
+    @RequestMapping(value = "/affil", method = RequestMethod.GET)
+    @ResponseBody
+	public List<Affiliation> getAffiliations() throws Exception {
+        return adviserControls.getAffiliations();
     }
 
 }
