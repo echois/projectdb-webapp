@@ -79,8 +79,8 @@ public class AdviserControllerRest {
 
     @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
     @ResponseBody
-    public List<Project> getProjectsForAdviser(@PathVariable int advisorId) {
-        return adviserControls.getProjectsForAdviser(advisorId);
+    public List<Project> getProjectsForAdviser(@PathVariable Integer id) {
+        return adviserControls.getProjectsForAdviser(id);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
