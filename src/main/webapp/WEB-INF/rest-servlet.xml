@@ -23,6 +23,7 @@
     <context:annotation-config/>
     <context:component-scan base-package="nz.org.nesi.researchHub.view.rest"/>
     <context:component-scan base-package="nz.org.nesi.researchHub.exceptions"/>
+    <context:property-placeholder location="classpath:common.properties" /> 
     <bean id="documentationConfig" class="com.mangofactory.swagger.configuration.DocumentationConfig"/>
     <bean id="adviserControls" class="nz.org.nesi.researchHub.control.AdviserControls"/>
     <bean id="researcherControls" class="nz.org.nesi.researchHub.control.ResearcherControls"/>
