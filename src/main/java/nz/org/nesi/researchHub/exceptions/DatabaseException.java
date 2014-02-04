@@ -12,7 +12,7 @@ import com.mangofactory.swagger.annotations.ApiError;
  * Time: 11:38 AM
  */
 @Component
-@ApiError(code=1,reason="Database exception")
+@ApiError(code=500,reason="Database exception")
 public class DatabaseException extends RuntimeException {
 
     private DatabaseException(){

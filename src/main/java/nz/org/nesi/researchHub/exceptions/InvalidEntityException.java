@@ -12,7 +12,7 @@ import com.mangofactory.swagger.annotations.ApiError;
  * Time: 9:31 AM
  */
 @Component
-@ApiError(code=2,reason="Invalid entity")
+@ApiError(code=500,reason="Invalid entity")
 public class InvalidEntityException extends Exception {
 
     private Class entityClass;

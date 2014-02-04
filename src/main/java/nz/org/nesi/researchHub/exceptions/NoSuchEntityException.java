@@ -12,7 +12,7 @@ import com.mangofactory.swagger.annotations.ApiError;
  * Time: 9:31 AM
  */
 @Component
-@ApiError(code=3,reason="No such entity in the database")
+@ApiError(code=500,reason="No such entity in the database")
 public class NoSuchEntityException extends Exception {
 
     private Class entityClass;

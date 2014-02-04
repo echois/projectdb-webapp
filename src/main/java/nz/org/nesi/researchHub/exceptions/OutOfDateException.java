@@ -9,7 +9,7 @@ import com.mangofactory.swagger.annotations.ApiError;
  * Date: 10/12/13
  * Time: 15:53pm
  */
-@ApiError(code=4,reason="Timestamp mismatch")
+@ApiError(code=500,reason="Timestamp mismatch")
 public class OutOfDateException extends Exception {
     public OutOfDateException(String s) {
         super(s);
