@@ -506,14 +506,12 @@
       REPLACE INTO project_properties (
       	id,
         projectId,
-        siteId,
         facilityId,
         propname,
         propvalue
       ) values (
       	#{id},
         #{projectId},
-        #{siteId},
         #{facilityId},
         #{propname},
         #{propvalue}

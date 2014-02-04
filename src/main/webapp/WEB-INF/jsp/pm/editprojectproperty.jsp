@@ -39,11 +39,6 @@
   <form:form method="post" commandName="property">
   <input type="hidden" name="projectId" value="${projectId}"/>
   <table border="0" cellspacing="0" cellpadding="3">
-  	<tr>
-      <td>Site</td>
-      <td>&nbsp;</td>
-      <td><form:select id="site" path="siteId" items="${sites}"/></td>
-    </tr>
     <tr>
       <td>Facility</td>
       <td>&nbsp;</td>

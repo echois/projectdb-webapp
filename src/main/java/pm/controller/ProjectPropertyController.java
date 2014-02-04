@@ -43,12 +43,7 @@ public class ProjectPropertyController extends GlobalController {
     	for (Facility f: this.projectDao.getFacilities()) {
     		facilities.put(f.getId(), f.getName());
     	}
-		HashMap<Integer,String> sites = new LinkedHashMap<Integer, String>();
-    	for (Site s: this.projectDao.getSites()) {
-    		sites.put(s.getId(), s.getName());
-    	}
 		mav.addObject("property", p);
-		mav.addObject("sites", sites);
 		mav.addObject("facilities", facilities);
 		mav.addObject("propnames", this.projectDao.getPropnames());
 		return mav;

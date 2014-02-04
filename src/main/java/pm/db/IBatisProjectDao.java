@@ -736,9 +736,6 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 		List<ProjectProperty> props = getSqlSession().selectList("getPropertiesForProjectId", id);
 		for (int i=0;i<props.size();i++) {
 			props.get(i).setFacilityName(this.getFacilityById(props.get(i).getFacilityId()).getName());
-			for (Site s: this.getSites()) {
-				if (s.getId().equals(props.get(i).getSiteId())) props.get(i).setSiteName(s.getName());
-			}
 		}
 		return props;
 	}
