@@ -158,13 +158,11 @@ public class ResearcherControls extends AbstractControl {
      * @throws InvalidEntityException if updated Researcher object doesn't have an id specified
      * @throws OutOfDateException 
      */
-	public void editResearcher(Integer id, Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+	public void editResearcher(Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         validateResearcher(researcher);
-		if (id != null) {
+		if (researcher.getId() != null) {
             // check whether an researcher with this id exists
             Researcher temp = getResearcher(researcher.getId());
-            // great, no exception, means an researcher with this id does already exist, now let's merge those two
-            researcher.setId(id);
             // Compare timestamps to prevent accidental overwrite
             if (!researcher.getLastModified().equals(temp.getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");

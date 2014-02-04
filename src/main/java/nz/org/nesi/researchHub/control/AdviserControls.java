@@ -219,13 +219,11 @@ public class AdviserControls extends AbstractControl {
      * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
      * @throws OutOfDateException 
      */
-	public void editAdviser(Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+	public void editAdviser(Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         validateAdviser(adviser);
-		if (id != null) {
+		if (adviser.getId() != null) {
             // check whether an adviser with this id exists
             Adviser temp = getAdviser(adviser.getId());
-            // great, no exception, means an adviser with this id does already exist, now let's merge those two
-            adviser.setId(id);
             // Compare timestamps to prevent accidental overwrite
             if (!adviser.getLastModified().equals(temp.getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
