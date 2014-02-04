@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
@@ -118,7 +119,7 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
-     * Returns researcher list of all researchers.
+     * Returns list of all researchers.
      *
      * @return all researchers in the project database
      */
@@ -133,6 +134,33 @@ public class ResearcherControls extends AbstractControl {
 
         return rl;
 	}
+	
+	/**
+     * Get all researchers that contain the specified filter string (case-insensitive) in one or more of the project properties.
+     *
+     * @param filter the filter string, can't be empty
+     * @return all projects matching the filter
+     */
+    public List<Researcher> filterResearchers(String filter) {
+
+        if (StringUtils.isEmpty(filter)) {
+            throw new IllegalArgumentException("Can't filter researchers using empty string, use getProjects method instead.");
+        }
+
+        filter = filter.toLowerCase();
+        List<Researcher> filtered = new LinkedList<Researcher>();
+
+        for (Researcher r : this.getAllResearchers()) {
+            if (r.getAffiliation().toLowerCase().contains(filter) || r.getEmail().toLowerCase().contains(filter) ||
+            	r.getFullName().toLowerCase().contains(filter) || r.getInstitutionalRoleName().toLowerCase().contains(filter) ||
+            	r.getNotes().toLowerCase().contains(filter) || r.getPreferredName().toLowerCase().contains(filter) ||
+            	r.getStatusName().toLowerCase().contains(filter))
+            filtered.add(r);
+        }
+
+        return filtered;
+
+    }
 
 
     /**

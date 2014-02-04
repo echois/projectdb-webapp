@@ -81,6 +81,16 @@ public class ResearcherControllerRest {
 	public List<Researcher> getAllResearchers() {
         return researcherControls.getAllResearchers();
     }
+    
+    @ApiOperation(
+    value = "Get all researchers that match the given filter",
+    notes = "Returns all matched researchers"
+    )
+    @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
+    @ResponseBody
+	public List<Researcher> filterResearchers(@ApiParam( value = "Search string", required = true ) @PathVariable String filter) {
+        return researcherControls.filterResearchers(filter);
+    }
 
     @ApiOperation(
     value = "Delete researcher",
