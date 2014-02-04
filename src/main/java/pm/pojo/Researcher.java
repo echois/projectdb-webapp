@@ -1,5 +1,9 @@
 package pm.pojo;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import common.util.AffiliationUtil;
 
 public class Researcher {
@@ -141,6 +145,13 @@ public class Researcher {
 
 	public void setStatusId(Integer statusId) {
 		this.statusId = statusId;
+		if (statusId.equals(2) && this.endDate.equals("")) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			this.endDate = df.format(new Date());
+		} else if (statusId.equals(7) && this.endDate.equals("")) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			this.endDate = df.format(new Date(System.currentTimeMillis() + 1000*60*60*24*30));
+		}
 	}
 
 	public String getStatusName() {

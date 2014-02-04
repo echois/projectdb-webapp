@@ -1,5 +1,9 @@
 package pm.pojo;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Project {
 
 	private Integer id;
@@ -42,6 +46,10 @@ public class Project {
 
 	public void setStatusId(Integer statusId) {
 		this.statusId = statusId;
+		if (statusId.equals(4) && this.endDate.equals("")) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			this.endDate = df.format(new Date());
+		}
 	}
 
 	public String getProjectCode() {
