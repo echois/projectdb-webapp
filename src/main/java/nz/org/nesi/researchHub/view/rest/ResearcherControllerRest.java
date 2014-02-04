@@ -98,7 +98,7 @@ public class ResearcherControllerRest {
     )
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
-	public void editResearcher(@RequestBody Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+	public void editResearcher(@ApiParam( value = "Researcher object", required = true ) @RequestBody Researcher researcher) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         researcherControls.editResearcher(researcher);
     }
     
