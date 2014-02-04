@@ -150,7 +150,7 @@ public class Researcher {
 			this.endDate = df.format(new Date());
 		} else if (statusId.equals(7) && this.endDate.equals("")) {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			this.endDate = df.format(new Date(System.currentTimeMillis() + 1000*60*60*24*30));
+			this.endDate = df.format(new Date(System.currentTimeMillis() + 1000L*60*60*24*30));
 		}
 	}
 
