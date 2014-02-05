@@ -1,5 +1,6 @@
 package nz.org.nesi.researchHub.control;
 
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +19,7 @@ import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
 import pm.pojo.Project;
+import pm.pojo.Researcher;
 
 /**
  * Project: project_management
@@ -216,32 +218,72 @@ public class AdviserControls extends AbstractControl {
     /**
      * Replaces an existing adviser object with new properties.
      *
-     * The provided Adviser object needs to have an id, otherwise it can't be matched with an existing on in the database.
+     * The provided Adviser object needs to have an id, otherwise it can't be matched with an existing one in the database.
      *
      * @param adviser the updated adviser object
      * @throws NoSuchEntityException if no Adviser with the specified
      * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
      * @throws OutOfDateException 
      */
-	public void editAdviser(Integer id, Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+	public void editAdviser(Adviser adviser) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
         validateAdviser(adviser);
-		if (id != null) {
+		if (adviser.getId() != null) {
             // check whether an adviser with this id exists
             Adviser temp = getAdviser(adviser.getId());
-            // great, no exception, means an adviser with this id does already exist, now let's merge those two
-            adviser.setId(id);
             // Compare timestamps to prevent accidental overwrite
             if (!adviser.getLastModified().equals(temp.getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
-            adviser.setLastModified((int) (System.currentTimeMillis() / 1000));
             try {
                 projectDao.updateAdviser(adviser);
             } catch (Exception e) {
                 throw new DatabaseException("Can't update adviser with id "+adviser.getId(), e);
             }
 		} else {
-            throw new InvalidEntityException("Can't edit advisor. No id provided.", Adviser.class, "id");
+            throw new InvalidEntityException("Can't edit adviser. No id provided.", Adviser.class, "id");
+        }
+	}
+	
+	/**
+     * Edit one field of a adviser.
+     *
+     * The provided Adviser object needs to have an id, otherwise it can't be matched with an existing one in the database.
+     *
+     * @param adviser the updated adviser object
+     * @throws NoSuchEntityException if no Adviser with the specified
+     * @throws InvalidEntityException if updated Adviser object doesn't have an id specified
+     * @throws OutOfDateException 
+     */
+	public void editAdviser(Integer id, String field, String timestamp, String data) throws NoSuchEntityException, InvalidEntityException, OutOfDateException {
+		if (id != null) {
+            // check whether an researcher with this id exists
+			Adviser temp = getAdviser(id);
+            // great, no exception, means an researcher with this id does already exist, now let's merge those two
+            // Compare timestamps to prevent accidental overwrite
+            boolean force = timestamp.equals("force");
+            if (!force && !timestamp.equals(temp.getLastModified())) {
+            	throw new OutOfDateException("Incorrect timestamp. Adviser has been modified since you last loaded it.");
+            }
+            try {
+            	String method = "set" + field;
+            	Class<Adviser> c = Adviser.class;
+            	try {
+            		// Try use the parameter as an integer
+            		Integer intData = Integer.valueOf(data);
+            		Method set = c.getDeclaredMethod (method, Integer.class);
+		            set.invoke (temp, intData);
+            	} catch (Exception e) {
+            		// String fallback
+            		Method set = c.getDeclaredMethod (method, String.class);
+		            set.invoke (temp, data);
+            	}
+            	validateAdviser(temp);
+                projectDao.updateAdviser(temp);
+            } catch (Exception e) {
+                throw new DatabaseException("Can't update adviser with id "+id, e);
+            }
+		} else {
+            throw new InvalidEntityException("Can't edit adviser. No id provided.", Adviser.class, "id");
         }
 	}
 
@@ -252,7 +294,7 @@ public class AdviserControls extends AbstractControl {
      * @param adviser the new Adviser
      * @throws InvalidEntityException if the new Adviser object has already an id specified
      */
-    public void createAdviser(Adviser adviser) throws InvalidEntityException {
+    public Integer createAdviser(Adviser adviser) throws InvalidEntityException {
     	validateAdviser(adviser);
         if ( adviser.getId() != null ) {
             throw new InvalidEntityException("Adviser can't have id, this property will be auto-generated.", Adviser.class, "id");
@@ -261,8 +303,7 @@ public class AdviserControls extends AbstractControl {
             if (StringUtils.isEmpty(adviser.getStartDate()) ) {
                 adviser.setStartDate(df.format(new Date()));
             }
-            adviser.setLastModified((int) (System.currentTimeMillis() / 1000));
-            this.projectDao.createAdviser(adviser);
+            return this.projectDao.createAdviser(adviser);
         } catch (Exception e) {
             throw new DatabaseException("Can't create Adviser '"+ adviser.getFullName()+"'", e);
         }

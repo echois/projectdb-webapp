@@ -3,6 +3,8 @@ package pm.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,9 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import pm.pojo.Adviser;
+import pm.pojo.Facility;
 import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.Review;
+import pm.pojo.Site;
 
 @Controller
 public class ProjectPropertyController extends GlobalController {
@@ -35,15 +39,18 @@ public class ProjectPropertyController extends GlobalController {
 		if (id!=null) {
 			p = this.projectDao.getProjectProperty(id);
 		}
+		HashMap<Integer,String> facilities = new LinkedHashMap<Integer, String>();
+    	for (Facility f: this.projectDao.getFacilities()) {
+    		facilities.put(f.getId(), f.getName());
+    	}
 		mav.addObject("property", p);
+		mav.addObject("facilities", facilities);
 		mav.addObject("propnames", this.projectDao.getPropnames());
 		return mav;
 	}
 		
 	@RequestMapping(value = "editprojectproperty", method = RequestMethod.POST)
 	public RedirectView editPost(ProjectProperty p) throws Exception {
-		p.setSiteId(1);
-		p.setFacilityId(1);
     	this.projectDao.upsertProjectProperty(p);
 		return new RedirectView ("editproject?id=" + p.getProjectId() + "#projectproperties");
 	}

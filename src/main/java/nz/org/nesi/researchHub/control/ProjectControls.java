@@ -34,6 +34,7 @@ import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.pojo.Review;
+import pm.pojo.Site;
 
 /**
  * Project: project_management
@@ -77,16 +78,8 @@ public class ProjectControls extends AbstractControl {
             pw.setErrorMessage("A project must have a title");
             throw new InvalidEntityException("Project does not have a title", Project.class, "name");
         }
-        // Exactly one PI?
-        if (pw.getRpLinks().isEmpty()) {
-            throw new InvalidEntityException("There must be exactly 1 project owner on a project", ProjectWrapper.class, "rpLinks");
-        }
-        // Exactly one primary project?
-        if (pw.getApLinks().isEmpty()) {
-            throw new InvalidEntityException("There must be exactly 1 primary project adviser on a project", ProjectWrapper.class, "apLinks");
-        }
         // At least one HPC
-        if (pw.getProjectFacilities().isEmpty()) {
+        if (pw.getProject().getId()!=null && pw.getProjectFacilities().isEmpty()) {
             throw new InvalidEntityException("There must be at least one HPC facility associated with the project", ProjectWrapper.class, "projectFacilities");
         }
         
@@ -256,7 +249,7 @@ public class ProjectControls extends AbstractControl {
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
             boolean force = timestamp.equals("force");
-            if (!force && timestamp.equals(pw.getProject().getLastModified())) {
+            if (!force && !timestamp.equals(pw.getProject().getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
             }
             boolean deep = false;
@@ -558,6 +551,7 @@ public class ProjectControls extends AbstractControl {
 			ProjectProperty old = this.projectDao.getProjectProperty(p.getId());
 			if (p.getPropname()!=null) old.setPropname(p.getPropname());
 			if (p.getPropvalue()!=null) old.setPropvalue(p.getPropvalue());
+			if (p.getFacilityId()!=null) old.setFacilityId(p.getFacilityId());
 			p = old;
 		}
     	this.projectDao.upsertProjectProperty(p);
@@ -608,6 +602,16 @@ public class ProjectControls extends AbstractControl {
      */
     public List<Facility> getFacilities() throws Exception {
     	return this.projectDao.getFacilities();
+    }
+    
+    /**
+     * Returns a list of sites.
+     *
+     * @return a list of sites
+     * @throws Exception 
+     */
+    public List<Site> getSites() throws Exception {
+    	return this.projectDao.getSites();
     }
     
     /**

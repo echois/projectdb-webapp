@@ -171,10 +171,6 @@ public class ProjectController extends GlobalController {
 		pw.setProject(newPw.getProject());
 		pw.setRedirect(newPw.getRedirect());
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
-		if (pw.getProject().getStatusId().equals(4) && pw.getProject().getEndDate().equals("")) {
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			pw.getProject().setEndDate(df.format(new Date()));
-		}
 
 		if (pw.getProject().getProjectCode()==null || pw.getProject().getProjectCode().equals("")) {
 			String projectCode = this.projectDao.getNextProjectCode(pw.getProject().getHostInstitution());

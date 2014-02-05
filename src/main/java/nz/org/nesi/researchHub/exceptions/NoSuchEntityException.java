@@ -2,6 +2,8 @@ package nz.org.nesi.researchHub.exceptions;
 
 import org.springframework.stereotype.Component;
 
+import com.mangofactory.swagger.annotations.ApiError;
+
 /**
  * Project: project_management
  * <p/>
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
  * Time: 9:31 AM
  */
 @Component
+@ApiError(code=500,reason="No such entity in the database")
 public class NoSuchEntityException extends Exception {
 
     private Class entityClass;

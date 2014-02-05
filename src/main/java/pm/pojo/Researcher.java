@@ -1,5 +1,11 @@
 package pm.pojo;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import common.util.AffiliationUtil;
+
 public class Researcher {
 
 	private Integer id;
@@ -18,7 +24,8 @@ public class Researcher {
 	private String startDate;
 	private String endDate;
 	private String notes;
-	private Integer lastModified;
+	private String lastModified;
+	private String affiliation;
 
 	public Integer getId() {
 		return id;
@@ -138,6 +145,13 @@ public class Researcher {
 
 	public void setStatusId(Integer statusId) {
 		this.statusId = statusId;
+		if (statusId.equals(2) && this.endDate.equals("")) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			this.endDate = df.format(new Date());
+		} else if (statusId.equals(7) && this.endDate.equals("")) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			this.endDate = df.format(new Date(System.currentTimeMillis() + 1000L*60*60*24*30));
+		}
 	}
 
 	public String getStatusName() {
@@ -148,12 +162,24 @@ public class Researcher {
 		this.statusName = string;
 	}
 
-	public Integer getLastModified() {
+	public String getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(Integer lastModified) {
+	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
+	}
+	
+	public String getAffiliation() {
+		AffiliationUtil af = new AffiliationUtil();
+		return af.createAffiliationString(institution, division, department);
+	}
+	
+	public void setAffiliation(String a) {
+		AffiliationUtil af = new AffiliationUtil();
+		this.department = af.getDepartmentFromAffiliationString(a);
+		this.division = af.getDivisionFromAffiliationString(a);
+		this.institution = af.getInstitutionFromAffiliationString(a);
 	}
 
 }

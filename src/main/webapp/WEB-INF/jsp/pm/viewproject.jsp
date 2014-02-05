@@ -329,6 +329,7 @@
   <table id="propertyTable" class="tablesorter">
     <thead>
       <tr>
+        <th>Location</th>
 	    <th>Property Name</th>
 	    <th>Property Value</th>
       </tr>
@@ -336,6 +337,7 @@
     <tbody>
       <c:forEach items="${properties}" var="property">
         <tr>
+          <td>${property.siteName } - ${property.facilityName }</td>
           <td>${property.propname}</td>
           <td>${property.propvalue}</td>
         </tr>

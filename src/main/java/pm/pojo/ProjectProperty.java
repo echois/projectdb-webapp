@@ -4,8 +4,8 @@ public class ProjectProperty {
 
 	private Integer id;
 	private Integer projectId;
-	private Integer siteId;
 	private Integer facilityId;
+	private String facilityName;
 	private String propname;
 	private String propvalue;
 	private String timestamp;
@@ -21,12 +21,6 @@ public class ProjectProperty {
 	}
 	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
-	}
-	public Integer getSiteId() {
-		return siteId;
-	}
-	public void setSiteId(Integer siteId) {
-		this.siteId = siteId;
 	}
 	public Integer getFacilityId() {
 		return facilityId;
@@ -51,6 +45,12 @@ public class ProjectProperty {
 	}
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+	public String getFacilityName() {
+		return facilityName;
+	}
+	public void setFacilityName(String facilityName) {
+		this.facilityName = facilityName;
 	}
 
 }

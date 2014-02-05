@@ -4,6 +4,7 @@ import java.util.List;
 
 import nz.org.nesi.researchHub.control.ProjectControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.pojo.Review;
+import pm.pojo.Site;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -56,14 +58,14 @@ public class ProjectControllerRest {
     //@PreAuthorize("hasPermission(#projectIdOrCode, 'read_project' )")
     @ApiOperation( value = "Get project wrapper", notes = "Returns a complete project wrapper object upon input of a id or code" )
     @ResponseBody
-    public ProjectWrapper getProjectWrapper(@PathVariable String projectIdOrCode) {
+    public ProjectWrapper getProjectWrapper(@ApiParam( value = "Project id or code", required = true ) @PathVariable String projectIdOrCode) {
         return projectControls.getProjectWrapper(projectIdOrCode);
     }
     
     @RequestMapping(value = "/{id}/prop", method = RequestMethod.GET)
     @ApiOperation( value = "Get project properties", notes = "Returns a list of project properties for a given project id" )
     @ResponseBody
-    public List<ProjectProperty> getProjectProperties(@PathVariable Integer id) {
+    public List<ProjectProperty> getProjectProperties(@ApiParam( value = "Project id", required = true ) @PathVariable Integer id) {
         return projectControls.getProjectProperties(id);
     }
 
@@ -77,7 +79,7 @@ public class ProjectControllerRest {
     @RequestMapping(value = "/filter/{filter}", method = RequestMethod.GET)
     @ApiOperation( value = "Get a filtered list of projects", notes = "Searches for the given string in any of the project's fields" )
     @ResponseBody
-    public List<Project> filterProjects(@PathVariable String filter) {
+    public List<Project> filterProjects(@ApiParam( value = "Search string", required = true ) @PathVariable String filter) {
         return projectControls.filterProjects(filter);
     }
 
@@ -90,94 +92,98 @@ public class ProjectControllerRest {
 //    }
     
 
-    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}", method = RequestMethod.POST)
-    @ApiOperation( value = "Edit field", notes = "Edits a single field in a project wrapper" )
+    @RequestMapping(value = "/{id}/{object}/{field}/{timestamp}/", method = RequestMethod.POST)
+    @ApiOperation( value = "Edit field", notes = "Edits a single field in a project wrapper. The timestamp included must match the last modified time of the adviser, otherwise an OutOfDateException will be thrown" )
     @ResponseBody
-    public void editProjectWrapper(@PathVariable Integer id, @PathVariable String object, @PathVariable String field, @PathVariable String timestamp, @RequestBody String data) throws InvalidEntityException, OutOfDateException {
+    public void editProjectWrapper(@ApiParam( value = "Project id", required = true ) @PathVariable Integer id, 
+    		@ApiParam( value = "Desired object in project wrapper to edit, with the first letter capitalised. Use underscores to separate indexes/attachments. For example, Project, APLinks_0, FollowUps_0_Attachments_0 etc", required = true ) @PathVariable String object, 
+    		@ApiParam( value = "Desired field to edit, with the first letter capitalised. For example, FullName, Description, StartDate etc", required = true ) @PathVariable String field, 
+    		@ApiParam( value = "A timestamp indicating the last time the adviser was modified. Used as a consistency check. Set to force to bypass (not recommended)", required = true ) @PathVariable String timestamp, 
+    		@ApiParam( value = "The new value for the field", required = true ) @RequestBody String data) throws InvalidEntityException, OutOfDateException {
     	projectControls.editProjectWrapper(id, object, field, timestamp, data);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ApiOperation( value = "Delete project", notes = "Deletes a project. This cannot be undone, unless the db is restored from backup" )
+    @ApiOperation( value = "Delete project", notes = "Deletes a project. This cannot be undone, unless the database is restored from backup" )
     @ResponseBody
-    public void delete(@PathVariable Integer id) {
+    public void delete(@ApiParam( value = "Project id", required = true ) @PathVariable Integer id) {
         projectControls.delete(id);
     }
     
     @RequestMapping(value = "/ap", method = RequestMethod.PUT)
     @ApiOperation( value = "Add APLink", notes = "Add APLink (adviser) to project" )
     @ResponseBody
-    public void addAPLink(@RequestBody APLink al) {
+    public void addAPLink(@ApiParam( value = "APLink object", required = true ) @RequestBody APLink al) {
         projectControls.addAdviser(al);
     }
     
     @RequestMapping(value = "/rp", method = RequestMethod.PUT)
     @ApiOperation( value = "Add RPLink", notes = "Add RPLink (researcher) to project" )
     @ResponseBody
-    public void addRPLink(@RequestBody RPLink rl) {
+    public void addRPLink(@ApiParam( value = "RPLink object", required = true ) @RequestBody RPLink rl) {
         projectControls.addResearcher(rl);
     }
     
     @RequestMapping(value = "/kpi", method = RequestMethod.PUT)
-    @ApiOperation( value = "Add project kpi", notes = "Add KPI to project" )
+    @ApiOperation( value = "Add Project KPI", notes = "Add KPI to project" )
     @ResponseBody
-    public void addKpi(@RequestBody ProjectKpi pk) throws Exception {
+    public void addKpi(@ApiParam( value = "ProjectKpi object", required = true ) @RequestBody ProjectKpi pk) throws Exception {
         projectControls.addKpi(pk);
     }
     
     @RequestMapping(value = "/ro", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Research Output", notes = "Add research output to project" )
     @ResponseBody
-    public void addResearchOutput(@RequestBody ResearchOutput ro) throws Exception {
+    public void addResearchOutput(@ApiParam( value = "ResearchOutput object", required = true ) @RequestBody ResearchOutput ro) throws Exception {
         projectControls.addResearchOutput(ro);
     }
     
     @RequestMapping(value = "/review", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Review", notes = "Add review to project" )
     @ResponseBody
-    public void addReview(@RequestBody Review r) throws Exception {
+    public void addReview(@ApiParam( value = "Review object", required = true ) @RequestBody Review r) throws Exception {
         projectControls.addReview(r);
     }
     
     @RequestMapping(value = "/followup", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Follow Up", notes = "Add followup to project" )
     @ResponseBody
-    public void addFollowUp(@RequestBody FollowUp f) throws Exception {
+    public void addFollowUp(@ApiParam( value = "FollowUp object", required = true ) @RequestBody FollowUp f) throws Exception {
         projectControls.addFollowUp(f);
     }
     
     @RequestMapping(value = "/prop", method = RequestMethod.PUT)
     @ApiOperation( value = "Upsert Project Property", notes = "Add or edit project property" )
     @ResponseBody
-    public void upsertProperty(@RequestBody ProjectProperty p) throws Exception {
+    public void upsertProperty(@ApiParam( value = "ProjectProperty object", required = true ) @RequestBody ProjectProperty p) throws Exception {
         projectControls.upsertProperty(p);
     }
     
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Adviser Action", notes = "Add adviser action to project" )
     @ResponseBody
-    public void addAdviserAction(@RequestBody AdviserAction aa) throws Exception {
+    public void addAdviserAction(@ApiParam( value = "AdviserAction object", required = true ) @RequestBody AdviserAction aa) throws Exception {
         projectControls.addAdviserAction(aa);
     }
     
     @RequestMapping(value = "/attachment", method = RequestMethod.PUT)
     @ApiOperation( value = "Add Attachment", notes = "Add attachment to object" )
     @ResponseBody
-    public void addAttachment(@RequestBody Attachment a) throws Exception {
+    public void addAttachment(@ApiParam( value = "Attachment object", required = true ) @RequestBody Attachment a) throws Exception {
         projectControls.addAttachment(a);
     }
     
     @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
-    @ApiOperation( value = "Remove object link from project", notes = "Removes someone/something from a project" )
+    @ApiOperation( value = "Remove object link from project", notes = "Removes someone (Adviser or Researcher)/something (FollowUp etc) from a project. Possible object types: adviser, researcher, kpi, researchoutput, review, followup, adviseraction, property, Attachments_#" )
     @ResponseBody
     public void remove(@ApiParam( value = "Internal project id", required = true ) @PathVariable Integer id, @ApiParam( value = "Object id. Context specific - is either adviserId, researcherId or array index", required = true ) @PathVariable Integer oid, @ApiParam( value = "Object type. adviser, researcher, kpi etc", required = true ) @PathVariable String type) {
         projectControls.removeObjectLink(id, oid, type);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    @ApiOperation( value = "Create project", notes = "Creates a new project from the given object" )
+    @ApiOperation( value = "Create project", notes = "Creates a new project from the given object. Returns the new project id if successfull" )
     @ResponseBody
-    public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
+    public synchronized Integer createProjectWrapper(@ApiParam( value = "ProjectWrapper object. Note that not all parts (FollowUps etc) are required.", required = true ) @RequestBody ProjectWrapper pw) throws InvalidEntityException {
         return projectControls.createProjectWrapper(pw);
     }
     
@@ -188,6 +194,13 @@ public class ProjectControllerRest {
         return projectControls.getInstitutions();
     }
     
+    @RequestMapping(value = "/sites", method = RequestMethod.GET)
+    @ApiOperation( value = "Get sites", notes = "Returns a list of possible cluster sites" )
+    @ResponseBody
+    public List<Site> getSites() throws Exception {
+        return projectControls.getSites();
+    }
+    
     @RequestMapping(value = "/fac", method = RequestMethod.GET)
     @ApiOperation( value = "Get facilities", notes = "Returns a list of possible project facilities" )
     @ResponseBody
@@ -196,7 +209,7 @@ public class ProjectControllerRest {
     }
 
     @RequestMapping(value = "/kpis", method = RequestMethod.GET)
-    @ApiOperation( value = "Get KPIS", notes = "Returns a list of possible project KPIS" )
+    @ApiOperation( value = "Get KPIS", notes = "Returns a list of possible project KPIs" )
     @ResponseBody
     public List<Kpi> getKpis() throws Exception {
         return projectControls.getKpis();
@@ -210,7 +223,7 @@ public class ProjectControllerRest {
     }
     
     @RequestMapping(value = "/akpis", method = RequestMethod.GET)
-    @ApiOperation( value = "Get Project KPIS", notes = "Returns a list of reported KPIs" )
+    @ApiOperation( value = "Get Project KPIS", notes = "Returns a list of all reported KPIs" )
     @ResponseBody
     public List<ProjectKpi> getProjectKpis() throws Exception {
         return projectControls.getProjectKpis();
