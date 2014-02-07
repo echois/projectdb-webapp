@@ -66,6 +66,7 @@ public class ResearcherControls extends AbstractControl {
 		if (r.getFullName().trim().equals("")) {
 			throw new InvalidEntityException("Researcher name cannot be empty", Researcher.class, "name");
 		}
+		if (r.getFullName().equals("New Researcher")) return;
 		for (Researcher other:getAllResearchers()) {
 			if (r.getFullName().equals(other.getFullName()) && (r.getId()==null || !r.getId().equals(other.getId()))) {
 				throw new InvalidEntityException(r.getFullName() + " already exists in the database", Researcher.class, "name");
@@ -256,6 +257,7 @@ public class ResearcherControls extends AbstractControl {
      * @throws InvalidEntityException if the new Researcher object has already an id specified
      */
     public Integer createResearcher(Researcher researcher) throws InvalidEntityException {
+    	validateResearcher(researcher);
         if ( researcher.getId() != null ) {
             throw new InvalidEntityException("Researcher can't have id, this property will be auto-generated.", Researcher.class, "id");
         }

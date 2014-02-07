@@ -73,12 +73,7 @@ public class AdviserControls extends AbstractControl {
 		if (a.getFullName().trim().equals("")) {
 			throw new InvalidEntityException("Adviser name cannot be empty", Adviser.class, "name");
 		}
-		
-		// Added to bypass mock objects for temporarily
-		if(getAllAdvisers()==null){
-			throw new InvalidEntityException("There is no existing adviser", Adviser.class, "none");
-		}
-		
+		if (a.getFullName().equals("New Adviser")) return;
 		for (Adviser other:getAllAdvisers()) {
 			if (a.getFullName().equals(other.getFullName()) && (a.getId()==null || !a.getId().equals(other.getId()))) {
 				throw new InvalidEntityException(a.getFullName() + " already exists in the database", Adviser.class, "name");
@@ -295,6 +290,7 @@ public class AdviserControls extends AbstractControl {
      * @throws InvalidEntityException if the new Adviser object has already an id specified
      */
     public Integer createAdviser(Adviser adviser) throws InvalidEntityException {
+    	validateAdviser(adviser);
         if ( adviser.getId() != null ) {
             throw new InvalidEntityException("Adviser can't have id, this property will be auto-generated.", Adviser.class, "id");
         }
