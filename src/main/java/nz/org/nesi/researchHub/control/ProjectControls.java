@@ -78,6 +78,9 @@ public class ProjectControls extends AbstractControl {
             pw.setErrorMessage("A project must have a title");
             throw new InvalidEntityException("Project does not have a title", Project.class, "name");
         }
+        
+        if (pw.getProject().getName().equals("New Project")) return; // Don't check HPC until the project has a real name
+        
         // At least one HPC
         if (pw.getProject().getId()!=null && pw.getProjectFacilities().isEmpty()) {
             throw new InvalidEntityException("There must be at least one HPC facility associated with the project", ProjectWrapper.class, "projectFacilities");
@@ -315,6 +318,10 @@ public class ProjectControls extends AbstractControl {
 			            set.invoke (pojo, data);
 		            }
             	}
+            	if (!pw.getProject().getHostInstitution().trim().equals("") && (pw.getProject().getProjectCode()==null || pw.getProject().getProjectCode().trim().equals(""))) {
+                	String projectCode = this.projectDao.getNextProjectCode(pw.getProject().getHostInstitution());
+                	pw.getProject().setProjectCode(projectCode);
+                }
             	this.validateProject(pw);
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
@@ -571,10 +578,10 @@ public class ProjectControls extends AbstractControl {
             throw new IllegalArgumentException("Can't create project that already has an id.");
         }
 
-        this.validateProject(pw);
-
-        String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
-        pw.getProject().setProjectCode(projectCode);
+        if (!p.getHostInstitution().trim().equals("") && (p.getProjectCode()==null || p.getProjectCode().trim().equals(""))) {
+        	String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
+        	pw.getProject().setProjectCode(projectCode);
+        }
         try {
             Integer pid = this.projectDao.createProjectWrapper(pw);
             return pid;

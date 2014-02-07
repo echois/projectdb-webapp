@@ -153,7 +153,7 @@ public class ResearcherControls extends AbstractControl {
         for (Researcher r : this.getAllResearchers()) {
             if (r.getAffiliation().toLowerCase().contains(filter) || r.getEmail().toLowerCase().contains(filter) ||
             	r.getFullName().toLowerCase().contains(filter) || r.getInstitutionalRoleName().toLowerCase().contains(filter) ||
-            	r.getNotes().toLowerCase().contains(filter) || r.getPreferredName().toLowerCase().contains(filter) ||
+            	r.getNotes()!=null && r.getNotes().toLowerCase().contains(filter) || r.getPreferredName()!=null && r.getPreferredName().toLowerCase().contains(filter) ||
             	r.getStatusName().toLowerCase().contains(filter))
             filtered.add(r);
         }
@@ -256,7 +256,6 @@ public class ResearcherControls extends AbstractControl {
      * @throws InvalidEntityException if the new Researcher object has already an id specified
      */
     public Integer createResearcher(Researcher researcher) throws InvalidEntityException {
-    	validateResearcher(researcher);
         if ( researcher.getId() != null ) {
             throw new InvalidEntityException("Researcher can't have id, this property will be auto-generated.", Researcher.class, "id");
         }
