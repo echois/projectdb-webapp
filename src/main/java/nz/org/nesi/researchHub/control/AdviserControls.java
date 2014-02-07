@@ -289,6 +289,7 @@ public class AdviserControls extends AbstractControl {
      * @throws InvalidEntityException if the new Adviser object has already an id specified
      */
     public Integer createAdviser(Adviser adviser) throws InvalidEntityException {
+    	validateAdviser(adviser);
         if ( adviser.getId() != null ) {
             throw new InvalidEntityException("Adviser can't have id, this property will be auto-generated.", Adviser.class, "id");
         }

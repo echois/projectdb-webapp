@@ -256,6 +256,7 @@ public class ResearcherControls extends AbstractControl {
      * @throws InvalidEntityException if the new Researcher object has already an id specified
      */
     public Integer createResearcher(Researcher researcher) throws InvalidEntityException {
+    	validateResearcher(researcher);
         if ( researcher.getId() != null ) {
             throw new InvalidEntityException("Researcher can't have id, this property will be auto-generated.", Researcher.class, "id");
         }
