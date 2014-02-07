@@ -48,8 +48,8 @@ public interface ProjectDao {
 	public Integer createAdviser(Adviser a) throws Exception;
 
 	public void updateProjectWrapper(int projectId, ProjectWrapper pw) throws Exception;
-	public void updateResearcher(Researcher r) throws Exception;
-	public void updateAdviser(Adviser a) throws Exception;
+	public void updateResearcher(Researcher r);
+	public void updateAdviser(Adviser a);
 
 	public void deleteProjectWrapper(Integer projectId) throws Exception;
 	public void deleteResearcher(Integer id) throws Exception;
