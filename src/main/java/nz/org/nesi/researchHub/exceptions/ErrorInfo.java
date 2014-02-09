@@ -1,5 +1,7 @@
 package nz.org.nesi.researchHub.exceptions;
 
+import com.google.common.base.Throwables;
+
 /**
  * Project: hub
  * <p/>
@@ -8,11 +10,14 @@ package nz.org.nesi.researchHub.exceptions;
  * Time: 10:01 AM
  */
 public class ErrorInfo {
-    public final String url;
-    public final String error;
 
-    public ErrorInfo(String url, Exception ex) {
+    public final String url;
+    public final String message;
+    public final String[] stackTrace;
+
+    public ErrorInfo(String url, Throwable ex) {
         this.url = url;
-        this.error = ex.getLocalizedMessage();
+        this.message = ex.getLocalizedMessage();
+        this.stackTrace = Throwables.getStackTraceAsString(ex).split("\n");
     }
 }
