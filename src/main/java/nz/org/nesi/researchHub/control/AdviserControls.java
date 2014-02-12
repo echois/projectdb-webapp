@@ -73,7 +73,7 @@ public class AdviserControls extends AbstractControl {
 		if (a.getFullName().trim().equals("")) {
 			throw new InvalidEntityException("Adviser name cannot be empty", Adviser.class, "name");
 		}
-		if (a.getFullName().equals("New adviser")) return;
+		if (a.getFullName().equals("New Adviser")) return;
 		for (Adviser other:getAllAdvisers()) {
 			if (a.getFullName().equals(other.getFullName()) && (a.getId()==null || !a.getId().equals(other.getId()))) {
 				throw new InvalidEntityException(a.getFullName() + " already exists in the database", Adviser.class, "name");
