@@ -1,0 +1,9 @@
+Package: projectdb-rest
+Version: VERSION_TOKEN
+Section: misc
+Priority: optional
+Architecture: all
+Depends: java-sdk, tomcat7, bzip2, unzip, zip
+Recommends: apache2, git
+Maintainer: Nick Young <nick.young@auckland.ac.nz>
+Description: RESTful interface to NeSI project database

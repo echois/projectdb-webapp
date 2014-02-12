@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Project: project_management
  * <p/>
@@ -23,40 +25,40 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DatabaseException.class)
     @ResponseBody
-    public DatabaseException handleDatabaseConflict(DatabaseException ex) {
+    public ErrorInfo handleDatabaseConflict(HttpServletRequest req, DatabaseException ex) {
 
         log.debug("DatabaseException: "+ex.getLocalizedMessage());
 
-        return ex;
+        return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InvalidEntityException.class)
     @ResponseBody
-    public InvalidEntityException handleInvalidEntityConflict(InvalidEntityException ex) {
+    public ErrorInfo handleInvalidEntityConflict(HttpServletRequest req, InvalidEntityException ex) {
 
         log.debug("InvalidEntityException: "+ex.getLocalizedMessage());
 
-        return ex;
+        return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NoSuchEntityException.class)
     @ResponseBody
-    public NoSuchEntityException handleNoEntityConflict(NoSuchEntityException ex) {
+    public ErrorInfo handleNoEntityConflict(HttpServletRequest req, NoSuchEntityException ex) {
 
         log.debug("NoSuchEntityException: "+ex.getLocalizedMessage());
 
-        return ex;
+        return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(OutOfDateException.class)
     @ResponseBody
-    public OutOfDateException handleOutOfDateConflict(OutOfDateException ex) {
+    public ErrorInfo handleOutOfDateConflict(HttpServletRequest req, OutOfDateException ex) {
 
         log.debug("OutOfDateException: "+ex.getLocalizedMessage());
 
-        return ex;
+        return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
 }

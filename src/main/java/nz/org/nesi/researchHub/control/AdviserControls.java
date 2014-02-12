@@ -229,11 +229,7 @@ public class AdviserControls extends AbstractControl {
             if (!adviser.getLastModified().equals(temp.getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp");
             }
-            try {
-                projectDao.updateAdviser(adviser);
-            } catch (Exception e) {
-                throw new DatabaseException("Can't update adviser with id "+adviser.getId(), e);
-            }
+            projectDao.updateAdviser(adviser);
 		} else {
             throw new InvalidEntityException("Can't edit adviser. No id provided.", Adviser.class, "id");
         }
@@ -259,7 +255,6 @@ public class AdviserControls extends AbstractControl {
             if (!force && !timestamp.equals(temp.getLastModified())) {
             	throw new OutOfDateException("Incorrect timestamp. Adviser has been modified since you last loaded it.");
             }
-            try {
             	String method = "set" + field;
             	Class<Adviser> c = Adviser.class;
             	try {
@@ -269,14 +264,16 @@ public class AdviserControls extends AbstractControl {
 		            set.invoke (temp, intData);
             	} catch (Exception e) {
             		// String fallback
-            		Method set = c.getDeclaredMethod (method, String.class);
-		            set.invoke (temp, data);
+            		try {
+	            		Method set = c.getDeclaredMethod (method, String.class);
+			            set.invoke (temp, data);
+	            	} catch (Exception ex) {
+	                    throw new DatabaseException("Can't update adviser with id "+id, e);
+	                }
             	}
             	validateAdviser(temp);
                 projectDao.updateAdviser(temp);
-            } catch (Exception e) {
-                throw new DatabaseException("Can't update adviser with id "+id, e);
-            }
+            
 		} else {
             throw new InvalidEntityException("Can't edit adviser. No id provided.", Adviser.class, "id");
         }

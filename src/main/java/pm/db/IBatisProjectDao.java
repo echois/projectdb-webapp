@@ -387,12 +387,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
     @RequireAdviser
-	public void updateResearcher(final Researcher r) throws Exception {
+	public void updateResearcher(final Researcher r) {
 		getSqlSession().update("pm.db.updateResearcher", r);
 	}
 
     @RequireAdviser
-	public void updateAdviser(final Adviser a) throws Exception {
+	public void updateAdviser(final Adviser a) {
 		getSqlSession().update("pm.db.updateAdviser", a);
 	}
 

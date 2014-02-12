@@ -15,14 +15,26 @@
   <mvc:annotation-driven />
 
 
-  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="locations">
-      <list>
-        <value>classpath:configuration.properties</value>
-        <value>classpath:common.properties</value>
-      </list>
-    </property>
-  </bean>
+  <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+    <!--<property name="locations">-->
+        <!--<list>-->
+        <!--<value>file:${conf.path}</value>-->
+        <!--<value>classpath:common.properties</value>-->
+      <!--</list>-->
+    <!--</property>-->
+  <!--</bean>-->
+
+
+    <context:property-placeholder location="file:/etc/projectdb.conf" order="-1"
+                                  ignore-unresolvable="true" ignore-resource-not-found="true" />
+    <context:property-placeholder location="classpath:configuration.properties" ignore-resource-not-found="true" ignore-unresolvable="true"/>
+
+
+    <bean id="placeholder-configurer-3" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="order" value="3"/>
+        <property name="ignoreResourceNotFound" value="false"/>
+        <property name="location" value="classpath:/common.properties"></property>
+    </bean>
 
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="${jdbc.driver.className}" />
