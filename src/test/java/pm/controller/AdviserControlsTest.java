@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +47,7 @@ import pm.db.ProjectDao;
 import pm.pojo.Adviser;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.ProjectWrapper;
+import static org.hamcrest.core.Is.*;
 
 /**
  * @author echoi
@@ -53,7 +56,6 @@ import pm.pojo.ProjectWrapper;
 @Repository(value="ProjectDao")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/AdvisercontrolsTest-context.xml", "/root-context.xml"})
-//@ContextConfiguration
 public class AdviserControlsTest {
 
 	/**
@@ -70,10 +72,10 @@ public class AdviserControlsTest {
 	@Before
 	public void setUp() throws Exception {
 		
+		// provide minimum information to create an adviser.
 		adviser = new Adviser(){
 			{
-			//setId(101);
-			setFullName("TestName");
+				setFullName("TestName");
 			}
 		};
 		
@@ -82,59 +84,49 @@ public class AdviserControlsTest {
 	}
 	
 	@Test
-	public void testGetaAdviser() throws Exception{
+	public void testGetAdviserById() throws Exception{
 		
-		adviser.setId(1);
-		projectDaoMock.createAdviser(adviser);
-		when(projectDaoMock.getAdviserById(1)).thenReturn(adviser);
-		
-	
+		String expectedFullname = "TestName";
 		when(adviserControls.getAdviser(1)).thenReturn(adviser);
-		//System.out.println(projectDaoMock.getAdviserById(1).getFullName());
-		
-		//verify(projectDaoMock, times(2)).getAdviserById(1);
-		assertEquals("TestName", adviserControls.getAdviser(1).getFullName());
+		assertEquals(expectedFullname, adviserControls.getAdviser(1).getFullName());
 	}
 	
+	//@Test(expected=NoSuchEntityException.class)
+	/*@Test
+	public void testGetAdviserByIdWithInvalidData() throws Exception {
+		//Check why it is failing
+		adviser.setId(1);
+		when(projectDaoMock.getAdviserById(1)).thenReturn(adviser);
+		when(adviserControls.getAdviser(1)).thenReturn(adviser);
+		adviserControls.getAdviser(1014);
+	}*/
+	
 	@Test
-	public void testGetAllAdvisers(){
+	public void testGetAllAdvisers() throws Exception{
+		
 		List<Adviser> all = new LinkedList<Adviser>();
 		all.add(new Adviser(){ {setFullName("TestName1");}});
 		all.add(new Adviser(){ {setFullName("TestName2");}});
 
-		//Mock alert: return mocked result set on find
-		try {
-			when(projectDaoMock.getAdvisers()).thenReturn(all);
-			//System.out.println("projectDao" + projectDaoMock.getAdvisers());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		adviserControls.getAllAdvisers();
+		verify(projectDaoMock).getAdvisers();
+
+	}
+	
+	@Test
+	public void testCreateAdviserSuccessfully() throws Exception{
 		
-		//call the main method you want to test
-		List result = adviserControls.getAllAdvisers();
-		//System.out.println("adviserControls" + adviserControls.getAllAdvisers());
+		when(projectDaoMock.createAdviser(adviser)).thenReturn(1);
 		
-		//Mock alert: verify the method was called
-		try {
-			verify(projectDaoMock, times(1)).getAdvisers();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("projectDaoMock is not called");
-			e.printStackTrace();
-		}
+		adviserControls.createAdviser(adviser);
+		verify(projectDaoMock).createAdviser(adviser);
 	}
 	
 	@Test(expected = InvalidEntityException.class)
 	public void testMissingFullName() throws Exception{
 
-		Adviser newadviser = new Adviser(){{setFullName(""); setId(1);}};
-		when(projectDaoMock.getAdviserById(1)).thenReturn(newadviser);
-		
-	
-		when(adviserControls.getAdviser(1)).thenReturn(newadviser);
-		//System.out.println("special"+projectDaoMock.getAdviserById(1).getFullName());
+		Adviser newadviser = new Adviser(){{setFullName(""); }};
+		when(projectDaoMock.createAdviser(newadviser)).thenReturn(1);
 			
 		adviserControls.createAdviser(newadviser);
 	}
@@ -146,17 +138,7 @@ public class AdviserControlsTest {
 		all.add(new Adviser(){ {setFullName("TestName");}});
 		all.add(new Adviser(){ {setFullName("TestName2");}});
 		
-		//Mock alert: return mocked result set on find
-		try {
-			when(projectDaoMock.getAdvisers()).thenReturn(all);
-			//System.out.println("projectDao" + projectDaoMock.getAdvisers());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//call the main method you want to test
-		List result = adviserControls.getAllAdvisers();
+		adviserControls.getAllAdvisers();
 		when(adviserControls.getAllAdvisers()).thenReturn(all);
 		
 		adviserControls.createAdviser(adviser);		
@@ -165,22 +147,14 @@ public class AdviserControlsTest {
 	@Test(expected = InvalidEntityException.class)
 	public void testCreateAdviserWithId() throws Exception {
 		
-		Adviser newadviser = new Adviser(){{setFullName("TestNewName"); setId(3);}};
-		projectDaoMock.createAdviser(adviser);
-		when(projectDaoMock.getAdviserById(1)).thenReturn(adviser);
-		
-	
-		when(adviserControls.getAdviser(1)).thenReturn(adviser);
-		System.out.println(projectDaoMock.getAdviserById(1).getFullName());
-		
-		verify(projectDaoMock, times(1)).getAdviserById(1);
-		assertEquals("TestName", adviserControls.getAdviser(1).getFullName());
+		Adviser newadviser = new Adviser(){{setFullName("TestNewName"); setId(1);}};
+		when(projectDaoMock.getAdviserById(1)).thenReturn(newadviser);
 		
 		adviserControls.createAdviser(newadviser);		
 	}
 	
 	@Test
-	public void testAllowDuplicateNewAdviserFullName() throws Exception {
+	public void testAllowDuplicateFullNameAsNewAdviser() throws Exception {
 		
 		List<Adviser> all = new LinkedList<Adviser>();
 		all.add(new Adviser(){ {setFullName("TestName");}});
@@ -193,18 +167,69 @@ public class AdviserControlsTest {
 			when(projectDaoMock.getAdvisers()).thenReturn(all);
 			//System.out.println("projectDao" + projectDaoMock.getAdvisers());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		//call the main method you want to test
-		List result = adviserControls.getAllAdvisers();
+		List<Adviser> result = adviserControls.getAllAdvisers();
 		when(adviserControls.getAllAdvisers()).thenReturn(all);
 		
 		adviserControls.createAdviser(newadviser);		
 	}
-
 	
+	@Test
+	public void testGetAdviserByDrupalId() throws Exception {
+		
+		String expectedFullname = "TestName";
+		when(projectDaoMock.getAdviserByDrupalId("1")).thenReturn(adviser);
+		when(adviserControls.getAdviserByDrupalId("1")).thenReturn(adviser);
+				
+		assertEquals(expectedFullname, adviserControls.getAdviserByDrupalId("1").getFullName());
+	}
+	
+	@Test(expected=NoSuchEntityException.class)
+	public void testGetAdviserByDrupalIdWithInvalidData() throws Exception {
+		
+		when(projectDaoMock.getAdviserByDrupalId("abc")).thenReturn(adviser);
+		when(adviserControls.getAdviserByDrupalId("abc")).thenReturn(adviser);
+		adviserControls.getAdviserByDrupalId("123");				
+	}
+	
+	@Test(expected=InvalidEntityException.class)
+	public void testEditAdviserWithNoId() throws Exception{
+		
+		when(adviserControls.getAdviser(1)).thenReturn(adviser);
+		adviserControls.editAdviser(adviser);
+		verify(projectDaoMock).updateAdviser(adviser);
+			
+	}
+	
+	@Test
+	public void testEditAdviser() throws Exception{
+		adviser.setId(1);
+		adviser.setLastModified("01/01/2014");
+		
+		when(adviserControls.getAdviser(1)).thenReturn(adviser);
+				
+		adviserControls.editAdviser(adviser);
+		
+		verify(projectDaoMock).updateAdviser(adviser);
+		
+	}
+	
+	
+	@Test(expected=NullPointerException.class)
+	public void testDeleteAdviser() throws Exception{
+		adviser.setId(1);
+		
+		when(adviserControls.getAdviser(1)).thenReturn(adviser);
+		
+		adviserControls.delete(1);
+		verify(projectDaoMock).deleteAdviser(1);
+		
+		// Try edit adviser to see if adviser is completely removed
+		adviserControls.editAdviser(adviser);
+	}
 }
 
 
