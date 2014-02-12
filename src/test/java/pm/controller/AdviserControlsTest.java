@@ -55,7 +55,7 @@ import static org.hamcrest.core.Is.*;
  */
 @Repository(value="ProjectDao")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/AdvisercontrolsTest-context.xml", "/root-context.xml"})
+@ContextConfiguration(locations={"/root-context.xml"})
 public class AdviserControlsTest {
 
 	/**
@@ -72,7 +72,7 @@ public class AdviserControlsTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		// provide minimum information to create an adviser.
+		// Provide minimum information to create an adviser.
 		adviser = new Adviser(){
 			{
 				setFullName("TestName");
