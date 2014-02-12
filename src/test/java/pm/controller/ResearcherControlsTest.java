@@ -34,14 +34,13 @@ import pm.pojo.Researcher;
 @RunWith(SpringJUnit4ClassRunner.class)
 
 @ContextConfiguration(locations={"/root-context.xml"})
-//@ContextConfiguration(locations={"/root-context.xml"})
 public class ResearcherControlsTest {
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@InjectMocks
-	private ResearcherControls researcherControls = new ResearcherControls();
+	private ResearcherControls researcherControls;
 	@InjectMocks
 	private ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
 	
@@ -62,7 +61,7 @@ public class ResearcherControlsTest {
 	
 	
 	@Test
-	public void testGetresearcherById() throws Exception{
+	public void testGetResearcherById() throws Exception{
 		
 		String expectedFullname = "TestName";
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
@@ -80,7 +79,7 @@ public class ResearcherControlsTest {
 	}*/
 	
 	@Test
-	public void testGetAllresearchers() throws Exception{
+	public void testGetAllResearchers() throws Exception{
 		
 		List<Researcher> all = new LinkedList<Researcher>();
 		all.add(new Researcher(){ {setFullName("TestName1");}});
@@ -92,7 +91,7 @@ public class ResearcherControlsTest {
 	}
 	
 	@Test
-	public void testCreateresearcherSuccessfully() throws Exception{
+	public void testCreateResearcherSuccessfully() throws Exception{
 		
 		when(projectDaoMock.createResearcher(researcher)).thenReturn(1);
 		
@@ -101,7 +100,7 @@ public class ResearcherControlsTest {
 	}
 	
 	@Test(expected = InvalidEntityException.class)
-	public void testMissingFullName() throws Exception{
+	public void testResearcherMissingFullName() throws Exception{
 
 		Researcher newresearcher = new Researcher(){{setFullName(""); }};
 		when(projectDaoMock.createResearcher(newresearcher)).thenReturn(1);
@@ -110,7 +109,7 @@ public class ResearcherControlsTest {
 	}
 
 	@Test(expected = InvalidEntityException.class)
-	public void testDuplicateresearcherFullName() throws Exception {
+	public void testDuplicateResearcherFullName() throws Exception {
 		
 		List<Researcher> all = new LinkedList<Researcher>();
 		all.add(new Researcher(){ {setFullName("TestName");}});
@@ -123,7 +122,7 @@ public class ResearcherControlsTest {
 	}
 		
 	@Test(expected = InvalidEntityException.class)
-	public void testCreateresearcherWithId() throws Exception {
+	public void testCreateResearcherWithId() throws Exception {
 		
 		Researcher newresearcher = new Researcher(){{setFullName("TestNewName"); setId(1);}};
 		when(projectDaoMock.getResearcherById(1)).thenReturn(newresearcher);
@@ -132,7 +131,7 @@ public class ResearcherControlsTest {
 	}
 	
 	@Test
-	public void testAllowDuplicateFullNameAsNewresearcher() throws Exception {
+	public void testAllowDuplicateFullNameAsNewResearcher() throws Exception {
 		
 		List<Researcher> all = new LinkedList<Researcher>();
 		all.add(new Researcher(){ {setFullName("TestName");}});
@@ -156,7 +155,7 @@ public class ResearcherControlsTest {
 	}
 	
 	@Test(expected=InvalidEntityException.class)
-	public void testEditresearcherWithNoId() throws Exception{
+	public void testEditResearcherWithNoId() throws Exception{
 		
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
 		researcherControls.editResearcher(researcher);
@@ -165,7 +164,7 @@ public class ResearcherControlsTest {
 	}
 	
 	@Test
-	public void testEditresearcher() throws Exception{
+	public void testEditResearcher() throws Exception{
 		researcher.setId(1);
 		researcher.setLastModified("01/01/2014");
 		
@@ -179,7 +178,7 @@ public class ResearcherControlsTest {
 	
 	
 	@Test(expected=NullPointerException.class)
-	public void testDeleteresearcher() throws Exception{
+	public void testDeleteResearcher() throws Exception{
 		researcher.setId(1);
 		
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);

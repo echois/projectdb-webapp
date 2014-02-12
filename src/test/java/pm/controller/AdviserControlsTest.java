@@ -63,7 +63,7 @@ public class AdviserControlsTest {
 	 */
 
 	@InjectMocks
-	private AdviserControls adviserControls = new AdviserControls();
+	private AdviserControls adviserControls;
 	@InjectMocks
 	private ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
 	
@@ -158,9 +158,9 @@ public class AdviserControlsTest {
 		
 		List<Adviser> all = new LinkedList<Adviser>();
 		all.add(new Adviser(){ {setFullName("TestName");}});
-		all.add(new Adviser(){ {setFullName("New adviser");}});
+		all.add(new Adviser(){ {setFullName("New Adviser");}});
 		
-		Adviser newadviser = new Adviser(){{setFullName("New adviser");}};
+		Adviser newadviser = new Adviser(){{setFullName("New Adviser");}};
 		
 		//Mock alert: return mocked result set on find
 		try {

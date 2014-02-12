@@ -8,6 +8,7 @@
   </bean>
  
   <bean class="common.util.AffiliationUtil"/>
-   <bean class="nz.org.nesi.researchHub.control.AdviserControls"/>
-     <bean class="nz.org.nesi.researchHub.control.ResearcherControls"/>
+  <bean class="nz.org.nesi.researchHub.control.AdviserControls"/>
+  <bean class="nz.org.nesi.researchHub.control.ResearcherControls"/>
+  <bean class="nz.org.nesi.researchHub.control.ProjectControls"/>
 </beans>
