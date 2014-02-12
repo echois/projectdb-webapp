@@ -55,7 +55,7 @@ import static org.hamcrest.core.Is.*;
  */
 @Repository(value="ProjectDao")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/root-context.xml"})
+@ContextConfiguration(locations={"/Controls-context.xml"})
 public class AdviserControlsTest {
 
 	/**

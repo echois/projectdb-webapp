@@ -33,7 +33,7 @@ import pm.pojo.Researcher;
 @Repository(value="ProjectDao")
 @RunWith(SpringJUnit4ClassRunner.class)
 
-@ContextConfiguration(locations={"/root-context.xml"})
+@ContextConfiguration(locations={"/Controls-context.xml"})
 public class ResearcherControlsTest {
 
 	/**
