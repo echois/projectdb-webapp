@@ -337,7 +337,7 @@
     <tbody>
       <c:forEach items="${properties}" var="property">
         <tr>
-          <td>${property.siteName } - ${property.facilityName }</td>
+          <td>${property.facilityName }</td>
           <td>${property.propname}</td>
           <td>${property.propvalue}</td>
         </tr>

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import pm.pojo.APLink;
+import pm.pojo.Adviser;
 import pm.pojo.AdviserAction;
 import pm.pojo.Attachment;
 import pm.pojo.Facility;
@@ -33,6 +34,7 @@ import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
+import pm.pojo.Researcher;
 import pm.pojo.Review;
 import pm.pojo.Site;
 
@@ -423,9 +425,13 @@ public class ProjectControls extends AbstractControl {
      * Add the specified adviser to this project
      *
      * @param id the id
+     * @throws InvalidEntityException 
      */
-    public void addAdviser(APLink al) {
-    	try {
+    public void addAdviser(APLink al) throws InvalidEntityException {
+    	if (al.getAdviserId()==null || al.getAdviserId().equals(0)) {
+    		throw new InvalidEntityException("Not a valid adviser", Adviser.class, "APLink");
+    	}
+    	try {        	
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(al.getProjectId());
 			pw.getApLinks().add(al);
 			this.validateProject(pw);
@@ -439,8 +445,12 @@ public class ProjectControls extends AbstractControl {
      * Add the specified researcher to this project
      *
      * @param id the id
+     * @throws InvalidEntityException 
      */
-    public void addResearcher(RPLink rl) {
+    public void addResearcher(RPLink rl) throws InvalidEntityException {
+    	if (rl.getResearcherId()==null || rl.getResearcherId().equals(0)) {
+    		throw new InvalidEntityException("Not a valid researcher", Researcher.class, "RPLink");
+    	}
     	try {
 			ProjectWrapper pw = this.projectDao.getProjectWrapperById(rl.getProjectId());
 			pw.getRpLinks().add(rl);
