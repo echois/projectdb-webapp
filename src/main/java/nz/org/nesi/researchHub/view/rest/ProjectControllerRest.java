@@ -113,14 +113,14 @@ public class ProjectControllerRest {
     @RequestMapping(value = "/ap", method = RequestMethod.PUT)
     @ApiOperation( value = "Add APLink", notes = "Add APLink (adviser) to project" )
     @ResponseBody
-    public void addAPLink(@ApiParam( value = "APLink object", required = true ) @RequestBody APLink al) {
+    public void addAPLink(@ApiParam( value = "APLink object", required = true ) @RequestBody APLink al) throws InvalidEntityException {
         projectControls.addAdviser(al);
     }
     
     @RequestMapping(value = "/rp", method = RequestMethod.PUT)
     @ApiOperation( value = "Add RPLink", notes = "Add RPLink (researcher) to project" )
     @ResponseBody
-    public void addRPLink(@ApiParam( value = "RPLink object", required = true ) @RequestBody RPLink rl) {
+    public void addRPLink(@ApiParam( value = "RPLink object", required = true ) @RequestBody RPLink rl) throws InvalidEntityException {
         projectControls.addResearcher(rl);
     }
     
