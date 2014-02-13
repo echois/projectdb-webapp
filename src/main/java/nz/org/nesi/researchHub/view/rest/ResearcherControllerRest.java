@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
+import pm.pojo.ResearcherProperty;
 import pm.pojo.ResearcherRole;
 import pm.pojo.ResearcherStatus;
 
@@ -63,13 +64,13 @@ public class ResearcherControllerRest {
     }
     
     @ApiOperation(
-    value = "Get linux username",
-    notes = "Returns this researcher's linux username"
+    value = "Get researcher's properties",
+    notes = "Returns this researcher's linux username + other details"
     )
-    @RequestMapping(value = "/{id}/linux", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/prop", method = RequestMethod.GET)
     @ResponseBody
-    public String getLinuxUsernameForResearcher(@ApiParam( value = "Internal researcher id", required = true ) @PathVariable Integer id) throws Exception {
-        return researcherControls.getLinuxUsernameForResearcher(id);
+    public List<ResearcherProperty> getResearcherProperties(@ApiParam( value = "Internal researcher id", required = true ) @PathVariable Integer id) throws Exception {
+        return researcherControls.getResearcherProperties(id);
     }
 
     @ApiOperation(

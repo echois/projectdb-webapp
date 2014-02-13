@@ -897,9 +897,23 @@
   	  WHERE name = #{name}
   </select>
 
-  <select id="getLinuxUsername" parameterType="java.lang.Integer" resultType="java.lang.String">
-      SELECT propvalue
+  <select id="getResearcherProperties" parameterType="java.lang.Integer" resultType="pm.pojo.ResearcherProperty">
+      SELECT *
       FROM `researcher_properties`
-      WHERE propname='linuxUsername' AND researcherId=#{id}
+      WHERE researcherId=#{id}
   </select>
+  
+  <insert id="upsertResearcherProperty" parameterType="pm.pojo.ResearcherProperty">
+      REPLACE INTO project_properties (
+      	researcherId,
+        siteId,
+        propname,
+        propvalue
+      ) values (
+      	#{researcherId},
+        #{siteId},
+        #{propname},
+        #{propvalue}
+      )
+   </insert>
 </mapper>
