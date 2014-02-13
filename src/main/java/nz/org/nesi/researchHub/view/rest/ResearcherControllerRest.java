@@ -72,6 +72,16 @@ public class ResearcherControllerRest {
     public List<ResearcherProperty> getResearcherProperties(@ApiParam( value = "Internal researcher id", required = true ) @PathVariable Integer id) throws Exception {
         return researcherControls.getResearcherProperties(id);
     }
+    
+    @ApiOperation(
+    value = "Upsert researcher property",
+    notes = "Replace or insert researcher property"
+    )
+    @RequestMapping(value = "/{id}/prop", method = RequestMethod.PUT)
+    @ResponseBody
+    public void upsertResearcherProperty(@RequestBody ResearcherProperty r) throws Exception {
+        researcherControls.upsertProperty(r);
+    }
 
     @ApiOperation(
     value = "Get all researchers",
