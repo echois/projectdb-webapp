@@ -428,7 +428,7 @@ public class ProjectControls extends AbstractControl {
      * @throws InvalidEntityException 
      */
     public void addAdviser(APLink al) throws InvalidEntityException {
-    	if (al.getAdviserId()==null) {
+    	if (al.getAdviserId()==null || al.getAdviserId().equals(0)) {
     		throw new InvalidEntityException("Not a valid adviser", Adviser.class, "APLink");
     	}
     	try {        	
@@ -448,7 +448,7 @@ public class ProjectControls extends AbstractControl {
      * @throws InvalidEntityException 
      */
     public void addResearcher(RPLink rl) throws InvalidEntityException {
-    	if (rl.getResearcherId()==null) {
+    	if (rl.getResearcherId()==null || rl.getResearcherId().equals(0)) {
     		throw new InvalidEntityException("Not a valid researcher", Researcher.class, "RPLink");
     	}
     	try {
