@@ -589,6 +589,9 @@ public class ProjectControls extends AbstractControl {
             throw new IllegalArgumentException("Can't create project that already has an id.");
         }
 
+        if (pw.getProject().getProjectCode().equals("nesi")) {
+        	pw.getProject().setProjectCode(this.projectDao.getNextProjectCode("nesi"));
+        }
         if (!p.getHostInstitution().trim().equals("") && (p.getProjectCode()==null || p.getProjectCode().trim().equals(""))) {
         	String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         	pw.getProject().setProjectCode(projectCode);
