@@ -697,11 +697,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 	}
 
 	public String getNextProjectCode(String name) {
-		String instCode = name;
-		try {
-			instCode = (String)getSqlSession().selectOne("pm.db.getInstitutionCodeFromName", name);
-		} catch (Exception e) {
-		}
+		String instCode = (String)getSqlSession().selectOne("pm.db.getInstitutionCodeFromName", name);
+		if (instCode==null) instCode = name;
 		String last = (String)getSqlSession().selectOne("pm.db.getLastProjectCode", instCode);
 		if (last==null) return instCode + StringUtils.leftPad("1",5,"0"); // First ever for this inst
 		Integer lastNum = Integer.valueOf(last.replace(instCode, ""));
