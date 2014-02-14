@@ -321,6 +321,9 @@ public class ProjectControls extends AbstractControl {
 			            set.invoke (pojo, data);
 		            }
             	}
+            	if (pw.getProject().getProjectCode().equals("nesi")) {
+                	pw.getProject().setProjectCode(this.projectDao.getNextProjectCode("nesi"));
+                }
             	if (!pw.getProject().getHostInstitution().trim().equals("") && (pw.getProject().getProjectCode()==null || pw.getProject().getProjectCode().trim().equals(""))) {
                 	String projectCode = this.projectDao.getNextProjectCode(pw.getProject().getHostInstitution());
                 	pw.getProject().setProjectCode(projectCode);
