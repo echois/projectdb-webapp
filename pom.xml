@@ -600,8 +600,8 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:makkus/projectdb-webapp.git</connection>
-        <developerConnection>scm:git:git@github.com:makkus/projectdb-webapp.git</developerConnection>
+        <connection>scm:git:git@github.com:nesi/projectdb-webapp.git</connection>
+        <developerConnection>scm:git:git@github.com:nesi/projectdb-webapp.git</developerConnection>
         <url>https://github.com/nesi/projectdb-webapp</url>
         <tag>0.1</tag>
     </scm>
