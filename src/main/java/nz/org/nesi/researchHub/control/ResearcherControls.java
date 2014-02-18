@@ -19,8 +19,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import pm.pojo.Affiliation;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
+import pm.pojo.ProjectProperty;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.Researcher;
+import pm.pojo.ResearcherProperty;
 import pm.pojo.ResearcherRole;
 import pm.pojo.ResearcherStatus;
 
@@ -308,13 +310,24 @@ public class ResearcherControls extends AbstractControl {
     }
     
     /**
-     * Returns the user's linux username.
+     * Returns the user's linux username + other details.
      *
      * @return a string
      * @throws Exception 
      */
-    public String getLinuxUsernameForResearcher(Integer id) throws Exception {
-    	return this.projectDao.getLinuxUsername(id);
+    public List<ResearcherProperty> getResearcherProperties(Integer id) throws Exception {
+    	return this.projectDao.getResearcherProperties(id);
+    }
+    
+    /**
+     * Add/Edit the specified researcher property
+     *
+     * @param id the id
+     * @throws Exception 
+     */
+    
+    public void upsertProperty(ResearcherProperty r) throws Exception {
+    	this.projectDao.upsertResearcherProperty(r);
     }
 
 }

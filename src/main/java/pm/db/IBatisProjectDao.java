@@ -2,11 +2,11 @@ package pm.db;
 
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
+
 import pm.authz.annotation.RequireAdmin;
 import pm.authz.annotation.RequireAdviser;
 import pm.authz.annotation.RequireAdviserOnProject;
 import pm.pojo.*;
-import pm.pojo.ProjectProperty;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -698,6 +698,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 
 	public String getNextProjectCode(String name) {
 		String instCode = (String)getSqlSession().selectOne("pm.db.getInstitutionCodeFromName", name);
+		if (instCode==null) instCode = name;
 		String last = (String)getSqlSession().selectOne("pm.db.getLastProjectCode", instCode);
 		if (last==null) return instCode + StringUtils.leftPad("1",5,"0"); // First ever for this inst
 		Integer lastNum = Integer.valueOf(last.replace(instCode, ""));
@@ -728,8 +729,20 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements ProjectDao
 		return (String) getSqlSession().selectOne("pm.db.getProjectStatusById", id);
 	}
 
-	public String getLinuxUsername(Integer id) {
-		return (String) getSqlSession().selectOne("pm.db.getLinuxUsername", id);
+	public List<ResearcherProperty> getResearcherProperties(Integer id) throws Exception {
+		List<ResearcherProperty> props = getSqlSession().selectList("pm.db.getResearcherProperties", id);
+		for (int i=0;i<props.size();i++) {
+			for (Site s : this.getSites()) {
+				if (s.getId().equals(props.get(i).getSiteId())) {
+					props.get(i).setSiteName(s.getName());
+				}
+			}
+		}
+		return props;
+	}
+	
+	public void upsertResearcherProperty(ResearcherProperty p) {
+		getSqlSession().update("upsertResearcherProperty", p);
 	}
 	
 	public List<ProjectProperty> getProjectProperties(Integer id) throws Exception {
