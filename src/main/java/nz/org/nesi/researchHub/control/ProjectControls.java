@@ -251,6 +251,7 @@ public class ProjectControls extends AbstractControl {
         if (id != null) {
             // might throw database exception if project does not already exist
             ProjectWrapper pw = getProjectWrapper(id.toString());
+            boolean skipValidation = pw.getProject().getName().equals("New Project");
             // great, no exception, means an project with this id does already exist,
             // Compare timestamps to prevent accidental overwrite
             boolean force = timestamp.equals("force");
@@ -320,11 +321,14 @@ public class ProjectControls extends AbstractControl {
 			            set.invoke (pojo, data);
 		            }
             	}
+            	if (pw.getProject().getProjectCode().equals("nesi")) {
+                	pw.getProject().setProjectCode(this.projectDao.getNextProjectCode("nesi"));
+                }
             	if (!pw.getProject().getHostInstitution().trim().equals("") && (pw.getProject().getProjectCode()==null || pw.getProject().getProjectCode().trim().equals(""))) {
                 	String projectCode = this.projectDao.getNextProjectCode(pw.getProject().getHostInstitution());
                 	pw.getProject().setProjectCode(projectCode);
                 }
-            	this.validateProject(pw);
+            	if (!skipValidation) this.validateProject(pw);
 	            projectDao.updateProjectWrapper(id, pw);
             } catch (NoSuchMethodException e) {
             	throw new InvalidEntityException(pojoClass.getName() + "." + method + " is not a valid method", ProjectWrapper.class, object);
@@ -581,13 +585,16 @@ public class ProjectControls extends AbstractControl {
      * @return the id of the new project
      */
     public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
-
+    	validateProject(pw);
         Project p = pw.getProject();
 
         if (p.getId() != null) {
             throw new IllegalArgumentException("Can't create project that already has an id.");
         }
 
+        if (pw.getProject().getProjectCode().equals("nesi")) {
+        	pw.getProject().setProjectCode(this.projectDao.getNextProjectCode("nesi"));
+        }
         if (!p.getHostInstitution().trim().equals("") && (p.getProjectCode()==null || p.getProjectCode().trim().equals(""))) {
         	String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
         	pw.getProject().setProjectCode(projectCode);
