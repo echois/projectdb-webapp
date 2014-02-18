@@ -24,3 +24,6 @@ configuration.properties.bevan
 configuration.properties.local
 configuration.properties.prod
 
+/bin
+/rebel.xml
+/.gitignore
