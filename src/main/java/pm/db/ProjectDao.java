@@ -3,6 +3,7 @@ package pm.db;
 import pm.pojo.*;
 
 import java.util.List;
+
 import pm.pojo.ProjectProperty;
 
 public interface ProjectDao {
@@ -63,12 +64,14 @@ public interface ProjectDao {
 	public String getProjectStatusById(Integer id);
 	public List<ResearcherStatus> getResearcherStatuses();
 	public String getResearcherStatusById(Integer id);
-	public String getLinuxUsername(Integer id);
+	public List<ResearcherProperty> getResearcherProperties(Integer id) throws Exception;
+	public void upsertResearcherProperty(ResearcherProperty r);
 	
 	public List<ProjectProperty> getProjectProperties(Integer id) throws Exception;
 	public List<String> getPropnames();
 	public ProjectProperty getProjectProperty(Integer id);
 	public void upsertProjectProperty(ProjectProperty p);
 	public void deleteProjectProperty(Integer id);
+	
 
 }

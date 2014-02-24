@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
+import pm.pojo.ResearcherProperty;
 import pm.pojo.ResearcherStatus;
 
 @Controller
@@ -27,9 +28,15 @@ public class ResearcherController extends GlobalController {
     	ModelAndView mav = new ModelAndView();
     	Researcher r = projectDao.getResearcherById(id);
     	List<Project> ps = projectDao.getProjectsForResearcherId(r.getId());
+    	String linuxUsername = "";
+    	for (ResearcherProperty rp : projectDao.getResearcherProperties(id)) {
+    		if (rp.getPropname().equals("linuxUsername")) {
+    			linuxUsername = rp.getPropvalue();
+    		}
+    	}
     	mav.addObject("heatmapBaseUserUrl",heatmapBaseUserUrl);
     	mav.addObject("jobauditBaseUserUrl",jobauditBaseUserUrl);
-    	mav.addObject("linuxUsername", projectDao.getLinuxUsername(r.getId()));
+    	mav.addObject("linuxUsername", linuxUsername);
     	mav.addObject("researcher", r);
     	mav.addObject("projects", ps);
 		return mav;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pm.controller;
+package researchHub.control;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
