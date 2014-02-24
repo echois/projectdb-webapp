@@ -1,5 +1,6 @@
 *.class
 **~
+*.ini
 
 # Package Files #
 *.jar
@@ -26,4 +27,3 @@ configuration.properties.prod
 
 /bin
 /rebel.xml
-/.gitignore
