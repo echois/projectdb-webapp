@@ -336,6 +336,17 @@
         	<artifactId>swagger-springmvc</artifactId>
         	<version>0.6.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>fm.void.jetm</groupId>
+            <artifactId>jetm</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>fm.void.jetm</groupId>
+            <artifactId>jetm-optional</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -512,7 +523,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>nesi.public.release</id>
-            <url>http://code.nesi.org.nz/nexus/content/groups/public/</url>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>
@@ -520,7 +531,7 @@
         </pluginRepository>
         <pluginRepository>
             <id>nesi.public.snapshots</id>
-            <url>http://code.nesi.org.nz/nexus/content/groups/public-snapshots/</url>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public-snapshots/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>true</enabled>
@@ -536,7 +547,7 @@
     <repositories>
         <repository>
             <id>nesi.public.release</id>
-            <url>http://code.nesi.org.nz/nexus/content/groups/public/</url>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -550,7 +561,7 @@
         </repository>
         <repository>
             <id>nesi.public.snapshots</id>
-            <url>http://code.nesi.org.nz/nexus/content/groups/public-snapshots/
+            <url>https://code.nesi.org.nz/nexus/content/groups/public-snapshots/
             </url>
             <releases>
                 <enabled>false</enabled>

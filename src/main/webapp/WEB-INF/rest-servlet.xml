@@ -12,6 +12,11 @@
     http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
+    <!--<aop:aspectj-autoproxy />-->
+
+    <!-- Aspect -->
+	<bean id="logAspect" class="nz.org.nesi.researchHub.view.rest.RestAdvice" />
+
     <context:annotation-config/>
     <context:component-scan base-package="nz.org.nesi.researchHub.view.rest"/>
     <context:component-scan base-package="nz.org.nesi.researchHub.exceptions"/>
@@ -20,6 +25,7 @@
     <bean id="adviserControls" class="nz.org.nesi.researchHub.control.AdviserControls"/>
     <bean id="researcherControls" class="nz.org.nesi.researchHub.control.ResearcherControls"/>
     <bean id="projectControls" class="nz.org.nesi.researchHub.control.ProjectControls"/>
+
 
 
    	<!-- Allows us to use @PreAuthorize family of security authorization annotations. -->
@@ -51,5 +57,6 @@
 			access="isAuthenticated()" />
 		<security:http-basic />
 	</security:http>
+
 
 </beans>

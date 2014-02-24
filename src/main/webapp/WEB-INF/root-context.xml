@@ -67,4 +67,8 @@
     <property name="projectDao" ref="projectDao" />
   </bean>
 
+  <import resource="classpath:jetm-monitoring.xml" />
+
+
+
 </beans>
