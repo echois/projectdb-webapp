@@ -81,6 +81,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>pm</servlet-name>
@@ -94,6 +95,7 @@
         <servlet-name>rest</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+
 
     <jsp-config>
         <taglib>
