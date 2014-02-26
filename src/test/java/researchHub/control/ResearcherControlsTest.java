@@ -3,7 +3,7 @@
  */
 package researchHub.control;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -12,28 +12,30 @@ import java.util.List;
 
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
-import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
+import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.exceptions.verification.junit.ArgumentsAreDifferent;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import pm.db.ProjectDao;
+import pm.pojo.Project;
 import pm.pojo.Researcher;
+import pm.pojo.ResearcherRole;
 
 /**
  * @author echoi
- *
+ * 
  */
-@Repository(value="ProjectDao")
+@Repository(value = "ProjectDao")
 @RunWith(SpringJUnit4ClassRunner.class)
-
-@ContextConfiguration(locations={"/Controls-context.xml"})
+@ContextConfiguration(locations = { "/Controls-context.xml" })
 public class ResearcherControlsTest {
 
 	/**
@@ -42,152 +44,260 @@ public class ResearcherControlsTest {
 	@InjectMocks
 	private ResearcherControls researcherControls;
 	@InjectMocks
-	private ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
-	
+	private final ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
+
 	private Researcher researcher;
-	
+	private Project project;
+	private List<Project> projects;
+
 	@Before
 	public void setUp() throws Exception {
-		
+
 		// provide minimum information to create a researcher.
-		researcher = new Researcher(){
+		researcher = new Researcher() {
 			{
 				setFullName("TestName");
 			}
 		};
-		
-		researcherControls = new ResearcherControls(){{projectDao = projectDaoMock;}};		
+
+		project = new Project() {
+			{
+				setName("TestName");
+				setProjectCode("");
+				setHostInstitution("");
+
+			}
+		};
+
+		projects = new LinkedList<Project>();
+		projects.add(project);
+
+		researcherControls = new ResearcherControls() {
+			{
+				projectDao = projectDaoMock;
+			}
+		};
 	}
-	
-	
+
 	@Test
-	public void testGetResearcherById() throws Exception{
-		
+	public void testGetResearcherById() throws Exception {
+
 		String expectedFullname = "TestName";
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
-		assertEquals(expectedFullname, researcherControls.getResearcher(1).getFullName());
+		assertEquals(expectedFullname, researcherControls.getResearcher(1)
+				.getFullName());
 	}
-	
-	//@Test(expected=NoSuchEntityException.class)
-	/*@Test
-	public void testGetresearcherByIdWithInvalidData() throws Exception {
-		//Check why it is failing
-		researcher.setId(1);
-		when(projectDaoMock.getresearcherById(1)).thenReturn(researcher);
-		when(researcherControls.getresearcher(1)).thenReturn(researcher);
-		researcherControls.getresearcher(1014);
-	}*/
-	
+
 	@Test
-	public void testGetAllResearchers() throws Exception{
-		
+	public void testGetProjectsForResearcher() throws Exception {
+
+		when(researcherControls.getResearcher(1)).thenReturn(researcher);
+		when(researcherControls.getProjectsForResearcher(1)).thenReturn(
+				projects);
+	}
+
+	@Test
+	public void testGetAllResearchers() throws Exception {
+
 		List<Researcher> all = new LinkedList<Researcher>();
-		all.add(new Researcher(){ {setFullName("TestName1");}});
-		all.add(new Researcher(){ {setFullName("TestName2");}});
+		all.add(new Researcher() {
+			{
+				setFullName("TestName1");
+			}
+		});
+		all.add(new Researcher() {
+			{
+				setFullName("TestName2");
+			}
+		});
 
 		researcherControls.getAllResearchers();
 		verify(projectDaoMock).getResearchers();
 
 	}
-	
+
 	@Test
-	public void testCreateResearcherSuccessfully() throws Exception{
-		
+	public void testGetResearcherRoles() throws Exception {
+		ResearcherRole researcherRole = new ResearcherRole() {
+			{
+				setName("Primary Researcher");
+			}
+		};
+		List<ResearcherRole> researcherRoles = new LinkedList<ResearcherRole>();
+		researcherRoles.add(researcherRole);
+
+		researcherControls.getResearcherRoles();
+		verify(projectDaoMock).getResearcherRoles();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetInvalidResearcher() throws Exception {
+
+		researcherControls.getResearcher(null);
+	}
+
+	@Test
+	public void testCreateResearcherSuccessfully() throws Exception {
+
 		when(projectDaoMock.createResearcher(researcher)).thenReturn(1);
-		
+
 		researcherControls.createResearcher(researcher);
 		verify(projectDaoMock).createResearcher(researcher);
 	}
-	
-	@Test(expected = InvalidEntityException.class)
-	public void testResearcherMissingFullName() throws Exception{
 
-		Researcher newresearcher = new Researcher(){{setFullName(""); }};
+	@Test(expected = InvalidEntityException.class)
+	public void testResearcherMissingFullName() throws Exception {
+
+		Researcher newresearcher = new Researcher() {
+			{
+				setFullName("");
+			}
+		};
 		when(projectDaoMock.createResearcher(newresearcher)).thenReturn(1);
-			
+
 		researcherControls.createResearcher(newresearcher);
 	}
 
 	@Test(expected = InvalidEntityException.class)
 	public void testDuplicateResearcherFullName() throws Exception {
-		
+
 		List<Researcher> all = new LinkedList<Researcher>();
-		all.add(new Researcher(){ {setFullName("TestName");}});
-		all.add(new Researcher(){ {setFullName("TestName2");}});
-		
+		all.add(new Researcher() {
+			{
+				setFullName("TestName");
+			}
+		});
+		all.add(new Researcher() {
+			{
+				setFullName("TestName2");
+			}
+		});
+
 		researcherControls.getAllResearchers();
 		when(researcherControls.getAllResearchers()).thenReturn(all);
-		
-		researcherControls.createResearcher(researcher);		
+
+		researcherControls.createResearcher(researcher);
 	}
-		
+
 	@Test(expected = InvalidEntityException.class)
 	public void testCreateResearcherWithId() throws Exception {
-		
-		Researcher newresearcher = new Researcher(){{setFullName("TestNewName"); setId(1);}};
+
+		Researcher newresearcher = new Researcher() {
+			{
+				setFullName("TestNewName");
+				setId(1);
+			}
+		};
 		when(projectDaoMock.getResearcherById(1)).thenReturn(newresearcher);
-		
-		researcherControls.createResearcher(newresearcher);		
+
+		researcherControls.createResearcher(newresearcher);
 	}
-	
+
 	@Test
 	public void testAllowDuplicateFullNameAsNewResearcher() throws Exception {
-		
+
 		List<Researcher> all = new LinkedList<Researcher>();
-		all.add(new Researcher(){ {setFullName("TestName");}});
-		all.add(new Researcher(){ {setFullName("New Researcher");}});
-		
-		Researcher newresearcher = new Researcher(){{setFullName("New Researcher");}};
-		
-		//Mock alert: return mocked result set on find
+		all.add(new Researcher() {
+			{
+				setFullName("TestName");
+			}
+		});
+		all.add(new Researcher() {
+			{
+				setFullName("New Researcher");
+			}
+		});
+
+		Researcher newresearcher = new Researcher() {
+			{
+				setFullName("New Researcher");
+			}
+		};
+
+		// Mock alert: return mocked result set on find
 		try {
 			when(projectDaoMock.getResearchers()).thenReturn(all);
-			//System.out.println("projectDao" + projectDaoMock.getresearchers());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		//call the main method you want to test
-		List<Researcher> result = researcherControls.getAllResearchers();
+
 		when(researcherControls.getAllResearchers()).thenReturn(all);
-		
-		researcherControls.createResearcher(newresearcher);		
+
+		researcherControls.createResearcher(newresearcher);
 	}
-	
-	@Test(expected=InvalidEntityException.class)
-	public void testEditResearcherWithNoId() throws Exception{
-		
+
+	@Test(expected = InvalidEntityException.class)
+	public void testEditResearcherWithNoId() throws Exception {
+
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
 		researcherControls.editResearcher(researcher);
 		verify(projectDaoMock).updateResearcher(researcher);
-			
+
 	}
-	
+
 	@Test
-	public void testEditResearcher() throws Exception{
+	public void testEditResearcher() throws Exception {
 		researcher.setId(1);
 		researcher.setLastModified("01/01/2014");
-		
+
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
-				
+
 		researcherControls.editResearcher(researcher);
-		
+
 		verify(projectDaoMock).updateResearcher(researcher);
-		
+
 	}
-	
-	
-	@Test(expected=NullPointerException.class)
-	public void testDeleteResearcher() throws Exception{
+
+	@Test(expected = NullPointerException.class)
+	public void testEditAdviserWithIncorrectId() throws Exception {
+
 		researcher.setId(1);
-		
+		researcher.setLastModified("1/1/2014");
+
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
-		
+
+		researcherControls
+				.editResearcher(2, "FullName", "1/1/2014", "TestName");
+		verify(projectDaoMock).updateResearcher(researcher);
+	}
+
+	@Test(expected = OutOfDateException.class)
+	public void testEditAdviserWithIncorrectTimestamp() throws Exception {
+
+		researcher.setId(1);
+		researcher.setLastModified("1/1/2014");
+
+		when(researcherControls.getResearcher(1)).thenReturn(researcher);
+
+		// Try to update the field with incorrect timestamp
+		researcherControls
+				.editResearcher(1, "FullName", "1/2/2014", "TestName");
+		verify(projectDaoMock).updateResearcher(researcher);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testDeleteResearcher() throws Exception {
+		researcher.setId(1);
+
+		when(researcherControls.getResearcher(1)).thenReturn(researcher);
+
 		researcherControls.delete(1);
 		verify(projectDaoMock).deleteResearcher(1);
-		
+
 		// Try edit researcher to see if researcher is completely removed
 		researcherControls.editResearcher(researcher);
 	}
 
+	@Test(expected = ArgumentsAreDifferent.class)
+	public void testDeleteIncorrectAdviser() throws Exception {
+
+		researcherControls.createResearcher(researcher);
+		researcher.setId(1);
+		when(researcherControls.getResearcher(1)).thenReturn(researcher);
+
+		researcherControls.delete(2);
+		verify(projectDaoMock).deleteResearcher(1);
+		// Try edit researcher to see if researcher is completely removed
+		researcherControls.editResearcher(researcher);
+	}
 }
