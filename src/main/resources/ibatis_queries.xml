@@ -7,7 +7,7 @@
 
 	<cache />
 	
-	<select id="getLastModifiedForTable" parameterType="java.lang.String"
+	<select id="getLastModifiedForTable" parameterType="String"
 		resultType="java.lang.String">
 		SELECT MAX(lastModified)
 		FROM ${table}
