@@ -89,14 +89,6 @@ public class ProjectControls extends AbstractControl {
             return; // Don't check HPC until the project has a real name
         }
 
-        // At least one HPC
-        if (pw.getProject().getId() != null
-                && pw.getProjectFacilities().isEmpty()) {
-            throw new InvalidEntityException(
-                    "There must be at least one HPC facility associated with the project",
-                    ProjectWrapper.class, "projectFacilities");
-        }
-
         for (final RPLink rp : pw.getRpLinks()) {
             for (final RPLink other : pw.getRpLinks()) {
                 if (rp.getResearcherId().equals(other.getResearcherId())
