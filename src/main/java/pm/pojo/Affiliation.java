@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class Affiliation {
+import java.io.Serializable;
+
+public class Affiliation implements Serializable {
 
 	private String institution;
 	private String division;

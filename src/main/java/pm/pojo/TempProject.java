@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class TempProject {
+import java.io.Serializable;
+
+public class TempProject implements Serializable {
 
 	private Integer id;
 	private Long lastVisited;

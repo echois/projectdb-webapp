@@ -2,7 +2,9 @@ package pm.pojo;
 
 import common.util.AffiliationUtil;
 
-public class Adviser {
+import java.io.Serializable;
+
+public class Adviser implements Serializable {
 
 	private Integer id;
 	private Integer numProjects;

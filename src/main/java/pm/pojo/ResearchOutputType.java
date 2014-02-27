@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class ResearchOutputType {
+import java.io.Serializable;
+
+public class ResearchOutputType implements Serializable {
 
 	private Integer id;
 	private String name;

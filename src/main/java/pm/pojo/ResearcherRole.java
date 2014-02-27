@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class ResearcherRole {
+import java.io.Serializable;
+
+public class ResearcherRole implements Serializable {
 
 	private Integer id;
 	private String name;

@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class KpiCode {
+import java.io.Serializable;
+
+public class KpiCode implements Serializable {
 
 	private Integer id;
 	private String code;

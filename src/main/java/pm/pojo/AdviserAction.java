@@ -1,9 +1,10 @@
 package pm.pojo;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AdviserAction {
+public class AdviserAction implements Serializable {
 
 	public AdviserAction() {
 		this.attachments = new LinkedList<Attachment>();

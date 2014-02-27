@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class AdviserRole {
+import java.io.Serializable;
+
+public class AdviserRole implements Serializable {
 
 	private Integer id;
 	private String name;

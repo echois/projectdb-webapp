@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class ProjectType {
+import java.io.Serializable;
+
+public class ProjectType implements Serializable {
 
 	private Integer id;
 	private String name;

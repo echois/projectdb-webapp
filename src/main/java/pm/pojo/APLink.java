@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class APLink {
+import java.io.Serializable;
+
+public class APLink implements Serializable {
 
 	private Integer adviserId;
 	private Integer projectId;

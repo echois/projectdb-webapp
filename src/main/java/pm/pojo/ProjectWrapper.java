@@ -1,9 +1,10 @@
 package pm.pojo;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProjectWrapper {
+public class ProjectWrapper implements Serializable {
 
 	private Project project;
 	private List<RPLink> rpLinks;

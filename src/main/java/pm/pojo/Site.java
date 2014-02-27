@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class Site {
+import java.io.Serializable;
+
+public class Site implements Serializable {
 
 	private Integer id;
 	private String name;
