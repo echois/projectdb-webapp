@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nz.ac.auckland.eresearch</groupId>
     <artifactId>project_management</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.7-SNAPSHOT</version>
     <name>Project Management Prototype</name>
     <description>Prototype for the project and collaborator management app</description>
     <packaging>war</packaging>
@@ -336,6 +336,17 @@
         	<artifactId>swagger-springmvc</artifactId>
         	<version>0.6.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>fm.void.jetm</groupId>
+            <artifactId>jetm</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>fm.void.jetm</groupId>
+            <artifactId>jetm-optional</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -511,16 +522,16 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>auckland.plugin.release</id>
-            <url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
+            <id>nesi.public.release</id>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
         <pluginRepository>
-            <id>auckland.public.snapshots</id>
-            <url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/</url>
+            <id>nesi.public.snapshots</id>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public-snapshots/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>true</enabled>
@@ -535,8 +546,8 @@
 
     <repositories>
         <repository>
-            <id>auckland.public.release</id>
-            <url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
+            <id>nesi.public.release</id>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -549,8 +560,8 @@
             </snapshots>
         </repository>
         <repository>
-            <id>auckland.public.snapshots</id>
-            <url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
+            <id>nesi.public.snapshots</id>
+            <url>https://code.nesi.org.nz/nexus/content/groups/public-snapshots/
             </url>
             <releases>
                 <enabled>false</enabled>
@@ -574,30 +585,34 @@
             <name>Apache Repository</name>
             <url>http://repository.apache.org/snapshots/</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>spring-maven-milestone</id>-->
+            <!--<name>Springframework Maven Repository</name>-->
+            <!--<url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>-->
+        <!--</repository>-->
         <repository>
             <id>spring-maven-milestone</id>
             <name>Springframework Maven Repository</name>
-            <url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>
+            <url>http://repo.spring.io/milestone</url>
         </repository>
 
     </repositories>
 
     <distributionManagement>
         <repository>
-            <name>Auckland Releases Repository</name>
-            <id>auckland.release</id>
-            <url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/releases</url>
+            <name>NeSI Releases Repository</name>
+            <id>nesi.release</id>
+            <url>https://code.nesi.org.nz/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
-            <id>auckland.snapshot</id>
-            <name>BeSTGRID Snapshots Repository</name>
-            <url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/snapshots</url>
+            <id>nesi.snapshot</id>
+            <url>https://code.nesi.org.nz/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:makkus/projectdb-webapp.git</connection>
-        <developerConnection>scm:git:git@github.com:makkus/projectdb-webapp.git</developerConnection>
+        <connection>scm:git:git@github.com:nesi/projectdb-webapp.git</connection>
+        <developerConnection>scm:git:git@github.com:nesi/projectdb-webapp.git</developerConnection>
         <url>https://github.com/nesi/projectdb-webapp</url>
         <tag>0.1</tag>
     </scm>
@@ -608,3 +623,5 @@
 	</organization>
 
 </project>
+
+

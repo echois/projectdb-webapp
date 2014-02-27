@@ -22,6 +22,7 @@
     <bean id="projectControls" class="nz.org.nesi.researchHub.control.ProjectControls"/>
 
 
+
    	<!-- Allows us to use @PreAuthorize family of security authorization annotations. -->
 	<security:global-method-security
 		pre-post-annotations="enabled">
@@ -51,5 +52,6 @@
 			access="isAuthenticated()" />
 		<security:http-basic />
 	</security:http>
+
 
 </beans>
