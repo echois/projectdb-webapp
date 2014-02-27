@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class ResearcherProperty {
+import java.io.Serializable;
+
+public class ResearcherProperty implements Serializable {
 
 	private Integer researcherId;
 	private Integer siteId;

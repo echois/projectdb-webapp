@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class RPLink {
+import java.io.Serializable;
+
+public class RPLink implements Serializable {
 
 	private Integer researcherId;
 	private Integer projectId;

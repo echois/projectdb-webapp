@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class Attachment {
+import java.io.Serializable;
+
+public class Attachment implements Serializable {
 
 	Integer id;
 	Integer projectId;

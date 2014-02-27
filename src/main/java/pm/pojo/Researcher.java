@@ -1,12 +1,13 @@
 package pm.pojo;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import common.util.AffiliationUtil;
 
-public class Researcher {
+public class Researcher implements Serializable {
 
 	private Integer id;
 	private String fullName;

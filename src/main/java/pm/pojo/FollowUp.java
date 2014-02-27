@@ -1,9 +1,10 @@
 package pm.pojo;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FollowUp {
+public class FollowUp implements Serializable {
 
 	private Integer id;
 	private Integer projectId;

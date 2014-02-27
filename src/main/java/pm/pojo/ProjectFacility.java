@@ -1,6 +1,8 @@
 package pm.pojo;
 
-public class ProjectFacility {
+import java.io.Serializable;
+
+public class ProjectFacility implements Serializable {
 
 	private Integer projectId;
 	private Integer facilityId;
