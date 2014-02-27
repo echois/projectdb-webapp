@@ -5,6 +5,8 @@
 
 <mapper namespace="pm.db">
 
+    <cache/>
+
    <select id="getProjectById" parameterType="java.lang.Integer" resultType="pm.pojo.Project">
        SELECT *
        FROM project
