@@ -7,19 +7,17 @@ import com.mangofactory.swagger.annotations.ApiError;
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 5/12/13
- * Time: 11:38 AM
+ * Written by: Markus Binsteiner Date: 5/12/13 Time: 11:38 AM
  */
 @Component
-@ApiError(code=500,reason="Database exception")
+@ApiError(code = 500, reason = "Database exception")
 public class DatabaseException extends RuntimeException {
+	// @formatter:off
+	private DatabaseException() {
+		super();
+	}
 
-    private DatabaseException(){
-        super();
-    }
-
-    public DatabaseException(String s, Exception e) {
-        super(s,e);
-    }
+	public DatabaseException(String s, Exception e) {
+		super(s, e);
+	}
 }
