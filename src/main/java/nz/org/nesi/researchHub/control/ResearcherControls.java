@@ -262,6 +262,15 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
+     * Get the timestamp of the most recently modified researcher.
+     * 
+     * @return a timestamp
+     */
+    public String getLastModified() {
+        return projectDao.getLastModifiedForTable("researcher");
+    }
+
+    /**
      * Returns researcher list of all projects for this researcher.
      * 
      * Note: this method returns an empty List if the specified researcher does

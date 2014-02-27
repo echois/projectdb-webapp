@@ -598,6 +598,15 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Get the timestamp of the most recently modified project.
+     * 
+     * @return a timestamp
+     */
+    public String getLastModified() {
+        return projectDao.getLastModifiedForTable("project");
+    }
+
+    /**
      * Returns a list of all KPIS reported for all projects.
      * 
      * @return a list of ProjectKpis

@@ -330,6 +330,15 @@ public class AdviserControls extends AbstractControl {
     }
 
     /**
+     * Get the timestamp of the most recently modified adviser.
+     * 
+     * @return a timestamp
+     */
+    public String getLastModified() {
+        return projectDao.getLastModifiedForTable("adviser");
+    }
+
+    /**
      * Returns adviser list of all projects for this adviser.
      * 
      * Note: this method returns an empty List if the specified advisor does not

@@ -223,6 +223,15 @@ public class ProjectControllerRest {
         return projectControls.getKpis();
     }
 
+    @RequestMapping(value = "/age", method = RequestMethod.GET)
+    @ApiOperation(
+                  value = "Get Timestamp",
+                  notes = "Returns a timestamp indicating the most recently modified project. Useful for caching.")
+    @ResponseBody
+    public String getLastModified() throws Exception {
+        return projectControls.getLastModified();
+    }
+
     @RequestMapping(value = "/akpis", method = RequestMethod.GET)
     @ApiOperation(value = "Get Project KPIS",
                   notes = "Returns a list of all reported KPIs")

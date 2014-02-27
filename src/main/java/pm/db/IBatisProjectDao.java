@@ -531,6 +531,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    public String getLastModifiedForTable(final String table) {
+        return getSqlSession()
+                .selectOne("pm.db.getLastModifiedForTable", table);
+    }
+
+    @Override
     public String getNextProjectCode(final String name) {
         String instCode = (String) getSqlSession().selectOne(
                 "pm.db.getInstitutionCodeFromName", name);

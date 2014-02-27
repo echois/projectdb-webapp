@@ -6,6 +6,12 @@
 <mapper namespace="pm.db">
 
 	<cache />
+	
+	<select id="getLastModifiedForTable" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		SELECT MAX(lastModified)
+		FROM #{table}		
+	</select>
 
 	<select id="getProjectById" parameterType="java.lang.Integer"
 		resultType="pm.pojo.Project">

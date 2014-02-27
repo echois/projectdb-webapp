@@ -79,6 +79,8 @@ public interface ProjectDao {
 
     public List<Kpi> getKpis() throws Exception;
 
+    public String getLastModifiedForTable(final String table);
+
     public String getNextProjectCode(String hostInstitution);
 
     public Integer getNumProjectsForAdviser(Integer adviserId) throws Exception;
