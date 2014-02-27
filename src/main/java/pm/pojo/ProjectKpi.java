@@ -4,112 +4,112 @@ import java.io.Serializable;
 
 public class ProjectKpi implements Serializable {
 
-	private Integer id;
-	private Integer kpiId;
-	private Integer code;
-	private String codeName;
-	private String kpiType;
-	private String kpiTitle;
-	private Integer projectId;
-	private String adviserName;
-	private Integer adviserId;
-	private String date;
-	private Float value;
-	private String notes;
+    private Integer adviserId;
+    private String adviserName;
+    private Integer code;
+    private String codeName;
+    private String date;
+    private Integer id;
+    private Integer kpiId;
+    private String kpiTitle;
+    private String kpiType;
+    private String notes;
+    private Integer projectId;
+    private Float value;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getAdviserId() {
+        return adviserId;
+    }
 
-	public String getKpiType() {
-		return kpiType;
-	}
+    public String getAdviserName() {
+        return adviserName;
+    }
 
-	public void setKpiType(String kpiType) {
-		this.kpiType = kpiType;
-	}
+    public Integer getCode() {
+        return code;
+    }
 
-	public Integer getCode() {
-		return code;
-	}
+    public String getCodeName() {
+        return codeName;
+    }
 
-	public void setCode(Integer code) {
-		this.code = code;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public String getCodeName() {
-		return codeName;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setCodeName(String codeName) {
-		this.codeName = codeName;
-	}
+    public Integer getKpiId() {
+        return kpiId;
+    }
 
-	public String getAdviserName() {
-		return adviserName;
-	}
+    public String getKpiTitle() {
+        return kpiTitle;
+    }
 
-	public void setAdviserName(String adviserName) {
-		this.adviserName = adviserName;
-	}
+    public String getKpiType() {
+        return kpiType;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public Float getValue() {
+        return value;
+    }
 
-	public Integer getAdviserId() {
-		return adviserId;
-	}
+    public void setAdviserId(final Integer adviserId) {
+        this.adviserId = adviserId;
+    }
 
-	public void setAdviserId(Integer adviserId) {
-		this.adviserId = adviserId;
-	}
+    public void setAdviserName(final String adviserName) {
+        this.adviserName = adviserName;
+    }
 
-	public String getKpiTitle() {
-		return kpiTitle;
-	}
+    public void setCode(final Integer code) {
+        this.code = code;
+    }
 
-	public void setKpiTitle(String kpiTitle) {
-		this.kpiTitle = kpiTitle;
-	}
+    public void setCodeName(final String codeName) {
+        this.codeName = codeName;
+    }
 
-	public Integer getKpiId() {
-		return kpiId;
-	}
+    public void setDate(final String date) {
+        this.date = date;
+    }
 
-	public void setKpiId(Integer kpiId) {
-		this.kpiId = kpiId;
-	}
-	
-	public String getDate() {
-		return date;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public void setKpiId(final Integer kpiId) {
+        this.kpiId = kpiId;
+    }
 
-	public Float getValue() {
-		return value;
-	}
+    public void setKpiTitle(final String kpiTitle) {
+        this.kpiTitle = kpiTitle;
+    }
 
-	public void setValue(Float value) {
-		this.value = value;
-	}
+    public void setKpiType(final String kpiType) {
+        this.kpiType = kpiType;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public void setNotes(final String notes) {
+        this.notes = notes;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setValue(final Float value) {
+        this.value = value;
+    }
 }

@@ -17,139 +17,153 @@ import common.util.CustomException;
 
 public class TempProjectManager {
 
-	private Logger log = Logger.getLogger(TempProjectManager.class.getName()); 
-	private String remoteUserHeader;
-	private ProjectDao projectDao;
-	private TempProjectDao tempDao;
-	@Value("${session.duration.seconds}")
-	private Integer sessionDuration;
+    private final Logger log = Logger.getLogger(TempProjectManager.class
+            .getName());
+    private ProjectDao projectDao;
+    private String remoteUserHeader;
+    @Value("${session.duration.seconds}")
+    private Integer sessionDuration;
+    private TempProjectDao tempDao;
 
-	public synchronized void register(ProjectWrapper pw) throws Exception {
-		Integer projectId = this.getNextTempId();
-		pw.getProject().setId(projectId);
-		this.register(projectId, pw);
-	}
+    public synchronized ProjectWrapper get(final Integer projectId)
+            throws Exception {
+        tempDao.deleteExpiredProjects(sessionDuration);
+        if (!isRegistered(projectId)) {
+            throw new CustomException(
+                    "Session lifetime for editing project expired.");
+        }
+        final TempProject tp = tempDao.getProject(projectId);
+        verifyCurrentUserIsOwner(tp.getOwner());
+        tempDao.updateLastVisited(projectId);
+        return (ProjectWrapper) new XStream().fromXML(tp.getProjectString());
+    }
 
-	public synchronized void register(Integer projectId, ProjectWrapper pw) throws Exception {
-		tempDao.deleteExpiredProjects(this.sessionDuration);
-		String currentUser=this.getTuakiriUniqueIdFromRequest();
-		TempProject tp = this.tempDao.getProject(projectId);
+    private Integer getNextTempId() {
+        return tempDao.getNextNewProjectId();
+    }
 
-		if (tp == null) {
-			tp = new TempProject();
-			tp.setId(projectId);
-			tp.setLastVisited(System.currentTimeMillis()/1000);
-			tp.setOwner(currentUser);
-			tp.setProjectString(new XStream().toXML(pw));		
-			tempDao.createProject(tp);
-		} else {
-			if (currentUser.equals(tp.getOwner())) {
-				tp.setLastVisited(System.currentTimeMillis()/1000);
-				this.tempDao.updateProject(tp);
-			} else {
-				String message = "This project is currently being edited";
-				try {
-					String owner = projectDao.getAdviserByTuakiriUniqueId(currentUser).getFullName();
-					message += " by " + owner;
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
-				}
-				throw new CustomException(message);
-			}
-		}
-	}
+    public ProjectDao getProjectDao() {
+        return projectDao;
+    }
 
-	public synchronized ProjectWrapper get(Integer projectId) throws Exception {
-		tempDao.deleteExpiredProjects(this.sessionDuration);
-		if (!this.isRegistered(projectId)) {
-			throw new CustomException("Session lifetime for editing project expired.");
-		}
-		TempProject tp = tempDao.getProject(projectId);
-		this.verifyCurrentUserIsOwner(tp.getOwner());
-		tempDao.updateLastVisited(projectId);
-		return (ProjectWrapper) new XStream().fromXML(tp.getProjectString());
-	}
+    public String getRemoteUserHeader() {
+        return remoteUserHeader;
+    }
 
-	public synchronized void update(Integer projectId, ProjectWrapper pw) throws Exception {
-		tempDao.deleteExpiredProjects(this.sessionDuration);
-		if (!this.isRegistered(projectId)) {
-			throw new CustomException("Session lifetime for editing project expired.");
-		}
-		TempProject tp = tempDao.getProject(projectId);
-		this.verifyCurrentUserIsOwner(tp.getOwner());
-		tp.setLastVisited(System.currentTimeMillis()/1000);
-		tp.setProjectString(new XStream().toXML(pw));		
-		tempDao.updateProject(tp);
-	}
+    public Integer getSessionDuration() {
+        return sessionDuration;
+    }
 
-	public synchronized void unregister(Integer projectId) throws Exception {
-		tempDao.deleteExpiredProjects(this.sessionDuration);
-		if (!this.isRegistered(projectId)) {
-			return;
-		}
-		this.verifyCurrentUserIsOwner(tempDao.getOwner(projectId));
-		tempDao.deleteProject(projectId);		
-	}
+    public TempProjectDao getTempDao() {
+        return tempDao;
+    }
 
-	public synchronized Boolean isRegistered(Integer pid) throws Exception {
-		tempDao.deleteExpiredProjects(this.sessionDuration);
-		return tempDao.projectExists(pid);
-	}
-	
-	private Integer getNextTempId() {
-		return tempDao.getNextNewProjectId();
-	}
+    private String getTuakiriUniqueIdFromRequest() {
+        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest();
+        String user = (String) request.getAttribute(remoteUserHeader);
+        if (user == null) {
+            user = "NULL";
+        }
+        return user;
+    }
 
-	private String getTuakiriUniqueIdFromRequest() {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String user = (String) request.getAttribute(this.remoteUserHeader);
-		if (user == null) {
-			user = "NULL";
-		}
-		return user;
-	}
+    public synchronized Boolean isRegistered(final Integer pid)
+            throws Exception {
+        tempDao.deleteExpiredProjects(sessionDuration);
+        return tempDao.projectExists(pid);
+    }
 
-	private void verifyCurrentUserIsOwner(String owner) throws CustomException {
-		if (!owner.equals(this.getTuakiriUniqueIdFromRequest())) {
-			String message = "This project is currently being edited";
-			try {
-			    String fullName = projectDao.getAdviserByTuakiriUniqueId(owner).getFullName();
-			    message += " by " + fullName;
-			} catch(Exception e) {}
-			throw new CustomException(message);
-		}		
-	}
+    public synchronized void register(final Integer projectId,
+            final ProjectWrapper pw) throws Exception {
+        tempDao.deleteExpiredProjects(sessionDuration);
+        final String currentUser = getTuakiriUniqueIdFromRequest();
+        TempProject tp = tempDao.getProject(projectId);
 
-	public String getRemoteUserHeader() {
-		return remoteUserHeader;
-	}
+        if (tp == null) {
+            tp = new TempProject();
+            tp.setId(projectId);
+            tp.setLastVisited(System.currentTimeMillis() / 1000);
+            tp.setOwner(currentUser);
+            tp.setProjectString(new XStream().toXML(pw));
+            tempDao.createProject(tp);
+        } else {
+            if (currentUser.equals(tp.getOwner())) {
+                tp.setLastVisited(System.currentTimeMillis() / 1000);
+                tempDao.updateProject(tp);
+            } else {
+                String message = "This project is currently being edited";
+                try {
+                    final String owner = projectDao
+                            .getAdviserByTuakiriUniqueId(currentUser)
+                            .getFullName();
+                    message += " by " + owner;
+                } catch (final Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+                throw new CustomException(message);
+            }
+        }
+    }
 
-	public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
+    public synchronized void register(final ProjectWrapper pw) throws Exception {
+        final Integer projectId = getNextTempId();
+        pw.getProject().setId(projectId);
+        this.register(projectId, pw);
+    }
 
-	public ProjectDao getProjectDao() {
-		return projectDao;
-	}
+    public void setProjectDao(final ProjectDao projectDao) {
+        this.projectDao = projectDao;
+    }
 
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
+    public void setRemoteUserHeader(final String remoteUserHeader) {
+        this.remoteUserHeader = remoteUserHeader;
+    }
 
-	public TempProjectDao getTempDao() {
-		return tempDao;
-	}
+    public void setSessionDuration(final Integer sessionDuration) {
+        this.sessionDuration = sessionDuration;
+    }
 
-	public void setTempDao(TempProjectDao tempDao) {
-		this.tempDao = tempDao;
-	}
+    public void setTempDao(final TempProjectDao tempDao) {
+        this.tempDao = tempDao;
+    }
 
-	public Integer getSessionDuration() {
-		return sessionDuration;
-	}
+    public synchronized void unregister(final Integer projectId)
+            throws Exception {
+        tempDao.deleteExpiredProjects(sessionDuration);
+        if (!isRegistered(projectId)) {
+            return;
+        }
+        verifyCurrentUserIsOwner(tempDao.getOwner(projectId));
+        tempDao.deleteProject(projectId);
+    }
 
-	public void setSessionDuration(Integer sessionDuration) {
-		this.sessionDuration = sessionDuration;
-	}
+    public synchronized void update(final Integer projectId,
+            final ProjectWrapper pw) throws Exception {
+        tempDao.deleteExpiredProjects(sessionDuration);
+        if (!isRegistered(projectId)) {
+            throw new CustomException(
+                    "Session lifetime for editing project expired.");
+        }
+        final TempProject tp = tempDao.getProject(projectId);
+        verifyCurrentUserIsOwner(tp.getOwner());
+        tp.setLastVisited(System.currentTimeMillis() / 1000);
+        tp.setProjectString(new XStream().toXML(pw));
+        tempDao.updateProject(tp);
+    }
+
+    private void verifyCurrentUserIsOwner(final String owner)
+            throws CustomException {
+        if (!owner.equals(getTuakiriUniqueIdFromRequest())) {
+            String message = "This project is currently being edited";
+            try {
+                final String fullName = projectDao.getAdviserByTuakiriUniqueId(
+                        owner).getFullName();
+                message += " by " + fullName;
+            } catch (final Exception e) {
+            }
+            throw new CustomException(message);
+        }
+    }
 
 }

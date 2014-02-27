@@ -4,59 +4,59 @@ import java.io.Serializable;
 
 public class APLink implements Serializable {
 
-	private Integer adviserId;
-	private Integer projectId;
-	private Integer adviserRoleId;
-	private String notes;
-	private String adviserRoleName;
-	private Adviser adviser;
+    private Adviser adviser;
+    private Integer adviserId;
+    private Integer adviserRoleId;
+    private String adviserRoleName;
+    private String notes;
+    private Integer projectId;
 
-	public Integer getAdviserRoleId() {
-		return adviserRoleId;
-	}
+    public Adviser getAdviser() {
+        return adviser;
+    }
 
-	public void setAdviserRoleId(Integer adviserRoleId) {
-		this.adviserRoleId = adviserRoleId;
-	}
+    public Integer getAdviserId() {
+        return adviserId;
+    }
 
-	public Integer getAdviserId() {
-		return adviserId;
-	}
+    public Integer getAdviserRoleId() {
+        return adviserRoleId;
+    }
 
-	public void setAdviserId(Integer adviserId) {
-		this.adviserId = adviserId;
-	}
+    public String getAdviserRoleName() {
+        return adviserRoleName;
+    }
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public String getAdviserRoleName() {
-		return adviserRoleName;
-	}
+    public void setAdviser(final Adviser adviser) {
+        this.adviser = adviser;
+    }
 
-	public void setAdviserRoleName(String adviserRoleName) {
-		this.adviserRoleName = adviserRoleName;
-	}
+    public void setAdviserId(final Integer adviserId) {
+        this.adviserId = adviserId;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public void setAdviserRoleId(final Integer adviserRoleId) {
+        this.adviserRoleId = adviserRoleId;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public void setAdviserRoleName(final String adviserRoleName) {
+        this.adviserRoleName = adviserRoleName;
+    }
 
-	public Adviser getAdviser() {
-		return adviser;
-	}
+    public void setNotes(final String notes) {
+        this.notes = notes;
+    }
 
-	public void setAdviser(Adviser adviser) {
-		this.adviser = adviser;
-	}
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
 
 }

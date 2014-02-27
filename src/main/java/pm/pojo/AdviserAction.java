@@ -6,90 +6,91 @@ import java.util.List;
 
 public class AdviserAction implements Serializable {
 
-	public AdviserAction() {
-		this.attachments = new LinkedList<Attachment>();
-	}
-	
-	private Integer id;
-	private Integer projectId;
-	private String date;
-	private Integer adviserId;
-	private String action;
-	private String adviserName;
-	private String attachmentDescription;
-	private String attachmentLink;
+    private String action;
+
+    private Integer adviserId;
+    private String adviserName;
+    private String attachmentDescription;
+    private String attachmentLink;
     private List<Attachment> attachments;
+    private String date;
+    private Integer id;
+    private Integer projectId;
 
-	public Integer getAdviserId() {
-		return adviserId;
-	}
+    public AdviserAction() {
+        attachments = new LinkedList<Attachment>();
+    }
 
-	public void setAdviserId(Integer adviserId) {
-		this.adviserId = adviserId;
-	}
+    public String getAction() {
+        return action;
+    }
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public Integer getAdviserId() {
+        return adviserId;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public String getAdviserName() {
+        return adviserName;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public String getAttachmentDescription() {
+        return attachmentDescription;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public String getAttachmentLink() {
+        return attachmentLink;
+    }
 
-	public String getAdviserName() {
-		return adviserName;
-	}
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
 
-	public void setAdviserName(String adviserName) {
-		this.adviserName = adviserName;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public String getAction() {
-		return action;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setAction(final String action) {
+        this.action = action;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setAdviserId(final Integer adviserId) {
+        this.adviserId = adviserId;
+    }
 
-	public String getAttachmentDescription() {
-		return attachmentDescription;
-	}
+    public void setAdviserName(final String adviserName) {
+        this.adviserName = adviserName;
+    }
 
-	public void setAttachmentDescription(String attachmentDescription) {
-		this.attachmentDescription = attachmentDescription;
-	}
+    public void setAttachmentDescription(final String attachmentDescription) {
+        this.attachmentDescription = attachmentDescription;
+    }
 
-	public String getAttachmentLink() {
-		return attachmentLink;
-	}
+    public void setAttachmentLink(final String attachmentLink) {
+        this.attachmentLink = attachmentLink;
+    }
 
-	public void setAttachmentLink(String attachmentLink) {
-		this.attachmentLink = attachmentLink;
-	}
+    public void setAttachments(final List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 
-	public List<Attachment> getAttachments() {
-		return attachments;
-	}
+    public void setDate(final String date) {
+        this.date = date;
+    }
 
-	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
-	}
-	
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
+
 }

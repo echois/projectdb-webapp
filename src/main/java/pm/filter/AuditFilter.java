@@ -1,6 +1,7 @@
 package pm.filter;
 
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -14,88 +15,93 @@ import org.apache.log4j.Logger;
 
 public class AuditFilter implements Filter {
 
-	private Logger flog = Logger.getLogger("file."+AuditFilter.class.getName()); 
-	private Logger log = Logger.getLogger(AuditFilter.class.getName()); 
+    private final Logger flog = Logger.getLogger("file."
+            + AuditFilter.class.getName());
+    private final Logger log = Logger.getLogger(AuditFilter.class.getName());
     private String proxyIp;
-    private String remoteUserHeader;
     private String remoteAddrHeader;
-    
-	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
+    private String remoteUserHeader;
 
-		try {
-			HttpServletRequest request = (HttpServletRequest) req;
-			HttpServletResponse response = (HttpServletResponse) resp;
-			String remoteUser = request.getHeader(this.remoteUserHeader);
-		    String remoteAddr = request.getHeader(this.remoteAddrHeader);
-			
-		    // Comment out for testing
-		    if (!request.getRemoteAddr().equals(this.proxyIp)) {
-				response.sendError(HttpServletResponse.SC_FORBIDDEN);
-				log.error("Denying access from host " + request.getRemoteAddr() + " (doesn't match " + this.proxyIp + ")");
-				return;
-			}
+    @Override
+    public void destroy() {
+    }
 
-		    // Set remoteUser to Tuakiri unique id for testing
-		    if (remoteUser == null) remoteUser = "behat-admin";
-		    if (remoteUser == null || remoteUser.trim().equals("")) {
-				log.error("Denying access for anonymous user");
-				response.sendError(HttpServletResponse.SC_FORBIDDEN);
-				return;
-		    }
-		    request.setAttribute(this.remoteUserHeader, remoteUser);
+    @Override
+    public void doFilter(final ServletRequest req, final ServletResponse resp,
+            final FilterChain filterChain) throws IOException, ServletException {
 
-		    if (remoteAddr == null || remoteAddr.trim().equals("")) {
-		    	remoteAddr = request.getRemoteAddr();
-		    	if (remoteAddr == null || remoteAddr.trim().equals("")) {
-		    		remoteAddr = "n/a";
-		    	}
-		    }
-		    StringBuffer sb = new StringBuffer();
-			sb.append("remoteIP=").append(remoteAddr)
-			  .append(" ")
-			  .append("user=").append(remoteUser)
-			  .append(" ")
-			  .append("method=").append(request.getMethod())
-			  .append(" ")
-			  .append("path=").append(request.getPathInfo());
-			if (request.getQueryString() != null) {
-				sb.append("?").append(request.getQueryString());
-			}
-			flog.info(sb.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		filterChain.doFilter(req, resp);
-	}
+        try {
+            final HttpServletRequest request = (HttpServletRequest) req;
+            final HttpServletResponse response = (HttpServletResponse) resp;
+            String remoteUser = request.getHeader(remoteUserHeader);
+            String remoteAddr = request.getHeader(remoteAddrHeader);
 
-	public void init(FilterConfig arg0) throws ServletException {
-	}
+            // Comment out for testing
+            if (!request.getRemoteAddr().equals(proxyIp)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                log.error("Denying access from host " + request.getRemoteAddr()
+                        + " (doesn't match " + proxyIp + ")");
+                return;
+            }
 
-	public void destroy() {
-	}
+            // Set remoteUser to Tuakiri unique id for testing
+            if (remoteUser == null) {
+                remoteUser = "behat-admin";
+            }
+            if (remoteUser == null || remoteUser.trim().equals("")) {
+                log.error("Denying access for anonymous user");
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+            request.setAttribute(remoteUserHeader, remoteUser);
 
-	public String getRemoteUserHeader() {
-		return remoteUserHeader;
-	}
+            if (remoteAddr == null || remoteAddr.trim().equals("")) {
+                remoteAddr = request.getRemoteAddr();
+                if (remoteAddr == null || remoteAddr.trim().equals("")) {
+                    remoteAddr = "n/a";
+                }
+            }
+            final StringBuffer sb = new StringBuffer();
+            sb.append("remoteIP=").append(remoteAddr).append(" ")
+                    .append("user=").append(remoteUser).append(" ")
+                    .append("method=").append(request.getMethod()).append(" ")
+                    .append("path=").append(request.getPathInfo());
+            if (request.getQueryString() != null) {
+                sb.append("?").append(request.getQueryString());
+            }
+            flog.info(sb.toString());
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        filterChain.doFilter(req, resp);
+    }
 
-	public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
+    public String getProxyIp() {
+        return proxyIp;
+    }
 
-	public String getRemoteAddrHeader() {
-		return remoteAddrHeader;
-	}
+    public String getRemoteAddrHeader() {
+        return remoteAddrHeader;
+    }
 
-	public void setRemoteAddrHeader(String remoteAddrHeader) {
-		this.remoteAddrHeader = remoteAddrHeader;
-	}
+    public String getRemoteUserHeader() {
+        return remoteUserHeader;
+    }
 
-	public String getProxyIp() {
-		return proxyIp;
-	}
+    @Override
+    public void init(final FilterConfig arg0) throws ServletException {
+    }
 
-	public void setProxyIp(String proxyIp) {
-		this.proxyIp = proxyIp;
-	}
+    public void setProxyIp(final String proxyIp) {
+        this.proxyIp = proxyIp;
+    }
+
+    public void setRemoteAddrHeader(final String remoteAddrHeader) {
+        this.remoteAddrHeader = remoteAddrHeader;
+    }
+
+    public void setRemoteUserHeader(final String remoteUserHeader) {
+        this.remoteUserHeader = remoteUserHeader;
+    }
 }

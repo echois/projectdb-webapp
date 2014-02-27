@@ -1,34 +1,25 @@
 package nz.org.nesi.researchHub.model;
 
-import com.google.common.collect.Sets;
-
 import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 10/12/13
- * Time: 4:29 PM
+ * Written by: Markus Binsteiner Date: 10/12/13 Time: 4:29 PM
  */
 public class Group {
 
-    private Integer id;
+    private final Set<Role> availableRoles = Sets.newHashSet();
     private String groupName;
-    private Set<Role> availableRoles = Sets.newHashSet();
+    private Integer id;
 
     public Group() {
     }
 
-    public Group(String groupName) {
+    public Group(final String groupName) {
         this.groupName = groupName;
-    }
-
-    public boolean isAllowedRole(Role role) {
-        if ( availableRoles.size() == 0 ) {
-            return true;
-        }
-        return allowedRoles().contains(role);
     }
 
     private Set<Role> allowedRoles() {
@@ -39,9 +30,15 @@ public class Group {
         return groupName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public boolean isAllowedRole(final Role role) {
+        if (availableRoles.size() == 0) {
+            return true;
+        }
+        return allowedRoles().contains(role);
     }
 
+    public void setGroupName(final String groupName) {
+        this.groupName = groupName;
+    }
 
 }

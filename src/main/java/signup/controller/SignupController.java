@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class SignupController {
-	
-	private Logger log = Logger.getLogger(RequestAccountController.class.getName()); 
 
-	@RequestMapping(value = "signup", method = RequestMethod.GET)
-	public String edit(ModelMap modelMap) throws Exception {
-		return "info";
-	}
+    private final Logger log = Logger.getLogger(RequestAccountController.class
+            .getName());
+
+    @RequestMapping(value = "signup", method = RequestMethod.GET)
+    public String edit(final ModelMap modelMap) throws Exception {
+        return "info";
+    }
 
 }

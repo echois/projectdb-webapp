@@ -4,77 +4,77 @@ import java.io.Serializable;
 
 public class Attachment implements Serializable {
 
-	Integer id;
-	Integer projectId;
-	Integer followUpId;
-	Integer reviewId;
-	Integer adviserActionId;
-	String description;
-	String link;
-	String date;
+    Integer adviserActionId;
+    String date;
+    String description;
+    Integer followUpId;
+    Integer id;
+    String link;
+    Integer projectId;
+    Integer reviewId;
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public Integer getAdviserActionId() {
+        return adviserActionId;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public Integer getFollowUpId() {
-		return followUpId;
-	}
+    public Integer getFollowUpId() {
+        return followUpId;
+    }
 
-	public void setFollowUpId(Integer followUpId) {
-		this.followUpId = followUpId;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Integer getReviewId() {
-		return reviewId;
-	}
+    public String getLink() {
+        return link;
+    }
 
-	public void setReviewId(Integer reviewId) {
-		this.reviewId = reviewId;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public Integer getAdviserActionId() {
-		return adviserActionId;
-	}
+    public Integer getReviewId() {
+        return reviewId;
+    }
 
-	public void setAdviserActionId(Integer adviserActionId) {
-		this.adviserActionId = adviserActionId;
-	}
+    public void setAdviserActionId(final Integer adviserActionId) {
+        this.adviserActionId = adviserActionId;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public void setDate(final String date) {
+        this.date = date;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setFollowUpId(final Integer followUpId) {
+        this.followUpId = followUpId;
+    }
 
-	public String getLink() {
-		return link;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public void setLink(final String link) {
+        this.link = link;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setReviewId(final Integer reviewId) {
+        this.reviewId = reviewId;
+    }
 
 }

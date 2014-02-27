@@ -4,40 +4,40 @@ import java.io.Serializable;
 
 public class Kpi implements Serializable {
 
-	private Integer id;
-	private String type;
-	private String title;
-	private String measures;
+    private Integer id;
+    private String measures;
+    private String title;
+    private String type;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getMeasures() {
+        return measures;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setMeasures(final String measures) {
+        this.measures = measures;
+    }
 
-	public String getMeasures() {
-		return measures;
-	}
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 
-	public void setMeasures(String measures) {
-		this.measures = measures;
-	}
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

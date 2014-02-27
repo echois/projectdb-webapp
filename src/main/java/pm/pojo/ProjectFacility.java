@@ -4,32 +4,32 @@ import java.io.Serializable;
 
 public class ProjectFacility implements Serializable {
 
-	private Integer projectId;
-	private Integer facilityId;
-	private String facilityName;
+    private Integer facilityId;
+    private String facilityName;
+    private Integer projectId;
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public Integer getFacilityId() {
+        return facilityId;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public String getFacilityName() {
+        return facilityName;
+    }
 
-	public String getFacilityName() {
-		return facilityName;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public void setFacilityName(String facilityName) {
-		this.facilityName = facilityName;
-	}
+    public void setFacilityId(final Integer facilityId) {
+        this.facilityId = facilityId;
+    }
 
-	public Integer getFacilityId() {
-		return facilityId;
-	}
+    public void setFacilityName(final String facilityName) {
+        this.facilityName = facilityName;
+    }
 
-	public void setFacilityId(Integer facilityId) {
-		this.facilityId = facilityId;
-	}
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
 
 }

@@ -11,78 +11,82 @@ import pm.pojo.Affiliation;
 
 public class AffiliationUtil {
 
-	private Log log = LogFactory.getLog(AffiliationUtil.class.getName()); 
-	private ProjectDao projectDao;
-	private String SEPARATOR = " -- ";
+    private final Log log = LogFactory.getLog(AffiliationUtil.class.getName());
+    private ProjectDao projectDao;
+    private final String SEPARATOR = " -- ";
 
-	public List<Affiliation> getAffiliations() throws Exception {
-		return this.projectDao.getAffiliations();
-	}
+    public String createAffiliationString(final String institution,
+            final String division, final String department) {
+        String returnValue = "";
+        if (institution != null && !institution.trim().isEmpty()) {
+            returnValue += institution;
+            if (division != null && !division.trim().isEmpty()) {
+                returnValue += SEPARATOR + division.trim();
+                if (department != null && !department.trim().isEmpty()) {
+                    returnValue += SEPARATOR + department.trim();
+                }
+            }
+        }
+        return returnValue;
+    }
 
-	public List<String> getAffiliationStrings() throws Exception {
-		List<Affiliation> affiliations = this.projectDao.getAffiliations();
-		List<String> affiliationStrings = new LinkedList<String>();
-		if (affiliations != null) {
-			for (Affiliation a: affiliations) {
-				String tmp = a.getInstitution().trim();
-				if (!a.getDivision().trim().isEmpty()) {
-					tmp += this.SEPARATOR + a.getDivision().trim();
-					if (!a.getDepartment().trim().isEmpty()) {
-						tmp += this.SEPARATOR + a.getDepartment().trim();
-					}
-				}
-				affiliationStrings.add(tmp);
-			}
-		}
-		return affiliationStrings;
-	}
+    public List<Affiliation> getAffiliations() throws Exception {
+        return projectDao.getAffiliations();
+    }
 
-	public String getInstitutionFromAffiliationString(String affiliationString) {
-		String returnValue = "";
-		if (affiliationString != null) {
-			returnValue = affiliationString.split(this.SEPARATOR)[0];
-		}
-		return returnValue;
-	}
+    public List<String> getAffiliationStrings() throws Exception {
+        final List<Affiliation> affiliations = projectDao.getAffiliations();
+        final List<String> affiliationStrings = new LinkedList<String>();
+        if (affiliations != null) {
+            for (final Affiliation a : affiliations) {
+                String tmp = a.getInstitution().trim();
+                if (!a.getDivision().trim().isEmpty()) {
+                    tmp += SEPARATOR + a.getDivision().trim();
+                    if (!a.getDepartment().trim().isEmpty()) {
+                        tmp += SEPARATOR + a.getDepartment().trim();
+                    }
+                }
+                affiliationStrings.add(tmp);
+            }
+        }
+        return affiliationStrings;
+    }
 
-	public String getDivisionFromAffiliationString(String affiliationString) {
-		String returnValue = "";
-		if (affiliationString != null) {
-			String[] parts = affiliationString.split(this.SEPARATOR);
-			if (parts.length > 1) {
-				returnValue = parts[1];
-			}			
-		}
-		return returnValue;
-	}
+    public String getDepartmentFromAffiliationString(
+            final String affiliationString) {
+        String returnValue = "";
+        if (affiliationString != null) {
+            final String[] parts = affiliationString.split(SEPARATOR);
+            if (parts.length > 2) {
+                returnValue = parts[2];
+            }
+        }
+        return returnValue;
+    }
 
-	public String getDepartmentFromAffiliationString(String affiliationString) {
-		String returnValue = "";
-		if (affiliationString != null) {
-			String[] parts = affiliationString.split(this.SEPARATOR);
-			if (parts.length > 2) {
-				returnValue = parts[2];
-			}
-		}
-		return returnValue;
-	}
+    public String getDivisionFromAffiliationString(
+            final String affiliationString) {
+        String returnValue = "";
+        if (affiliationString != null) {
+            final String[] parts = affiliationString.split(SEPARATOR);
+            if (parts.length > 1) {
+                returnValue = parts[1];
+            }
+        }
+        return returnValue;
+    }
 
-	public String createAffiliationString(String institution, String division, String department) {
-		String returnValue = "";
-		if (institution != null && !institution.trim().isEmpty()) {
-			returnValue += institution;
-			if (division != null && !division.trim().isEmpty()) {
-				returnValue += this.SEPARATOR + division.trim();
-				if (department != null && !department.trim().isEmpty()) {
-					returnValue += this.SEPARATOR + department.trim();
-				}
-			}
-		}
-		return returnValue;
-	}
+    public String getInstitutionFromAffiliationString(
+            final String affiliationString) {
+        String returnValue = "";
+        if (affiliationString != null) {
+            returnValue = affiliationString.split(SEPARATOR)[0];
+        }
+        return returnValue;
+    }
 
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
+    public void setProjectDao(final ProjectDao projectDao) {
+        this.projectDao = projectDao;
+    }
 
 }

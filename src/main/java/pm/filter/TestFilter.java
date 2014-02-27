@@ -1,6 +1,7 @@
 package pm.filter;
 
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,57 +13,61 @@ import javax.servlet.http.HttpServletRequest;
 public class TestFilter implements Filter {
 
     private String proxyIp;
-    private String remoteUserHeader;
     private String remoteAddrHeader;
-    
-	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
+    private String remoteUserHeader;
 
-		try {
-			HttpServletRequest request = (HttpServletRequest) req;
-			String remoteUser = "nyou045@auckland.ac.nz";
-		    String remoteAddr = request.getHeader(this.remoteAddrHeader);			
-		    request.setAttribute(this.remoteUserHeader, remoteUser);
+    @Override
+    public void destroy() {
+    }
 
-		    if (remoteAddr == null || remoteAddr.trim().equals("")) {
-		    	remoteAddr = request.getRemoteAddr();
-		    	if (remoteAddr == null || remoteAddr.trim().equals("")) {
-		    		remoteAddr = "n/a";
-		    	}
-		    }
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		filterChain.doFilter(req, resp);
-	}
+    @Override
+    public void doFilter(final ServletRequest req, final ServletResponse resp,
+            final FilterChain filterChain) throws IOException, ServletException {
 
-	public void init(FilterConfig arg0) throws ServletException {
-	}
+        try {
+            final HttpServletRequest request = (HttpServletRequest) req;
+            final String remoteUser = "nyou045@auckland.ac.nz";
+            String remoteAddr = request.getHeader(remoteAddrHeader);
+            request.setAttribute(remoteUserHeader, remoteUser);
 
-	public void destroy() {
-	}
+            if (remoteAddr == null || remoteAddr.trim().equals("")) {
+                remoteAddr = request.getRemoteAddr();
+                if (remoteAddr == null || remoteAddr.trim().equals("")) {
+                    remoteAddr = "n/a";
+                }
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        filterChain.doFilter(req, resp);
+    }
 
-	public String getRemoteUserHeader() {
-		return remoteUserHeader;
-	}
+    public String getProxyIp() {
+        return proxyIp;
+    }
 
-	public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
+    public String getRemoteAddrHeader() {
+        return remoteAddrHeader;
+    }
 
-	public String getRemoteAddrHeader() {
-		return remoteAddrHeader;
-	}
+    public String getRemoteUserHeader() {
+        return remoteUserHeader;
+    }
 
-	public void setRemoteAddrHeader(String remoteAddrHeader) {
-		this.remoteAddrHeader = remoteAddrHeader;
-	}
+    @Override
+    public void init(final FilterConfig arg0) throws ServletException {
+    }
 
-	public String getProxyIp() {
-		return proxyIp;
-	}
+    public void setProxyIp(final String proxyIp) {
+        this.proxyIp = proxyIp;
+    }
 
-	public void setProxyIp(String proxyIp) {
-		this.proxyIp = proxyIp;
-	}
+    public void setRemoteAddrHeader(final String remoteAddrHeader) {
+        this.remoteAddrHeader = remoteAddrHeader;
+    }
+
+    public void setRemoteUserHeader(final String remoteUserHeader) {
+        this.remoteUserHeader = remoteUserHeader;
+    }
 }

@@ -4,86 +4,86 @@ import java.io.Serializable;
 
 public class ResearchOutput implements Serializable {
 
-	private Integer id;
-	private Integer projectId;
-	private String type;
-	private Integer typeId;
-	private String description;
-	private String link;
-	private String date;
-	private String adviserName;
-	private Integer adviserId;
+    private Integer adviserId;
+    private String adviserName;
+    private String date;
+    private String description;
+    private Integer id;
+    private String link;
+    private Integer projectId;
+    private String type;
+    private Integer typeId;
 
-	public String getAdviserName() {
-		return adviserName;
-	}
+    public Integer getAdviserId() {
+        return adviserId;
+    }
 
-	public void setAdviserName(String adviserName) {
-		this.adviserName = adviserName;
-	}
+    public String getAdviserName() {
+        return adviserName;
+    }
 
-	public Integer getAdviserId() {
-		return adviserId;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public void setAdviserId(Integer adviserId) {
-		this.adviserId = adviserId;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public String getLink() {
+        return link;
+    }
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public Integer getTypeId() {
+        return typeId;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setAdviserId(final Integer adviserId) {
+        this.adviserId = adviserId;
+    }
 
-	public String getLink() {
-		return link;
-	}
+    public void setAdviserName(final String adviserName) {
+        this.adviserName = adviserName;
+    }
 
-	public Integer getTypeId() {
-		return typeId;
-	}
+    public void setDate(final String date) {
+        this.date = date;
+    }
 
-	public void setTypeId(Integer typeId) {
-		this.typeId = typeId;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public void setLink(final String link) {
+        this.link = link;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setType(final String type) {
+        this.type = type;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setTypeId(final Integer typeId) {
+        this.typeId = typeId;
+    }
 
 }

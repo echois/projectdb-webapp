@@ -1,61 +1,77 @@
 package pm.db;
 
-import org.mybatis.spring.support.SqlSessionDaoSupport;
-import pm.pojo.TempProject;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class IBatisTempProjectDao extends SqlSessionDaoSupport implements TempProjectDao {
+import org.mybatis.spring.support.SqlSessionDaoSupport;
 
-	public Integer createProject(final TempProject tp) {
-		return (Integer) getSqlSession().insert("createTempProject", tp);
-	}
+import pm.pojo.TempProject;
 
-	public TempProject getProject(Integer pid) {
-		return (TempProject) getSqlSession().selectOne("getTempProjectById", pid);
-	}
+public class IBatisTempProjectDao extends SqlSessionDaoSupport implements
+        TempProjectDao {
 
-	public String getOwner(Integer pid) {
-		return (String) getSqlSession().selectOne("getOwner", pid);
-	}
-	public void deleteExpiredProjects(Integer lifetimeSeconds) {
-		Long maxTimestamp = (System.currentTimeMillis()/1000) - lifetimeSeconds;
-		getSqlSession().insert("deleteExpiredTempProjects", maxTimestamp);
-	}
+    @Override
+    public Integer createProject(final TempProject tp) {
+        return getSqlSession().insert("createTempProject", tp);
+    }
 
-	public Boolean projectExists(Integer pid) {
-		Integer count = (Integer) getSqlSession().selectOne("countOccurences", pid);
-		return count.equals(0) ? false : true;
-	}
+    @Override
+    public void deleteExpiredProjects(final Integer lifetimeSeconds) {
+        final Long maxTimestamp = (System.currentTimeMillis() / 1000)
+                - lifetimeSeconds;
+        getSqlSession().insert("deleteExpiredTempProjects", maxTimestamp);
+    }
 
-	public Boolean projectExistsAndOwnedByUser(Integer pid, String user) {
-		String owner = (String) getSqlSession().selectOne("getOwner", pid);
-		return this.projectExists(pid) && owner.equals(user);
-	}
+    @Override
+    public void deleteProject(final Integer projectId) {
+        getSqlSession().update("deleteTempProject", projectId);
+    }
 
-	public void updateLastVisited(Integer projectId) {
-        Map<String,Object> params=new HashMap<String, Object>();
+    @Override
+    public Integer getNextNewProjectId() {
+        Integer id = ((Integer) getSqlSession().selectOne("getMinId"));
+        if (id == null || id > -1) {
+            id = 0;
+        }
+        return id - 1;
+    }
+
+    @Override
+    public String getOwner(final Integer pid) {
+        return (String) getSqlSession().selectOne("getOwner", pid);
+    }
+
+    @Override
+    public TempProject getProject(final Integer pid) {
+        return (TempProject) getSqlSession().selectOne("getTempProjectById",
+                pid);
+    }
+
+    @Override
+    public Boolean projectExists(final Integer pid) {
+        final Integer count = (Integer) getSqlSession().selectOne(
+                "countOccurences", pid);
+        return count.equals(0) ? false : true;
+    }
+
+    public Boolean projectExistsAndOwnedByUser(final Integer pid,
+            final String user) {
+        final String owner = (String) getSqlSession()
+                .selectOne("getOwner", pid);
+        return projectExists(pid) && owner.equals(user);
+    }
+
+    @Override
+    public void updateLastVisited(final Integer projectId) {
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", projectId);
-        params.put("lastVisited", System.currentTimeMillis()/1000);
-		getSqlSession().insert("updateTempProjectLastVisited", params);
-	}
+        params.put("lastVisited", System.currentTimeMillis() / 1000);
+        getSqlSession().insert("updateTempProjectLastVisited", params);
+    }
 
-	public void updateProject(TempProject tp) {
-		getSqlSession().update("updateTempProject", tp);
-	}
-
-	public void deleteProject(Integer projectId) {
-		getSqlSession().update("deleteTempProject", projectId);
-	}
-
-	public Integer getNextNewProjectId() {
-		Integer id = ((Integer)getSqlSession().selectOne("getMinId"));
-		if (id == null || id > -1) {
-			id = 0;
-		}
-		return id-1;
-	}
-
+    @Override
+    public void updateProject(final TempProject tp) {
+        getSqlSession().update("updateTempProject", tp);
+    }
 
 }

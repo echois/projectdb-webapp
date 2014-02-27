@@ -1,5 +1,7 @@
 package nz.org.nesi.researchHub.exceptions;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -8,14 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 9/12/13
- * Time: 4:00 PM
+ * Written by: Markus Binsteiner Date: 9/12/13 Time: 4:00 PM
  */
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -25,9 +23,10 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DatabaseException.class)
     @ResponseBody
-    public ErrorInfo handleDatabaseConflict(HttpServletRequest req, DatabaseException ex) {
+    public ErrorInfo handleDatabaseConflict(final HttpServletRequest req,
+            final DatabaseException ex) {
 
-        log.debug("DatabaseException: "+ex.getLocalizedMessage());
+        log.debug("DatabaseException: " + ex.getLocalizedMessage());
 
         return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
@@ -35,9 +34,10 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InvalidEntityException.class)
     @ResponseBody
-    public ErrorInfo handleInvalidEntityConflict(HttpServletRequest req, InvalidEntityException ex) {
+    public ErrorInfo handleInvalidEntityConflict(final HttpServletRequest req,
+            final InvalidEntityException ex) {
 
-        log.debug("InvalidEntityException: "+ex.getLocalizedMessage());
+        log.debug("InvalidEntityException: " + ex.getLocalizedMessage());
 
         return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
@@ -45,9 +45,10 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NoSuchEntityException.class)
     @ResponseBody
-    public ErrorInfo handleNoEntityConflict(HttpServletRequest req, NoSuchEntityException ex) {
+    public ErrorInfo handleNoEntityConflict(final HttpServletRequest req,
+            final NoSuchEntityException ex) {
 
-        log.debug("NoSuchEntityException: "+ex.getLocalizedMessage());
+        log.debug("NoSuchEntityException: " + ex.getLocalizedMessage());
 
         return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
@@ -55,9 +56,10 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(OutOfDateException.class)
     @ResponseBody
-    public ErrorInfo handleOutOfDateConflict(HttpServletRequest req, OutOfDateException ex) {
+    public ErrorInfo handleOutOfDateConflict(final HttpServletRequest req,
+            final OutOfDateException ex) {
 
-        log.debug("OutOfDateException: "+ex.getLocalizedMessage());
+        log.debug("OutOfDateException: " + ex.getLocalizedMessage());
 
         return new ErrorInfo(req.getRequestURL().toString(), ex);
     }

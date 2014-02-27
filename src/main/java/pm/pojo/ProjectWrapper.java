@@ -6,135 +6,136 @@ import java.util.List;
 
 public class ProjectWrapper implements Serializable {
 
-	private Project project;
-	private List<RPLink> rpLinks;
-	private List<APLink> apLinks;
-	private List<ResearchOutput> researchOutputs;
-	private List<ProjectKpi> projectKpis;
-	private List<Review> reviews;
-	private List<FollowUp> followUps;
-	private List<AdviserAction> adviserActions;
-	private List<ProjectFacility> projectFacilities;
-	// helpers
-	private String operation;
-	private String errorMessage;
-	private String redirect;
-	private Integer secondsLeft;
+    private List<AdviserAction> adviserActions;
+    private List<APLink> apLinks;
+    private String errorMessage;
+    private List<FollowUp> followUps;
+    // helpers
+    private String operation;
+    private Project project;
+    private List<ProjectFacility> projectFacilities;
+    private List<ProjectKpi> projectKpis;
+    private String redirect;
+    private List<ResearchOutput> researchOutputs;
+    private List<Review> reviews;
+    private List<RPLink> rpLinks;
+    private Integer secondsLeft;
 
-	public ProjectWrapper() {
-		this.project = new Project();
-		this.rpLinks = new LinkedList<RPLink>();
-		this.apLinks = new LinkedList<APLink>();
-		this.researchOutputs = new LinkedList<ResearchOutput>();
-		this.projectKpis = new LinkedList<ProjectKpi>();
-		this.reviews = new LinkedList<Review>();
-		this.followUps = new LinkedList<FollowUp>();
-		this.adviserActions = new LinkedList<AdviserAction>();
-		this.projectFacilities = new LinkedList<ProjectFacility>();
-	}
+    public ProjectWrapper() {
+        project = new Project();
+        rpLinks = new LinkedList<RPLink>();
+        apLinks = new LinkedList<APLink>();
+        researchOutputs = new LinkedList<ResearchOutput>();
+        projectKpis = new LinkedList<ProjectKpi>();
+        reviews = new LinkedList<Review>();
+        followUps = new LinkedList<FollowUp>();
+        adviserActions = new LinkedList<AdviserAction>();
+        projectFacilities = new LinkedList<ProjectFacility>();
+    }
 
-	public String getOperation() {
-		return operation;
-	}
+    public List<AdviserAction> getAdviserActions() {
+        return adviserActions;
+    }
 
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
+    public List<APLink> getApLinks() {
+        return apLinks;
+    }
 
-	public String getRedirect() {
-		return redirect;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public Integer getSecondsLeft() {
-		return secondsLeft;
-	}
+    public List<FollowUp> getFollowUps() {
+        return followUps;
+    }
 
-	public void setSecondsLeft(Integer secondsLeft) {
-		this.secondsLeft = secondsLeft;
-	}
+    public String getOperation() {
+        return operation;
+    }
 
-	public void setRedirect(String redirect) {
-		this.redirect = redirect;
-	}
+    public Project getProject() {
+        return project;
+    }
 
-	public Project getProject() {
-		return project;
-	}
+    public List<ProjectFacility> getProjectFacilities() {
+        return projectFacilities;
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    public List<ProjectKpi> getProjectKpis() {
+        return projectKpis;
+    }
 
-	public List<RPLink> getRpLinks() {
-		return rpLinks;
-	}
+    public String getRedirect() {
+        return redirect;
+    }
 
-	public void setRpLinks(List<RPLink> rpLinks) {
-		this.rpLinks = rpLinks;
-	}
+    public List<ResearchOutput> getResearchOutputs() {
+        return researchOutputs;
+    }
 
-	public List<APLink> getApLinks() {
-		return apLinks;
-	}
+    public List<Review> getReviews() {
+        return reviews;
+    }
 
-	public void setApLinks(List<APLink> apLinks) {
-		this.apLinks = apLinks;
-	}
+    public List<RPLink> getRpLinks() {
+        return rpLinks;
+    }
 
-	public List<ResearchOutput> getResearchOutputs() {
-		return researchOutputs;
-	}
+    public Integer getSecondsLeft() {
+        return secondsLeft;
+    }
 
-	public void setResearchOutputs(List<ResearchOutput> researchOutputs) {
-		this.researchOutputs = researchOutputs;
-	}
+    public void setAdviserActions(final List<AdviserAction> adviserActions) {
+        this.adviserActions = adviserActions;
+    }
 
-	public List<ProjectKpi> getProjectKpis() {
-		return projectKpis;
-	}
+    public void setApLinks(final List<APLink> apLinks) {
+        this.apLinks = apLinks;
+    }
 
-	public void setProjectKpis(List<ProjectKpi> projectKpis) {
-		this.projectKpis = projectKpis;
-	}
+    public void setErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
-	public List<Review> getReviews() {
-		return reviews;
-	}
+    public void setFollowUps(final List<FollowUp> followUps) {
+        this.followUps = followUps;
+    }
 
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
-	}
+    public void setOperation(final String operation) {
+        this.operation = operation;
+    }
 
-	public List<FollowUp> getFollowUps() {
-		return followUps;
-	}
+    public void setProject(final Project project) {
+        this.project = project;
+    }
 
-	public void setFollowUps(List<FollowUp> followUps) {
-		this.followUps = followUps;
-	}
+    public void setProjectFacilities(
+            final List<ProjectFacility> projectFacilities) {
+        this.projectFacilities = projectFacilities;
+    }
 
-	public List<AdviserAction> getAdviserActions() {
-		return adviserActions;
-	}
+    public void setProjectKpis(final List<ProjectKpi> projectKpis) {
+        this.projectKpis = projectKpis;
+    }
 
-	public void setAdviserActions(List<AdviserAction> adviserActions) {
-		this.adviserActions = adviserActions;
-	}
+    public void setRedirect(final String redirect) {
+        this.redirect = redirect;
+    }
 
-	public List<ProjectFacility> getProjectFacilities() {
-		return projectFacilities;
-	}
+    public void setResearchOutputs(final List<ResearchOutput> researchOutputs) {
+        this.researchOutputs = researchOutputs;
+    }
 
-	public void setProjectFacilities(List<ProjectFacility> projectFacilities) {
-		this.projectFacilities = projectFacilities;
-	}
+    public void setReviews(final List<Review> reviews) {
+        this.reviews = reviews;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public void setRpLinks(final List<RPLink> rpLinks) {
+        this.rpLinks = rpLinks;
+    }
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
+    public void setSecondsLeft(final Integer secondsLeft) {
+        this.secondsLeft = secondsLeft;
+    }
 
 }

@@ -1,7 +1,3 @@
-<Context
-    docBase="/var/lib/projectdb/projectdb.war"
-    unpackWAR="true"
-    reloadable="true"
-    autoDeploy="true"
-    debug="0">
-  </Context>
+<Context docBase="/var/lib/projectdb/projectdb.war" unpackWAR="true"
+	reloadable="true" autoDeploy="true" debug="0">
+</Context>

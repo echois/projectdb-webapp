@@ -4,41 +4,41 @@ import java.io.Serializable;
 
 public class TempProject implements Serializable {
 
-	private Integer id;
-	private Long lastVisited;
-	private String owner;
-	private String projectString;
+    private Integer id;
+    private Long lastVisited;
+    private String owner;
+    private String projectString;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Long getLastVisited() {
+        return lastVisited;
+    }
 
-	public Long getLastVisited() {
-		return lastVisited;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public void setLastVisited(Long lastVisited) {
-		this.lastVisited = lastVisited;
-	}
+    public String getProjectString() {
+        return projectString;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public void setLastVisited(final Long lastVisited) {
+        this.lastVisited = lastVisited;
+    }
 
-	public String getProjectString() {
-		return projectString;
-	}
+    public void setOwner(final String owner) {
+        this.owner = owner;
+    }
 
-	public void setProjectString(String projectString) {
-		this.projectString = projectString;
-	}
+    public void setProjectString(final String projectString) {
+        this.projectString = projectString;
+    }
 
 }

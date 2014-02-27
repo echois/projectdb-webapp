@@ -12,12 +12,12 @@ import com.mangofactory.swagger.annotations.ApiError;
 @Component
 @ApiError(code = 500, reason = "Database exception")
 public class DatabaseException extends RuntimeException {
-	// @formatter:off
-	private DatabaseException() {
-		super();
-	}
+    // @formatter:off
+    private DatabaseException() {
+        super();
+    }
 
-	public DatabaseException(String s, Exception e) {
-		super(s, e);
-	}
+    public DatabaseException(final String s, final Exception e) {
+        super(s, e);
+    }
 }

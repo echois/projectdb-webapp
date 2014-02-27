@@ -4,32 +4,32 @@ import java.io.Serializable;
 
 public class Affiliation implements Serializable {
 
-	private String institution;
-	private String division;
-	private String department;
+    private String department;
+    private String division;
+    private String institution;
 
-	public String getInstitution() {
-		return institution;
-	}
+    public String getDepartment() {
+        return department;
+    }
 
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
+    public String getDivision() {
+        return division;
+    }
 
-	public String getDivision() {
-		return division;
-	}
+    public String getInstitution() {
+        return institution;
+    }
 
-	public void setDivision(String division) {
-		this.division = division;
-	}
+    public void setDepartment(final String department) {
+        this.department = department;
+    }
 
-	public String getDepartment() {
-		return department;
-	}
+    public void setDivision(final String division) {
+        this.division = division;
+    }
 
-	public void setDepartment(String department) {
-		this.department = department;
-	}
+    public void setInstitution(final String institution) {
+        this.institution = institution;
+    }
 
 }

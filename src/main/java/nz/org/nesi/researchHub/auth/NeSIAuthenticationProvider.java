@@ -7,19 +7,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 11/12/13
- * Time: 1:40 PM
+ * Written by: Markus Binsteiner Date: 11/12/13 Time: 1:40 PM
  */
 public class NeSIAuthenticationProvider extends DaoAuthenticationProvider {
 
-    	@Override
-	protected void additionalAuthenticationChecks(UserDetails userDetails,
-			UsernamePasswordAuthenticationToken authentication) {
+    @Override
+    protected void additionalAuthenticationChecks(
+            final UserDetails userDetails,
+            final UsernamePasswordAuthenticationToken authentication) {
 
-		final NeSIUserDetailsImpl udi = (NeSIUserDetailsImpl) userDetails;
-		udi.setAuthentication(authentication);
-            return;
+        final NeSIUserDetailsImpl udi = (NeSIUserDetailsImpl) userDetails;
+        udi.setAuthentication(authentication);
+        return;
 
-	}
+    }
 }

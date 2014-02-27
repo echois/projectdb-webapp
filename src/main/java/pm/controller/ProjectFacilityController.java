@@ -17,55 +17,60 @@ import pm.pojo.ProjectWrapper;
 
 @Controller
 public class ProjectFacilityController extends GlobalController {
-	
-	@RequestMapping(value = "deleteprojectfacility", method = RequestMethod.GET)
-	public RedirectView delete(Integer fid, Integer projectId) throws Exception {
-		ProjectWrapper pw = this.tempProjectManager.get(projectId);
-    	List<ProjectFacility> tmp = new LinkedList<ProjectFacility>();
-        for (ProjectFacility pf: pw.getProjectFacilities()) {
-        	if (!pf.getFacilityId().equals(fid)) {
-        		tmp.add(pf);
-        	}
+
+    @RequestMapping(value = "deleteprojectfacility", method = RequestMethod.GET)
+    public RedirectView delete(final Integer fid, final Integer projectId)
+            throws Exception {
+        final ProjectWrapper pw = tempProjectManager.get(projectId);
+        final List<ProjectFacility> tmp = new LinkedList<ProjectFacility>();
+        for (final ProjectFacility pf : pw.getProjectFacilities()) {
+            if (!pf.getFacilityId().equals(fid)) {
+                tmp.add(pf);
+            }
         }
         pw.setProjectFacilities(tmp);
-    	this.tempProjectManager.update(projectId, pw);
-		return new RedirectView("editproject?id=" + projectId + "#facilities");
-	}
-	
-	@RequestMapping(value = "editprojectfacility", method = RequestMethod.GET)
-    public ModelAndView edit(Integer fid, Integer projectId) throws Exception {
-		ModelAndView mav = new ModelAndView();
-    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
-    	HashMap<Integer,String> facilities = new LinkedHashMap<Integer, String>();
-    	for (Facility f: this.projectDao.getFacilities()) {
-    		facilities.put(f.getId(), f.getName());
-    	}
-    	ProjectFacility pf = new ProjectFacility();
-    	for (ProjectFacility pfc : pw.getProjectFacilities()) {
-    		if (pfc.getFacilityId().equals(fid)) {
-    			pf = pfc;
-    		}
-    	}
+        tempProjectManager.update(projectId, pw);
+        return new RedirectView("editproject?id=" + projectId + "#facilities");
+    }
+
+    @RequestMapping(value = "editprojectfacility", method = RequestMethod.GET)
+    public ModelAndView edit(final Integer fid, final Integer projectId)
+            throws Exception {
+        final ModelAndView mav = new ModelAndView();
+        final ProjectWrapper pw = tempProjectManager.get(projectId);
+        final HashMap<Integer, String> facilities = new LinkedHashMap<Integer, String>();
+        for (final Facility f : projectDao.getFacilities()) {
+            facilities.put(f.getId(), f.getName());
+        }
+        ProjectFacility pf = new ProjectFacility();
+        for (final ProjectFacility pfc : pw.getProjectFacilities()) {
+            if (pfc.getFacilityId().equals(fid)) {
+                pf = pfc;
+            }
+        }
         mav.addObject("facilities", facilities);
         mav.addObject("projectFacility", pf);
         return mav;
     }
-	
-	@RequestMapping(value = "editprojectfacility", method = RequestMethod.POST)
-	public RedirectView editPost(ProjectFacility pf, Integer fid) throws Exception {
-    	Integer projectId = pf.getProjectId();
-    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
-    	pf.setFacilityName(this.projectDao.getFacilityById(pf.getFacilityId()).getName());
-    	if (fid==null) {
-    		pw.getProjectFacilities().add(pf);
-    	} else {
-    		for (int i=0; i<pw.getProjectFacilities().size(); i++) {
-    			if (pw.getProjectFacilities().get(i).getFacilityId().equals(fid)) { 
-    				pw.getProjectFacilities().set(i, pf);
-    			}
-    		}
-    	}
-    	this.tempProjectManager.update(projectId, pw);
-		return new RedirectView("editproject?id=" + projectId + "#facilities");
-	}
+
+    @RequestMapping(value = "editprojectfacility", method = RequestMethod.POST)
+    public RedirectView editPost(final ProjectFacility pf, final Integer fid)
+            throws Exception {
+        final Integer projectId = pf.getProjectId();
+        final ProjectWrapper pw = tempProjectManager.get(projectId);
+        pf.setFacilityName(projectDao.getFacilityById(pf.getFacilityId())
+                .getName());
+        if (fid == null) {
+            pw.getProjectFacilities().add(pf);
+        } else {
+            for (int i = 0; i < pw.getProjectFacilities().size(); i++) {
+                if (pw.getProjectFacilities().get(i).getFacilityId()
+                        .equals(fid)) {
+                    pw.getProjectFacilities().set(i, pf);
+                }
+            }
+        }
+        tempProjectManager.update(projectId, pw);
+        return new RedirectView("editproject?id=" + projectId + "#facilities");
+    }
 }

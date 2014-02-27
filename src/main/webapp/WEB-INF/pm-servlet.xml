@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
@@ -8,7 +8,7 @@
            http://www.springframework.org/schema/context/spring-context-3.0.xsd
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-    <context:component-scan base-package="pm.controller" />
+	<context:component-scan base-package="pm.controller" />
 
 	<bean
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
@@ -26,16 +26,20 @@
 
 	<aop:config>
 		<aop:aspect id="AuthorizationAspect" ref="authzAspect">
-			<aop:pointcut id="requireAdviserOnProject" expression="@annotation(pm.authz.annotation.RequireAdviserOnProject) and args(projectId,..)" />
-			<aop:pointcut id="requireAdviser" expression="@annotation(pm.authz.annotation.RequireAdviser)" />
-			<aop:pointcut id="requireAdmin" expression="@annotation(pm.authz.annotation.RequireAdmin)" />
+			<aop:pointcut id="requireAdviserOnProject"
+				expression="@annotation(pm.authz.annotation.RequireAdviserOnProject) and args(projectId,..)" />
+			<aop:pointcut id="requireAdviser"
+				expression="@annotation(pm.authz.annotation.RequireAdviser)" />
+			<aop:pointcut id="requireAdmin"
+				expression="@annotation(pm.authz.annotation.RequireAdmin)" />
 			<aop:before pointcut-ref="requireAdviserOnProject" method="verifyUserIsAdviserOnProject" />
 			<aop:before pointcut-ref="requireAdviser" method="verifyUserIsAdviser" />
 			<aop:before pointcut-ref="requireAdmin" method="verifyUserIsAdmin" />
 		</aop:aspect>
 	</aop:config>
 
-	<bean id="tempProjectManager" class="pm.temp.TempProjectManager" scope="request">
+	<bean id="tempProjectManager" class="pm.temp.TempProjectManager"
+		scope="request">
 		<aop:scoped-proxy />
 		<property name="remoteUserHeader" value="${remoteUserHeader}" />
 		<property name="projectDao" ref="projectDao" />
@@ -43,9 +47,9 @@
 		<property name="sessionDuration" value="${session.duration.seconds}" />
 	</bean>
 
-  <bean id="tempProjectDao" class="pm.db.IBatisTempProjectDao">
-      <property name="sqlSessionFactory" ref="ibatisSqlMapClient"></property>
-  </bean>
+	<bean id="tempProjectDao" class="pm.db.IBatisTempProjectDao">
+		<property name="sqlSessionFactory" ref="ibatisSqlMapClient"></property>
+	</bean>
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -53,16 +57,16 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-    <bean id="PMAuditFilter" class="pm.filter.AuditFilter">
-        <property name="proxyIp" value="${proxyIp}"/>
-        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
-        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
-    </bean>
+	<bean id="PMAuditFilter" class="pm.filter.AuditFilter">
+		<property name="proxyIp" value="${proxyIp}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
+		<property name="remoteAddrHeader" value="${remoteAddrHeader}" />
+	</bean>
 
-    <bean id="PMTestFilter" class="pm.filter.TestFilter">
-        <property name="proxyIp" value="${proxyIp}"/>
-        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
-        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
-    </bean>
+	<bean id="PMTestFilter" class="pm.filter.TestFilter">
+		<property name="proxyIp" value="${proxyIp}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
+		<property name="remoteAddrHeader" value="${remoteAddrHeader}" />
+	</bean>
 
 </beans>
