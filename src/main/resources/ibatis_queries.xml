@@ -10,7 +10,7 @@
 	<select id="getLastModifiedForTable" parameterType="String"
 		resultType="java.lang.String">
 		SELECT MAX(lastModified)
-		FROM ${table}
+		FROM ${value}
 	</select>
 
 	<select id="getProjectById" parameterType="java.lang.Integer"
