@@ -8,8 +8,11 @@
 <meta charset="utf-8">
 <script src="<%=request.getContextPath()%>/js/jquery-1.8.3.js"></script>
 <script src="<%=request.getContextPath()%>/js/jquery-ui.js"></script>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/style/common.css" type="text/css" />
-<link rel="stylesheet" href="<%=request.getContextPath()%>/style/jquery-ui.css" type="text/css" />
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/style/common.css" type="text/css" />
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/style/jquery-ui.css"
+	type="text/css" />
 <script type="text/javascript">
   function beforeSubmit() {
   }
@@ -64,71 +67,76 @@
 
 <body>
 
-  <form:form method="POST" commandName="requestaccount" onsubmit="beforeSubmit()" action='requestaccount'>
+	<form:form method="POST" commandName="requestaccount"
+		onsubmit="beforeSubmit()" action='requestaccount'>
 
-    <!-- Applicants information -->
+		<!-- Applicants information -->
 
-    <table cellpadding="10">
-      <tbody>
-        <tr>
-          <td><img src="<%=request.getContextPath()%>/pics/create_account.png" /></td>
-          <td><h2>Request an account on the Auckland NeSI cluster</h2></td>
-        </tr>
-        <tr>
-          <td colspan="2"><form:errors path="*" cssClass="errorblock" element="div" />
-            <table cellpadding="5">
-              <tbody>
-                <tr>
-                  <td>Full Name (from Tuakiri):</td>
-                  <td><form:input id="fullname" path="fullName" value="Joe Blogs" disabled="true"/></td>
-                </tr>
-                <tr>
-                  <td>Preferred Name:</td>
-                  <td><form:input id="preferredname" path="preferredName" /></td>
-                </tr>
-                <tr>
-                  <td valign="top">Affiliation:</td>
-                  <td><form:select path="institution">
-                      <form:option value="" label="Please Select" />
-                      <form:options items="${affiliations}" />
-                    </form:select>
+		<table cellpadding="10">
+			<tbody>
+				<tr>
+					<td><img
+						src="<%=request.getContextPath()%>/pics/create_account.png" /></td>
+					<td><h2>Request an account on the Auckland NeSI cluster</h2></td>
+				</tr>
+				<tr>
+					<td colspan="2"><form:errors path="*" cssClass="errorblock"
+							element="div" />
+						<table cellpadding="5">
+							<tbody>
+								<tr>
+									<td>Full Name (from Tuakiri):</td>
+									<td><form:input id="fullname" path="fullName"
+											value="Joe Blogs" disabled="true" /></td>
+								</tr>
+								<tr>
+									<td>Preferred Name:</td>
+									<td><form:input id="preferredname" path="preferredName" /></td>
+								</tr>
+								<tr>
+									<td valign="top">Affiliation:</td>
+									<td><form:select path="institution">
+											<form:option value="" label="Please Select" />
+											<form:options items="${affiliations}" />
+										</form:select>
 
-                    <div id="other_inst" style="display: none;">
-                      <br>
-                      Please specify:
-                      <form:input id="other_institution" value="" path="otherInstitution" />
-                    </div></td>
-                </tr>
-                <tr>
-                  <td>Contact phone number:</td>
-                  <td><form:input id="phone" path="phone" /></td>
-                </tr>
-                <tr>
-                  <td>E-mail address:</td>
-                  <td><form:input id="email" path="email" /></td>
-                </tr>
-                <tr>
-                  <td>Institutional role:<br>(at institution you named above)
-                  </td>
-                  <td valign="top"><form:select path="institutionalRoleId">
-                      <form:option value="" label="Please Select" />
-                      <form:options items="${institutionalRoles}" />
-                    </form:select>
-                    <div id="other_institutionalRole" style="display: none;">
-                      <br>
-                      Please specify:
-                      <form:input id="institutionalRole_other_value" value="" path="otherInstitutionalRole" />
-                    </div></td>
-                </tr>
-              </tbody>
-            </table></td>
-        </tr>
-      </tbody>
-    </table>
+										<div id="other_inst" style="display: none;">
+											<br> Please specify:
+											<form:input id="other_institution" value=""
+												path="otherInstitution" />
+										</div></td>
+								</tr>
+								<tr>
+									<td>Contact phone number:</td>
+									<td><form:input id="phone" path="phone" /></td>
+								</tr>
+								<tr>
+									<td>E-mail address:</td>
+									<td><form:input id="email" path="email" /></td>
+								</tr>
+								<tr>
+									<td>Institutional role:<br>(at institution you named
+										above)
+									</td>
+									<td valign="top"><form:select path="institutionalRoleId">
+											<form:option value="" label="Please Select" />
+											<form:options items="${institutionalRoles}" />
+										</form:select>
+										<div id="other_institutionalRole" style="display: none;">
+											<br> Please specify:
+											<form:input id="institutionalRole_other_value" value=""
+												path="otherInstitutionalRole" />
+										</div></td>
+								</tr>
+							</tbody>
+						</table></td>
+				</tr>
+			</tbody>
+		</table>
 
-    <br>
-    <input type="submit" value="Next">
+		<br>
+		<input type="submit" value="Next">
 
-  </form:form>
+	</form:form>
 
 </body>

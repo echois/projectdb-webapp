@@ -1,41 +1,43 @@
 package pm.pojo;
 
-public class Kpi {
+import java.io.Serializable;
 
-	private Integer id;
-	private String type;
-	private String title;
-	private String measures;
+public class Kpi implements Serializable {
 
-	public Integer getId() {
-		return id;
-	}
+    private Integer id;
+    private String measures;
+    private String title;
+    private String type;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getMeasures() {
+        return measures;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public String getMeasures() {
-		return measures;
-	}
+    public void setMeasures(final String measures) {
+        this.measures = measures;
+    }
 
-	public void setMeasures(String measures) {
-		this.measures = measures;
-	}
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

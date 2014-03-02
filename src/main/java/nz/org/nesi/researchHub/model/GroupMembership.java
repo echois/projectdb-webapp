@@ -1,15 +1,13 @@
 package nz.org.nesi.researchHub.model;
 
-import com.google.common.collect.Lists;
-
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 11/12/13
- * Time: 9:34 AM
+ * Written by: Markus Binsteiner Date: 11/12/13 Time: 9:34 AM
  */
 public class GroupMembership {
 
@@ -19,24 +17,24 @@ public class GroupMembership {
     public GroupMembership() {
     }
 
-    public Group getGroup() {
-        return group;
+    public void addRole(final Role role) {
+        roles.add(role);
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public Group getGroup() {
+        return group;
     }
 
     public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles.clear();
-        this.roles.addAll(roles);
+    public void setGroup(final Group group) {
+        this.group = group;
     }
 
-    public void addRole(Role role) {
-        this.roles.add(role);
+    public void setRoles(final List<Role> roles) {
+        this.roles.clear();
+        this.roles.addAll(roles);
     }
 }

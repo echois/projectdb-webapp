@@ -1,87 +1,89 @@
 package pm.pojo;
 
-public class ResearchOutput {
+import java.io.Serializable;
 
-	private Integer id;
-	private Integer projectId;
-	private String type;
-	private Integer typeId;
-	private String description;
-	private String link;
-	private String date;
-	private String adviserName;
-	private Integer adviserId;
+public class ResearchOutput implements Serializable {
 
-	public String getAdviserName() {
-		return adviserName;
-	}
+    private Integer adviserId;
+    private String adviserName;
+    private String date;
+    private String description;
+    private Integer id;
+    private String link;
+    private Integer projectId;
+    private String type;
+    private Integer typeId;
 
-	public void setAdviserName(String adviserName) {
-		this.adviserName = adviserName;
-	}
+    public Integer getAdviserId() {
+        return adviserId;
+    }
 
-	public Integer getAdviserId() {
-		return adviserId;
-	}
+    public String getAdviserName() {
+        return adviserName;
+    }
 
-	public void setAdviserId(Integer adviserId) {
-		this.adviserId = adviserId;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    public String getLink() {
+        return link;
+    }
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public Integer getTypeId() {
+        return typeId;
+    }
 
-	public String getLink() {
-		return link;
-	}
+    public void setAdviserId(final Integer adviserId) {
+        this.adviserId = adviserId;
+    }
 
-	public Integer getTypeId() {
-		return typeId;
-	}
+    public void setAdviserName(final String adviserName) {
+        this.adviserName = adviserName;
+    }
 
-	public void setTypeId(Integer typeId) {
-		this.typeId = typeId;
-	}
+    public void setDate(final String date) {
+        this.date = date;
+    }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setLink(final String link) {
+        this.link = link;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setType(final String type) {
+        this.type = type;
+    }
+
+    public void setTypeId(final Integer typeId) {
+        this.typeId = typeId;
+    }
 
 }

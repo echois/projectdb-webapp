@@ -1,33 +1,35 @@
 package pm.pojo;
 
-public class ProjectFacility {
+import java.io.Serializable;
 
-	private Integer projectId;
-	private Integer facilityId;
-	private String facilityName;
+public class ProjectFacility implements Serializable {
 
-	public Integer getProjectId() {
-		return projectId;
-	}
+    private Integer facilityId;
+    private String facilityName;
+    private Integer projectId;
 
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
-	}
+    public Integer getFacilityId() {
+        return facilityId;
+    }
 
-	public String getFacilityName() {
-		return facilityName;
-	}
+    public String getFacilityName() {
+        return facilityName;
+    }
 
-	public void setFacilityName(String facilityName) {
-		this.facilityName = facilityName;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public Integer getFacilityId() {
-		return facilityId;
-	}
+    public void setFacilityId(final Integer facilityId) {
+        this.facilityId = facilityId;
+    }
 
-	public void setFacilityId(Integer facilityId) {
-		this.facilityId = facilityId;
-	}
+    public void setFacilityName(final String facilityName) {
+        this.facilityName = facilityName;
+    }
+
+    public void setProjectId(final Integer projectId) {
+        this.projectId = projectId;
+    }
 
 }

@@ -1,24 +1,26 @@
 package pm.pojo;
 
-public class ResearcherRole {
+import java.io.Serializable;
 
-	private Integer id;
-	private String name;
+public class ResearcherRole implements Serializable {
 
-	public Integer getId() {
-		return id;
-	}
+    private Integer id;
+    private String name;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
 
 }

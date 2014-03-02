@@ -1,48 +1,61 @@
 package pm.pojo;
 
-public class ResearcherProperty {
+import java.io.Serializable;
 
-	private Integer researcherId;
-	private Integer siteId;
-	private String siteName;
-	private String propname;
-	private String propvalue;
-	private String timestamp;
-	
-	public Integer getResearcherId() {
-		return researcherId;
-	}
-	public void setResearcherId(Integer researcherId) {
-		this.researcherId = researcherId;
-	}
-	public Integer getSiteId() {
-		return siteId;
-	}
-	public void setSiteId(Integer siteId) {
-		this.siteId = siteId;
-	}
-	public String getSiteName() {
-		return siteName;
-	}
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
-	}
-	public String getPropname() {
-		return propname;
-	}
-	public void setPropname(String propname) {
-		this.propname = propname;
-	}
-	public String getPropvalue() {
-		return propvalue;
-	}
-	public void setPropvalue(String propvalue) {
-		this.propvalue = propvalue;
-	}
-	public String getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+public class ResearcherProperty implements Serializable {
+
+    private String propname;
+    private String propvalue;
+    private Integer researcherId;
+    private Integer siteId;
+    private String siteName;
+    private String timestamp;
+
+    public String getPropname() {
+        return propname;
+    }
+
+    public String getPropvalue() {
+        return propvalue;
+    }
+
+    public Integer getResearcherId() {
+        return researcherId;
+    }
+
+    public Integer getSiteId() {
+        return siteId;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setPropname(final String propname) {
+        this.propname = propname;
+    }
+
+    public void setPropvalue(final String propvalue) {
+        this.propvalue = propvalue;
+    }
+
+    public void setResearcherId(final Integer researcherId) {
+        this.researcherId = researcherId;
+    }
+
+    public void setSiteId(final Integer siteId) {
+        this.siteId = siteId;
+    }
+
+    public void setSiteName(final String siteName) {
+        this.siteName = siteName;
+    }
+
+    public void setTimestamp(final String timestamp) {
+        this.timestamp = timestamp;
+    }
 }

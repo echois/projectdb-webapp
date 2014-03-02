@@ -1,20 +1,26 @@
 package pm.pojo;
 
-public class ProjectStatus {
+import java.io.Serializable;
 
-	private Integer id;
-	private String name;
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+public class ProjectStatus implements Serializable {
+
+    private Integer id;
+    private String name;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
 
 }

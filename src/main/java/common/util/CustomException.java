@@ -2,14 +2,14 @@ package common.util;
 
 public class CustomException extends Exception {
 
-	private String customMsg;
-	
-	public CustomException(String s) {
-		this.customMsg = s;
+    private final String customMsg;
 
-	}
-	
-	public String getCustomMsg() {
-		return this.customMsg;
-	}
+    public CustomException(final String s) {
+        customMsg = s;
+
+    }
+
+    public String getCustomMsg() {
+        return customMsg;
+    }
 }

@@ -1,42 +1,44 @@
 package pm.pojo;
 
-public class TempProject {
+import java.io.Serializable;
 
-	private Integer id;
-	private Long lastVisited;
-	private String owner;
-	private String projectString;
+public class TempProject implements Serializable {
 
-	public Integer getId() {
-		return id;
-	}
+    private Integer id;
+    private Long lastVisited;
+    private String owner;
+    private String projectString;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Long getLastVisited() {
-		return lastVisited;
-	}
+    public Long getLastVisited() {
+        return lastVisited;
+    }
 
-	public void setLastVisited(Long lastVisited) {
-		this.lastVisited = lastVisited;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public String getProjectString() {
+        return projectString;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public String getProjectString() {
-		return projectString;
-	}
+    public void setLastVisited(final Long lastVisited) {
+        this.lastVisited = lastVisited;
+    }
 
-	public void setProjectString(String projectString) {
-		this.projectString = projectString;
-	}
+    public void setOwner(final String owner) {
+        this.owner = owner;
+    }
+
+    public void setProjectString(final String projectString) {
+        this.projectString = projectString;
+    }
 
 }

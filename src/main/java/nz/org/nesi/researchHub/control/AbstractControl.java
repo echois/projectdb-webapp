@@ -1,46 +1,46 @@
 package nz.org.nesi.researchHub.control;
 
-import common.util.AffiliationUtil;
+import java.util.Random;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+
 import pm.db.ProjectDao;
 
-import java.util.Random;
+import common.util.AffiliationUtil;
 
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 5/12/13
- * Time: 11:08 AM
+ * Written by: Markus Binsteiner Date: 5/12/13 Time: 11:08 AM
  */
 @Controller
 public class AbstractControl {
 
+    // @Autowired
+    // protected TempProjectManager tempProjectManager;
+    // @Autowired
+    // protected AuthzAspect authzAspect;
     @Autowired
-	protected ProjectDao projectDao;
-//	@Autowired
-//	protected TempProjectManager tempProjectManager;
-//	@Autowired
-//	protected AuthzAspect authzAspect;
-	@Autowired
-	protected AffiliationUtil affiliationUtil;
-//	@Value("${proxy}")
-//	protected String proxy;
-	@Value("${profile.default.picture}")
-	protected String profileDefaultPicture;
-//	@Value("${remoteUserHeader}")
-//	protected String remoteUserHeader;
-//	@Value("${heatmapBaseUserUrl}")
-//	protected String heatmapBaseUserUrl;
-//	@Value("${jobauditBaseUserUrl}")
-//	protected String jobauditBaseUserUrl;
-//	@Value("${jobauditBaseProjectUrl}")
-//	protected String jobauditBaseProjectUrl;
-	protected Log log = LogFactory.getLog(this.getClass().getName());
-	protected Random random = new Random();
+    protected AffiliationUtil affiliationUtil;
+    // @Value("${remoteUserHeader}")
+    // protected String remoteUserHeader;
+    // @Value("${heatmapBaseUserUrl}")
+    // protected String heatmapBaseUserUrl;
+    // @Value("${jobauditBaseUserUrl}")
+    // protected String jobauditBaseUserUrl;
+    // @Value("${jobauditBaseProjectUrl}")
+    // protected String jobauditBaseProjectUrl;
+    protected Log log = LogFactory.getLog(this.getClass().getName());
+    // @Value("${proxy}")
+    // protected String proxy;
+    @Value("${profile.default.picture}")
+    protected String profileDefaultPicture;
+    @Autowired
+    protected ProjectDao projectDao;
+    protected Random random = new Random();
 
 }

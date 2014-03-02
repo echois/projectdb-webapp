@@ -9,102 +9,113 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import common.util.CustomException;
-
 import pm.db.ProjectDao;
 import pm.pojo.Adviser;
 
+import common.util.CustomException;
+
 public class AuthzAspect {
 
-	private Log log = LogFactory.getLog(AuthzAspect.class.getName()); 
-	private String remoteUserHeader;
-	private ProjectDao projectDao;
+    private final Log log = LogFactory.getLog(AuthzAspect.class.getName());
+    private ProjectDao projectDao;
+    private String remoteUserHeader;
 
-	public void verifyUserIsAdviser() throws CustomException {
-		log.info("verifying user " + this.getTuakiriUniqueIdFromRequest() + " is adviser");
-		try {
-			String tuakiriUniqueId = this.getTuakiriUniqueIdFromRequest();
-			List<Adviser> advisers = this.projectDao.getAdvisers();
-			if (advisers != null) {
-				for (Adviser a: advisers) {
-					String tid = a.getTuakiriUniqueId();
-					if (tid != null && !tid.trim().equals("") && tid.equals(tuakiriUniqueId)) {
-						return;
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new CustomException(e.getMessage());
-		}
-		throw new CustomException("Only an adviser can perform this operation.");
-	}
+    public ProjectDao getProjectDao() {
+        return projectDao;
+    }
 
-	public void verifyUserIsAdviserOnProject(Integer projectId) throws CustomException {
-		try {
-			if (projectId < 1) {
-				return;
-			}
-			String tuakiriUniqueId = this.getTuakiriUniqueIdFromRequest();
-			Adviser tmp = this.projectDao.getAdviserByTuakiriUniqueId(tuakiriUniqueId);
-			if (tmp != null) {
-				if (tmp.getIsAdmin() > 0) {
-					return;
-				}
-			}
+    public String getRemoteUserHeader() {
+        return remoteUserHeader;
+    }
 
-			List<Adviser> advisers = this.projectDao.getAdvisersOnProject(projectId);
-			if (advisers != null) {
-				for (Adviser a: advisers) {
-					String tid = a.getTuakiriUniqueId();
-					if (tid != null && !tid.trim().equals("") && tid.equals(tuakiriUniqueId)) {
-						return;
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new CustomException(e.getMessage());
-		}
-		throw new CustomException(this.getTuakiriUniqueIdFromRequest() + " is unauthorised. Only an adviser of this project or an admin can perform this operation.");
-	}
+    private String getTuakiriUniqueIdFromRequest() {
+        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest();
+        String user = request.getHeader(remoteUserHeader);
+        if (user == null) {
+            user = "NULL";
+        }
+        return user;
+    }
 
-	public void verifyUserIsAdmin() throws CustomException {		
-		log.info("verifying user " + this.getTuakiriUniqueIdFromRequest() + " is admin");
-		try {
-			String tuakiriUniqueId = this.getTuakiriUniqueIdFromRequest();
-			if (tuakiriUniqueId != null && !tuakiriUniqueId.trim().equals("")) {
-				Adviser adviser = this.projectDao.getAdviserByTuakiriUniqueId(tuakiriUniqueId);
-				if (adviser.getIsAdmin() > 0) {
-					return;
-				}				
-			}
-		} catch (Exception e) {
-			throw new CustomException(e.getMessage());
-		}
-		throw new CustomException("Only an admin can perform this operation.");
-	}
+    public void setProjectDao(final ProjectDao projectDao) {
+        this.projectDao = projectDao;
+    }
 
-	public ProjectDao getProjectDao() {
-		return projectDao;
-	}
+    public void setRemoteUserHeader(final String remoteUserHeader) {
+        this.remoteUserHeader = remoteUserHeader;
+    }
 
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
+    public void verifyUserIsAdmin() throws CustomException {
+        log.info("verifying user " + getTuakiriUniqueIdFromRequest()
+                + " is admin");
+        try {
+            final String tuakiriUniqueId = getTuakiriUniqueIdFromRequest();
+            if (tuakiriUniqueId != null && !tuakiriUniqueId.trim().equals("")) {
+                final Adviser adviser = projectDao
+                        .getAdviserByTuakiriUniqueId(tuakiriUniqueId);
+                if (adviser.getIsAdmin() > 0) {
+                    return;
+                }
+            }
+        } catch (final Exception e) {
+            throw new CustomException(e.getMessage());
+        }
+        throw new CustomException("Only an admin can perform this operation.");
+    }
 
-	public String getRemoteUserHeader() {
-		return remoteUserHeader;
-	}
+    public void verifyUserIsAdviser() throws CustomException {
+        log.info("verifying user " + getTuakiriUniqueIdFromRequest()
+                + " is adviser");
+        try {
+            final String tuakiriUniqueId = getTuakiriUniqueIdFromRequest();
+            final List<Adviser> advisers = projectDao.getAdvisers();
+            if (advisers != null) {
+                for (final Adviser a : advisers) {
+                    final String tid = a.getTuakiriUniqueId();
+                    if (tid != null && !tid.trim().equals("")
+                            && tid.equals(tuakiriUniqueId)) {
+                        return;
+                    }
+                }
+            }
+        } catch (final Exception e) {
+            throw new CustomException(e.getMessage());
+        }
+        throw new CustomException("Only an adviser can perform this operation.");
+    }
 
-	public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
+    public void verifyUserIsAdviserOnProject(final Integer projectId)
+            throws CustomException {
+        try {
+            if (projectId < 1) {
+                return;
+            }
+            final String tuakiriUniqueId = getTuakiriUniqueIdFromRequest();
+            final Adviser tmp = projectDao
+                    .getAdviserByTuakiriUniqueId(tuakiriUniqueId);
+            if (tmp != null) {
+                if (tmp.getIsAdmin() > 0) {
+                    return;
+                }
+            }
 
-	private String getTuakiriUniqueIdFromRequest() {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String user = request.getHeader(remoteUserHeader);
-		if (user == null) {
-			user = "NULL";
-		}
-		return user;
-	}
+            final List<Adviser> advisers = projectDao
+                    .getAdvisersOnProject(projectId);
+            if (advisers != null) {
+                for (final Adviser a : advisers) {
+                    final String tid = a.getTuakiriUniqueId();
+                    if (tid != null && !tid.trim().equals("")
+                            && tid.equals(tuakiriUniqueId)) {
+                        return;
+                    }
+                }
+            }
+        } catch (final Exception e) {
+            throw new CustomException(e.getMessage());
+        }
+        throw new CustomException(
+                getTuakiriUniqueIdFromRequest()
+                        + " is unauthorised. Only an adviser of this project or an admin can perform this operation.");
+    }
 }

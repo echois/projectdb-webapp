@@ -13,14 +13,15 @@ import pm.pojo.Site;
 
 public class Util {
 
-	private Log log = LogFactory.getLog(Util.class.getName()); 
+    private final Log log = LogFactory.getLog(Util.class.getName());
 
-	public void addProjectInfosToMav(ModelAndView mav, ProjectDao dao, Integer projectId) throws Exception {
-		ProjectWrapper pw = dao.getProjectWrapperById(projectId);
-		List<ProjectType> projectTypes = dao.getProjectTypes();
-		List<Site> sites = dao.getSites();
-		mav.addObject("projectwrapper", pw);
-		mav.addObject("sites", sites);
-		mav.addObject("projectTypes", projectTypes);
-	}
+    public void addProjectInfosToMav(final ModelAndView mav,
+            final ProjectDao dao, final Integer projectId) throws Exception {
+        final ProjectWrapper pw = dao.getProjectWrapperById(projectId);
+        final List<ProjectType> projectTypes = dao.getProjectTypes();
+        final List<Site> sites = dao.getSites();
+        mav.addObject("projectwrapper", pw);
+        mav.addObject("sites", sites);
+        mav.addObject("projectTypes", projectTypes);
+    }
 }

@@ -3,9 +3,7 @@ package nz.org.nesi.researchHub.model;
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 11/12/13
- * Time: 10:47 AM
+ * Written by: Markus Binsteiner Date: 11/12/13 Time: 10:47 AM
  */
 public class AuthenticationIdentity {
 
@@ -15,19 +13,19 @@ public class AuthenticationIdentity {
     public AuthenticationIdentity() {
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public AuthenticationPoint getAuthPoint() {
         return authPoint;
     }
 
-    public void setAuthPoint(AuthenticationPoint authPoint) {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setAuthPoint(final AuthenticationPoint authPoint) {
         this.authPoint = authPoint;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
     }
 }

@@ -1,196 +1,190 @@
 package pm.pojo;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Project {
+public class Project implements Serializable {
 
-	private Integer id;
-	private String projectCode;
-	private Integer projectTypeId;
-	private Integer statusId;
-	private String statusName;
-	private String name;
-	private String description;
-	private String hostInstitution;
-	private String startDate;
-	private String nextReviewDate;
-	private String nextFollowUpDate;
-	private String endDate;
-	private String notes;
-	private String todo;
-	private String requirements;
-	private String projectTypeName;
-	private String lastModified;
+    private String description;
+    private String endDate;
+    private String hostInstitution;
+    private Integer id;
+    private String lastModified;
+    private String name;
+    private String nextFollowUpDate;
+    private String nextReviewDate;
+    private String notes;
+    private String projectCode;
+    private Integer projectTypeId;
+    private String projectTypeName;
+    private String requirements;
+    private String startDate;
+    private Integer statusId;
+    private String statusName;
+    private String todo;
 
-	public Integer getId() {
-		return id;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getEndDate() {
+        return endDate;
+    }
 
-	public Integer getProjectTypeId() {
-		return projectTypeId;
-	}
+    public String getHostInstitution() {
+        return hostInstitution;
+    }
 
-	public void setProjectTypeId(Integer projectTypeId) {
-		this.projectTypeId = projectTypeId;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Integer getStatusId() {
-		return statusId;
-	}
+    public String getLastModified() {
+        return lastModified;
+    }
 
-	public void setStatusId(Integer statusId) {
-		this.statusId = statusId;
-		if (statusId.equals(4)) {
-			if (this.endDate.equals("")) {
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-				this.endDate = df.format(new Date());
-			}
-			this.nextFollowUpDate = "";
-			this.nextReviewDate = "";
-		}
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getProjectCode() {
-		return projectCode;
-	}
+    public String getNextFollowUpDate() {
+        return nextFollowUpDate;
+    }
 
-	public void setProjectCode(String projectCode) {
-		this.projectCode = projectCode;
-	}
+    public String getNextReviewDate() {
+        return nextReviewDate;
+    }
 
-	public String getProjectTypeName() {
-		return projectTypeName;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public void setProjectTypeName(String projectTypeName) {
-		this.projectTypeName = projectTypeName;
-	}
+    public String getProjectCode() {
+        return projectCode;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Integer getProjectId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public Integer getProjectTypeId() {
+        return projectTypeId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getProjectTypeName() {
+        return projectTypeName;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getRequirements() {
+        return requirements;
+    }
 
-	public String getHostInstitution() {
-		return hostInstitution;
-	}
+    public String getStartDate() {
+        return startDate;
+    }
 
-	public void setHostInstitution(String hostInstitution) {
-		this.hostInstitution = hostInstitution;
-	}
+    public Integer getStatusId() {
+        return statusId;
+    }
 
-	public String getStartDate() {
-		return startDate;
-	}
+    public String getStatusName() {
+        return statusName;
+    }
 
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
-	}
+    public String getTodo() {
+        return todo;
+    }
 
-	public String getEndDate() {
-		return endDate;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
+    public void setEndDate(final String endDate) {
+        this.endDate = endDate;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public void setHostInstitution(final String hostInstitution) {
+        this.hostInstitution = hostInstitution;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public String getNextReviewDate() {
-		return nextReviewDate;
-	}
+    public void setLastModified(final String lastModified) {
+        this.lastModified = lastModified;
+    }
 
-	public void setNextReviewDate(String nextReviewDate) {
-		this.nextReviewDate = nextReviewDate;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public String getNextFollowUpDate() {
-		return nextFollowUpDate;
-	}
+    public void setNextFollowUpDate(final String nextFollowUpDate) {
+        this.nextFollowUpDate = nextFollowUpDate;
+    }
 
-	public void setNextFollowUpDate(String nextFollowUpDate) {
-		this.nextFollowUpDate = nextFollowUpDate;
-	}
+    public void setNextReviewDate(final String nextReviewDate) {
+        this.nextReviewDate = nextReviewDate;
+    }
 
-	public String getRequirements() {
-		return requirements;
-	}
+    public void setNotes(final String notes) {
+        this.notes = notes;
+    }
 
-	public void setRequirements(String requirements) {
-		this.requirements = requirements;
-	}
+    public void setProjectCode(final String projectCode) {
+        this.projectCode = projectCode;
+    }
 
-	public String getTodo() {
-		return todo;
-	}
+    public void setProjectTypeId(final Integer projectTypeId) {
+        this.projectTypeId = projectTypeId;
+    }
 
-	public void setTodo(String todo) {
-		this.todo = todo;
-	}
+    public void setProjectTypeName(final String projectTypeName) {
+        this.projectTypeName = projectTypeName;
+    }
 
-	public Integer getProjectId() {
-		return this.id;
-	}
+    public void setRequirements(final String requirements) {
+        this.requirements = requirements;
+    }
 
-	public String getStatusName() {
-		return statusName;
-	}
+    public void setStartDate(final String startDate) {
+        this.startDate = startDate;
+    }
 
-	public void setStatusName(String statusName) {
-		this.statusName = statusName;
-	}
+    public void setStatusId(final Integer statusId) {
+        this.statusId = statusId;
+        if (statusId.equals(4)) {
+            if (endDate.equals("")) {
+                final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                endDate = df.format(new Date());
+            }
+            nextFollowUpDate = "";
+            nextReviewDate = "";
+        }
+    }
+
+    public void setStatusName(final String statusName) {
+        this.statusName = statusName;
+    }
+
+    public void setTodo(final String todo) {
+        this.todo = todo;
+    }
 
     @Override
     public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", projectCode='" + projectCode + '\'' +
-                ", projectTypeId=" + projectTypeId +
-                ", statusId=" + statusId +
-                ", statusName='" + statusName + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", hostInstitution='" + hostInstitution + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", nextReviewDate='" + nextReviewDate + '\'' +
-                ", nextFollowUpDate='" + nextFollowUpDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", notes='" + notes + '\'' +
-                ", todo='" + todo + '\'' +
-                ", requirements='" + requirements + '\'' +
-                ", projectTypeName='" + projectTypeName + '\'' +
-                '}';
+        return "Project{" + "id=" + id + ", projectCode='" + projectCode + '\''
+                + ", projectTypeId=" + projectTypeId + ", statusId=" + statusId
+                + ", statusName='" + statusName + '\'' + ", name='" + name
+                + '\'' + ", description='" + description + '\''
+                + ", hostInstitution='" + hostInstitution + '\''
+                + ", startDate='" + startDate + '\'' + ", nextReviewDate='"
+                + nextReviewDate + '\'' + ", nextFollowUpDate='"
+                + nextFollowUpDate + '\'' + ", endDate='" + endDate + '\''
+                + ", notes='" + notes + '\'' + ", todo='" + todo + '\''
+                + ", requirements='" + requirements + '\''
+                + ", projectTypeName='" + projectTypeName + '\'' + '}';
     }
-
-	public String getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(String lastModified) {
-		this.lastModified = lastModified;
-	}
 }

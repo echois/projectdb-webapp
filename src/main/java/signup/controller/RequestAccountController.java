@@ -15,45 +15,50 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import common.util.AffiliationUtil;
 import pm.db.ProjectDao;
 import pm.pojo.InstitutionalRole;
 import signup.pojo.RequestAccount;
 
+import common.util.AffiliationUtil;
+
 @Controller
 public class RequestAccountController {
-	
-	private Logger log = Logger.getLogger(RequestAccountController.class.getName());
-	@Autowired
-	private ProjectDao projectDao;
-	@Autowired
-	private AffiliationUtil affiliationUtil;
 
-	@RequestMapping(value = "requestaccount", method = RequestMethod.GET)
-	public String edit(Model m) throws Exception {
-		this.augmentModel(m);
-		m.addAttribute("requestaccount", new RequestAccount());
-		return "requestaccount";
-	}
+    @Autowired
+    private AffiliationUtil affiliationUtil;
+    private final Logger log = Logger.getLogger(RequestAccountController.class
+            .getName());
+    @Autowired
+    private ProjectDao projectDao;
 
-    @RequestMapping(value="requestaccount", method=RequestMethod.POST)
-    public String onSubmit(Model m, @Valid @ModelAttribute("requestaccount") RequestAccount requestAccount, BindingResult result) throws Exception {
-    	this.augmentModel(m);
-		if(result.hasErrors()) {
+    private void augmentModel(final Model m) throws Exception {
+        final List<InstitutionalRole> ir = projectDao.getInstitutionalRoles();
+        final HashMap<Integer, String> institutionalRoles = new LinkedHashMap<Integer, String>();
+        if (ir != null) {
+            for (final InstitutionalRole role : ir) {
+                institutionalRoles.put(role.getId(), role.getName());
+            }
+        }
+        m.addAttribute("institutionalRoles", institutionalRoles);
+        m.addAttribute("affiliations", affiliationUtil.getAffiliationStrings());
+    }
+
+    @RequestMapping(value = "requestaccount", method = RequestMethod.GET)
+    public String edit(final Model m) throws Exception {
+        augmentModel(m);
+        m.addAttribute("requestaccount", new RequestAccount());
+        return "requestaccount";
+    }
+
+    @RequestMapping(value = "requestaccount", method = RequestMethod.POST)
+    public String onSubmit(
+            final Model m,
+            @Valid @ModelAttribute("requestaccount") final RequestAccount requestAccount,
+            final BindingResult result) throws Exception {
+        augmentModel(m);
+        if (result.hasErrors()) {
             return "requestaccount";
         }
         return "requestaccount";
-    }
-    
-    private void augmentModel(Model m) throws Exception {
-		List<InstitutionalRole> ir = this.projectDao.getInstitutionalRoles();
-		HashMap<Integer,String> institutionalRoles = new LinkedHashMap<Integer, String>();
-		if (ir != null) {
-			for (InstitutionalRole role: ir) {
-				institutionalRoles.put(role.getId(), role.getName());
-			}
-		}
-		m.addAttribute("institutionalRoles", institutionalRoles);
-		m.addAttribute("affiliations", this.affiliationUtil.getAffiliationStrings());    	
     }
 }

@@ -5,13 +5,11 @@ import com.mangofactory.swagger.annotations.ApiError;
 /**
  * Project: project_management
  * <p/>
- * Written by: Nick Young
- * Date: 10/12/13
- * Time: 15:53pm
+ * Written by: Nick Young Date: 10/12/13 Time: 15:53pm
  */
-@ApiError(code=500,reason="Timestamp mismatch")
+@ApiError(code = 500, reason = "Timestamp mismatch")
 public class OutOfDateException extends Exception {
-    public OutOfDateException(String s) {
+    public OutOfDateException(final String s) {
         super(s);
     }
 }

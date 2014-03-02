@@ -1,185 +1,187 @@
 package pm.pojo;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import common.util.AffiliationUtil;
 
-public class Researcher {
+public class Researcher implements Serializable {
 
-	private Integer id;
-	private String fullName;
-	private String preferredName;
-	private Integer statusId;
-	private String statusName;
-	private String email;
-	private String phone;
-	private String institution;
-	private String division;
-	private String department;
-	private Integer institutionalRoleId;
-	private String institutionalRoleName;
-	private String pictureUrl;
-	private String startDate;
-	private String endDate;
-	private String notes;
-	private String lastModified;
-	private String affiliation;
+    private String affiliation;
+    private String department;
+    private String division;
+    private String email;
+    private String endDate;
+    private String fullName;
+    private Integer id;
+    private String institution;
+    private Integer institutionalRoleId;
+    private String institutionalRoleName;
+    private String lastModified;
+    private String notes;
+    private String phone;
+    private String pictureUrl;
+    private String preferredName;
+    private String startDate;
+    private Integer statusId;
+    private String statusName;
 
-	public Integer getId() {
-		return id;
-	}
+    public String getAffiliation() {
+        final AffiliationUtil af = new AffiliationUtil();
+        return af.createAffiliationString(institution, division, department);
+    }
 
-	public Integer getInstitutionalRoleId() {
-		return institutionalRoleId;
-	}
+    public String getDepartment() {
+        return department;
+    }
 
-	public void setInstitutionalRoleId(Integer institutionalRoleId) {
-		this.institutionalRoleId = institutionalRoleId;
-	}
+    public String getDivision() {
+        return division;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getFullName() {
-		return fullName;
-	}
+    public String getEndDate() {
+        return endDate;
+    }
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    public String getFullName() {
+        return fullName;
+    }
 
-	public String getPreferredName() {
-		return preferredName;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setPreferredName(String preferredName) {
-		this.preferredName = preferredName;
-	}
+    public String getInstitution() {
+        return institution;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public Integer getInstitutionalRoleId() {
+        return institutionalRoleId;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getInstitutionalRoleName() {
+        return institutionalRoleName;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public String getLastModified() {
+        return lastModified;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public String getInstitution() {
-		return institution;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
 
-	public String getDivision() {
-		return division;
-	}
+    public String getPreferredName() {
+        return preferredName;
+    }
 
-	public void setDivision(String division) {
-		this.division = division;
-	}
+    public String getStartDate() {
+        return startDate;
+    }
 
-	public String getDepartment() {
-		return department;
-	}
+    public Integer getStatusId() {
+        return statusId;
+    }
 
-	public void setDepartment(String department) {
-		this.department = department;
-	}
+    public String getStatusName() {
+        return statusName;
+    }
 
-	public String getPictureUrl() {
-		return pictureUrl;
-	}
+    public void setAffiliation(final String a) {
+        final AffiliationUtil af = new AffiliationUtil();
+        department = af.getDepartmentFromAffiliationString(a);
+        division = af.getDivisionFromAffiliationString(a);
+        institution = af.getInstitutionFromAffiliationString(a);
+    }
 
-	public void setPictureUrl(String pictureUrl) {
-		this.pictureUrl = pictureUrl;
-	}
+    public void setDepartment(final String department) {
+        this.department = department;
+    }
 
-	public String getStartDate() {
-		return startDate;
-	}
+    public void setDivision(final String division) {
+        this.division = division;
+    }
 
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
-	}
+    public void setEmail(final String email) {
+        this.email = email;
+    }
 
-	public String getEndDate() {
-		return endDate;
-	}
+    public void setEndDate(final String endDate) {
+        this.endDate = endDate;
+    }
 
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
+    public void setFullName(final String fullName) {
+        this.fullName = fullName;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public void setId(final Integer id) {
+        this.id = id;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public void setInstitution(final String institution) {
+        this.institution = institution;
+    }
 
-	public String getInstitutionalRoleName() {
-		return institutionalRoleName;
-	}
+    public void setInstitutionalRoleId(final Integer institutionalRoleId) {
+        this.institutionalRoleId = institutionalRoleId;
+    }
 
-	public void setInstitutionalRoleName(String institutionalRoleName) {
-		this.institutionalRoleName = institutionalRoleName;
-	}
+    public void setInstitutionalRoleName(final String institutionalRoleName) {
+        this.institutionalRoleName = institutionalRoleName;
+    }
 
-	public Integer getStatusId() {
-		return statusId;
-	}
+    public void setLastModified(final String lastModified) {
+        this.lastModified = lastModified;
+    }
 
-	public void setStatusId(Integer statusId) {
-		this.statusId = statusId;
-		if (statusId.equals(2) && this.endDate.equals("")) {
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			this.endDate = df.format(new Date());
-		} else if (statusId.equals(7) && this.endDate.equals("")) {
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			this.endDate = df.format(new Date(System.currentTimeMillis() + 1000L*60*60*24*30));
-		}
-	}
+    public void setNotes(final String notes) {
+        this.notes = notes;
+    }
 
-	public String getStatusName() {
-		return statusName;
-	}
+    public void setPhone(final String phone) {
+        this.phone = phone;
+    }
 
-	public void setStatusName(String string) {
-		this.statusName = string;
-	}
+    public void setPictureUrl(final String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
 
-	public String getLastModified() {
-		return lastModified;
-	}
+    public void setPreferredName(final String preferredName) {
+        this.preferredName = preferredName;
+    }
 
-	public void setLastModified(String lastModified) {
-		this.lastModified = lastModified;
-	}
-	
-	public String getAffiliation() {
-		AffiliationUtil af = new AffiliationUtil();
-		return af.createAffiliationString(institution, division, department);
-	}
-	
-	public void setAffiliation(String a) {
-		AffiliationUtil af = new AffiliationUtil();
-		this.department = af.getDepartmentFromAffiliationString(a);
-		this.division = af.getDivisionFromAffiliationString(a);
-		this.institution = af.getInstitutionFromAffiliationString(a);
-	}
+    public void setStartDate(final String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setStatusId(final Integer statusId) {
+        this.statusId = statusId;
+        if (statusId.equals(2) && endDate.equals("")) {
+            final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            endDate = df.format(new Date());
+        } else if (statusId.equals(7) && endDate.equals("")) {
+            final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            endDate = df.format(new Date(System.currentTimeMillis() + 1000L
+                    * 60 * 60 * 24 * 30));
+        }
+    }
+
+    public void setStatusName(final String string) {
+        statusName = string;
+    }
 
 }

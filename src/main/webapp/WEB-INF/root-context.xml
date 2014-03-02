@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
-  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jd="http://www.springframework.org/schema/jdbc"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:jd="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
       http://www.springframework.org/schema/context
       http://www.springframework.org/schema/context/spring-context-3.0.xsd
@@ -11,63 +12,66 @@
       http://www.springframework.org/schema/jdbc
       http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-  <context:annotation-config/>
-  <mvc:annotation-driven />
+	<context:annotation-config />
+	<mvc:annotation-driven />
 
 
-  <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
-    <!--<property name="locations">-->
-        <!--<list>-->
-        <!--<value>file:${conf.path}</value>-->
-        <!--<value>classpath:common.properties</value>-->
-      <!--</list>-->
-    <!--</property>-->
-  <!--</bean>-->
+	<!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> -->
+	<!--<property name="locations"> -->
+	<!--<list> -->
+	<!--<value>file:${conf.path}</value> -->
+	<!--<value>classpath:common.properties</value> -->
+	<!--</list> -->
+	<!--</property> -->
+	<!--</bean> -->
 
 
-    <context:property-placeholder location="file:/etc/projectdb.conf" order="-1"
-                                  ignore-unresolvable="true" ignore-resource-not-found="true" />
-    <context:property-placeholder location="classpath:configuration.properties" ignore-resource-not-found="true" ignore-unresolvable="true"/>
+	<context:property-placeholder location="file:/etc/projectdb.conf"
+		order="-1" ignore-unresolvable="true" ignore-resource-not-found="true" />
+	<context:property-placeholder location="classpath:configuration.properties"
+		ignore-resource-not-found="true" ignore-unresolvable="true" />
 
 
-    <bean id="placeholder-configurer-3" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="order" value="3"/>
-        <property name="ignoreResourceNotFound" value="false"/>
-        <property name="location" value="classpath:/common.properties"></property>
-    </bean>
+	<bean id="placeholder-configurer-3"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="order" value="3" />
+		<property name="ignoreResourceNotFound" value="false" />
+		<property name="location" value="classpath:/common.properties"></property>
+	</bean>
 
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    <property name="driverClassName" value="${jdbc.driver.className}" />
-    <property name="url" value="${jdbc.url}" />
-    <property name="username" value="${jdbc.username}" />
-    <property name="password" value="${jdbc.password}" />
-    <property name="testOnBorrow" value="true" />
-    <property name="validationQuery" value="SELECT 1" />
-    <property name="initialSize" value="10" />
-    <property name="maxActive" value="10" />
-    <property name="maxIdle" value="10" />
-  </bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver.className}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="10" />
+		<property name="maxIdle" value="10" />
+	</bean>
 
-  <bean id="ibatisSqlMapClient" class="org.mybatis.spring.SqlSessionFactoryBean">
-    <property name="configLocation" value="classpath:ibatisSqlMapConfig.xml" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
+	<bean id="ibatisSqlMapClient" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:ibatisSqlMapConfig.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
-    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-        <constructor-arg index="0" ref="ibatisSqlMapClient" />
-    </bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="ibatisSqlMapClient" />
+	</bean>
 
 
-  <bean id="projectDao" class="pm.db.IBatisProjectDao">
-      <property name="sqlSessionFactory" ref="ibatisSqlMapClient"></property>
-    <!--<property name="sqlMapClient" ref="ibatisSqlMapClient" />-->
-  </bean>
+	<bean id="projectDao" class="pm.db.IBatisProjectDao">
+		<property name="sqlSessionFactory" ref="ibatisSqlMapClient"></property>
+		<!--<property name="sqlMapClient" ref="ibatisSqlMapClient" /> -->
+	</bean>
 
-  <bean id="affiliationUtil" class="common.util.AffiliationUtil">
-    <property name="projectDao" ref="projectDao" />
-  </bean>
+	<bean id="affiliationUtil" class="common.util.AffiliationUtil">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
 
-  <import resource="classpath:jetm-monitoring.xml" />
+	<import resource="classpath:jetm-monitoring.xml" />
 
 
 

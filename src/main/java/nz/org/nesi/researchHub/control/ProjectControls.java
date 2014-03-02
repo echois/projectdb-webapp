@@ -41,161 +41,516 @@ import pm.pojo.Site;
 /**
  * Project: project_management
  * <p/>
- * Written by: Markus Binsteiner
- * Date: 9/12/13
- * Time: 9:38 AM
+ * Written by: Markus Binsteiner Date: 9/12/13 Time: 9:38 AM
  */
 public class ProjectControls extends AbstractControl {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("rest-servlet.xml", "pm-servlet.xml", "signup-servlet.xml", "root-context.xml");
+        final ApplicationContext context = new ClassPathXmlApplicationContext(
+                "rest-servlet.xml", "pm-servlet.xml", "signup-servlet.xml",
+                "root-context.xml");
 
+        context.getBean("adviserControls");
 
-        AdviserControls ac = (AdviserControls) context.getBean("adviserControls");
+        final ProjectControls pc = (ProjectControls) context
+                .getBean("projectControls");
 
-        ProjectControls pc = (ProjectControls) context.getBean("projectControls");
-
-//        for (Project p : pc.getProjects()) {
-//            System.out.println(p);
-//        }
+        // for (Project p : pc.getProjects()) {
+        // System.out.println(p);
+        // }
 
         System.out.println(pc.getProjectWrapper("uoa00155"));
 
     }
 
-
     /**
      * Validates the project wrapper object.
-     *
-     * @param pw the project wrapper
-     * @throws InvalidEntityException if there is something wrong with the projectwrapper object or one of the associated objects
+     * 
+     * @param pw
+     *            the project wrapper
+     * @throws InvalidEntityException
+     *             if there is something wrong with the projectwrapper object or
+     *             one of the associated objects
      */
-    public static void validateProject(ProjectWrapper pw) throws InvalidEntityException {
-    	if (pw.getProject().getName()==null) {
-    		throw new InvalidEntityException("Project does not have a title", Project.class, "name");
-    	}
+    public static void validateProject(final ProjectWrapper pw)
+            throws InvalidEntityException {
+        if (pw.getProject().getName() == null) {
+            throw new InvalidEntityException("Project does not have a title",
+                    Project.class, "name");
+        }
         if (pw.getProject().getName().trim().equals("")) {
             pw.setErrorMessage("A project must have a title");
-            throw new InvalidEntityException("Project does not have a title", Project.class, "name");
-        }
-        
-        if (pw.getProject().getName().equals("New Project")) return; // Don't check HPC until the project has a real name
-        
-        // At least one HPC
-        if (pw.getProject().getId()!=null && pw.getProjectFacilities().isEmpty()) {
-            throw new InvalidEntityException("There must be at least one HPC facility associated with the project", ProjectWrapper.class, "projectFacilities");
-        }
-        
-        for (RPLink rp : pw.getRpLinks()) {
-        	for (RPLink other :pw.getRpLinks()) {
-        		if (rp.getResearcherId().equals(other.getResearcherId()) && !rp.getResearcherRoleId().equals(other.getResearcherRoleId())) {
-        			throw new InvalidEntityException("A researcher can only have one role on a project", ProjectWrapper.class, "rpLinks");
-        		}
-        	}
-        }
-        
-        for (APLink ap : pw.getApLinks()) {
-        	for (APLink other :pw.getApLinks()) {
-        		if (ap.getAdviserId().equals(other.getAdviserId()) && !ap.getAdviserRoleId().equals(other.getAdviserRoleId())) {
-        			throw new InvalidEntityException("An adviser can only have one role on a project", ProjectWrapper.class, "apLinks");
-        		}
-        	}
+            throw new InvalidEntityException("Project does not have a title",
+                    Project.class, "name");
         }
 
-    }
+        if (pw.getProject().getName().equals("New Project")) {
+            return; // Don't check HPC until the project has a real name
+        }
 
-    /**
-     * Gets the project (with associted objects) with the specified id or project code.
-     *
-     * @param projectIdOrCode the project id or project code
-     * @return the Project
-     */
-    public ProjectWrapper getProjectWrapper(String projectIdOrCode) {
-
-        try {
-            int i = Integer.parseInt(projectIdOrCode);
-            try {
-                ProjectWrapper pw = projectDao.getProjectWrapperById(i);
-                return pw;
-            } catch (Exception e) {
-                throw new DatabaseException("Could not retrieve project with id: " + projectIdOrCode, e);
+        for (final RPLink rp : pw.getRpLinks()) {
+            for (final RPLink other : pw.getRpLinks()) {
+                if (rp.getResearcherId().equals(other.getResearcherId())
+                        && !rp.getResearcherRoleId().equals(
+                                other.getResearcherRoleId())) {
+                    throw new InvalidEntityException(
+                            "A researcher can only have one role on a project",
+                            ProjectWrapper.class, "rpLinks");
+                }
             }
-        } catch (Exception e) {
-            try {
-            ProjectWrapper pw = projectDao.getProjectWrapperByProjectCode(projectIdOrCode);
-            return pw;
-            } catch (Exception e2) {
-                throw new DatabaseException("Could not retrieve project with code: "+ projectIdOrCode, e2);
+        }
+
+        for (final APLink ap : pw.getApLinks()) {
+            for (final APLink other : pw.getApLinks()) {
+                if (ap.getAdviserId().equals(other.getAdviserId())
+                        && !ap.getAdviserRoleId().equals(
+                                other.getAdviserRoleId())) {
+                    throw new InvalidEntityException(
+                            "An adviser can only have one role on a project",
+                            ProjectWrapper.class, "apLinks");
+                }
             }
         }
 
     }
 
     /**
-     * Utility method that forwards to {@link #getProjectWrapper(String)}.
-     * @param id the id of the project
-     * @return the projectWrapper object
+     * Add the specified adviser to this project
+     * 
+     * @param id
+     *            the id
+     * @throws InvalidEntityException
      */
-    public ProjectWrapper getProjectWrapper(Integer id) {
-        return getProjectWrapper(id.toString());
-    }
-    
-    /**
-     * Gets the project properties associated with the specified project id.
-     *
-     * @param projectId the project
-     * @return the ProjectProperties
-     */
-    public List<ProjectProperty> getProjectProperties(Integer id) {
-    	try {
-    		return this.projectDao.getProjectProperties(id);
-    	} catch (Exception e) {
-            throw new DatabaseException("Could not retrieve properties", e);
+    public void addAdviser(final APLink al) throws InvalidEntityException {
+        if (al.getAdviserId() == null || al.getAdviserId().equals(0)) {
+            throw new InvalidEntityException("Not a valid adviser",
+                    Adviser.class, "APLink");
         }
-    }
-
-    /**
-     * Get all projects in the database.
-     *
-     * Mind, this doesn't return project wrapper objects, just the plain objects. We could change that, not sure about
-     * performance in that case.
-     *
-     * @return all projects
-     */
-    public List<Project> getProjects() {
         try {
-            List<Project> ps = projectDao.getProjects();
-            return ps;
-        } catch (Exception e) {
-            throw new DatabaseException("Could not retrieve projects", e);
+            final ProjectWrapper pw = projectDao.getProjectWrapperById(al
+                    .getProjectId());
+            pw.getApLinks().add(al);
+            validateProject(pw);
+            projectDao.updateProjectWrapper(al.getProjectId(), pw);
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't fetch project with id "
+                    + al.getProjectId(), e);
         }
     }
 
     /**
-     * Get all projects that contain the specified filter string (case-insensitive) in one or more of the project properties.
-     *
-     * Mind, this returns only the Project object, not the ProjectWrapper ones (see: {@link #getProjects()}.
-     *
-     * @param filter the filter string, can't be empty
+     * Add the specified project_kpi to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void addAdviserAction(final AdviserAction aa) throws Exception {
+        final ProjectWrapper pw = projectDao.getProjectWrapperById(aa
+                .getProjectId());
+        pw.getAdviserActions().add(aa);
+        validateProject(pw);
+        projectDao.updateProjectWrapper(aa.getProjectId(), pw);
+    }
+
+    /**
+     * Add the specified attachment to the project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void addAttachment(final Attachment a) throws Exception {
+        final ProjectWrapper pw = projectDao.getProjectWrapperById(a
+                .getProjectId());
+        Integer oid = 0;
+        if (a.getAdviserActionId() != null) {
+            oid = a.getAdviserActionId();
+            a.setAdviserActionId(pw.getAdviserActions().get(oid).getId());
+            pw.getAdviserActions().get(oid).getAttachments().add(a);
+        } else if (a.getFollowUpId() != null) {
+            oid = a.getFollowUpId();
+            a.setFollowUpId(pw.getFollowUps().get(oid).getId());
+            pw.getFollowUps().get(oid).getAttachments().add(a);
+        } else if (a.getReviewId() != null) {
+            oid = a.getReviewId();
+            a.setReviewId(pw.getReviews().get(oid).getId());
+            pw.getReviews().get(oid).getAttachments().add(a);
+        }
+        validateProject(pw);
+        projectDao.updateProjectWrapper(a.getProjectId(), pw);
+    }
+
+    /**
+     * Add the specified project_kpi to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void addFollowUp(final FollowUp f) throws Exception {
+        final ProjectWrapper pw = projectDao.getProjectWrapperById(f
+                .getProjectId());
+        pw.getFollowUps().add(f);
+        validateProject(pw);
+        projectDao.updateProjectWrapper(f.getProjectId(), pw);
+    }
+
+    /**
+     * Add the specified project_kpi to this project
+     * 
+     * @param id
+     *            the id
+     * @throws InvalidEntityException
+     */
+    public void addKpi(final ProjectKpi pk) throws Exception {
+        final ProjectWrapper pw = projectDao.getProjectWrapperById(pk
+                .getProjectId());
+        pw.getProjectKpis().add(pk);
+        validateProject(pw);
+        try {
+            projectDao.updateProjectWrapper(pk.getProjectId(), pw);
+        } catch (final DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Add the specified researcher to this project
+     * 
+     * @param id
+     *            the id
+     * @throws InvalidEntityException
+     */
+    public void addResearcher(final RPLink rl) throws InvalidEntityException {
+        if (rl.getResearcherId() == null || rl.getResearcherId().equals(0)) {
+            throw new InvalidEntityException("Not a valid researcher",
+                    Researcher.class, "RPLink");
+        }
+        try {
+            final ProjectWrapper pw = projectDao.getProjectWrapperById(rl
+                    .getProjectId());
+            pw.getRpLinks().add(rl);
+            validateProject(pw);
+            projectDao.updateProjectWrapper(rl.getProjectId(), pw);
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't fetch project with id "
+                    + rl.getProjectId(), e);
+        }
+    }
+
+    /**
+     * Add the specified research_output to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void addResearchOutput(final ResearchOutput ro) throws Exception {
+        final ProjectWrapper pw = projectDao.getProjectWrapperById(ro
+                .getProjectId());
+        pw.getResearchOutputs().add(ro);
+        validateProject(pw);
+        projectDao.updateProjectWrapper(ro.getProjectId(), pw);
+    }
+
+    /**
+     * Add the specified project_kpi to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void addReview(final Review r) throws Exception {
+        final ProjectWrapper pw = projectDao.getProjectWrapperById(r
+                .getProjectId());
+        pw.getReviews().add(r);
+        validateProject(pw);
+        projectDao.updateProjectWrapper(r.getProjectId(), pw);
+    }
+
+    /**
+     * Creates a new project in the database.
+     * 
+     * @param pw
+     *            the projectWrapper object
+     * @return the id of the new project
+     */
+    public synchronized Integer createProjectWrapper(final ProjectWrapper pw)
+            throws InvalidEntityException {
+        validateProject(pw);
+        final Project p = pw.getProject();
+
+        if (p.getId() != null) {
+            throw new IllegalArgumentException(
+                    "Can't create project that already has an id.");
+        }
+
+        if (pw.getProject().getProjectCode().equals("nesi")) {
+            pw.getProject().setProjectCode(
+                    projectDao.getNextProjectCode("nesi"));
+        }
+        if (!p.getHostInstitution().trim().equals("")
+                && (p.getProjectCode() == null || p.getProjectCode().trim()
+                        .equals(""))) {
+            final String projectCode = projectDao.getNextProjectCode(p
+                    .getHostInstitution());
+            pw.getProject().setProjectCode(projectCode);
+        }
+        try {
+            final Integer pid = projectDao.createProjectWrapper(pw);
+            return pid;
+        } catch (final Exception e) {
+            throw new DatabaseException(
+                    "Could not create Project in database.", e);
+        }
+
+    }
+
+    /**
+     * Delete the project wrapper object with the specified id.
+     * 
+     * @param id
+     *            the id
+     */
+    public void delete(final Integer id) {
+
+        try {
+            projectDao.deleteProjectWrapper(id);
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't delete ProjectWrapper with id "
+                    + id, e);
+        }
+
+    }
+
+    /**
+     * Edit a project wrapper object.
+     * 
+     * @param project
+     *            the updated project wrapper
+     * @throws InvalidEntityException
+     *             if there is something wrong with either the projectwrapper or
+     *             associated objects
+     * @throws OutOfDateException
+     */
+    public void editProjectWrapper(@PathVariable final Integer id,
+            @RequestBody final ProjectWrapper project)
+            throws InvalidEntityException, OutOfDateException {
+
+        validateProject(project);
+        if (project.getProject() != null) {
+            // might throw database exception if project does not already exist
+            final ProjectWrapper temp = getProjectWrapper(id.toString());
+
+            project.getProject().setId(id);
+
+            // great, no exception, means an project with this id does already
+            // exist,
+            // Compare timestamps to prevent accidental overwrite
+            if (project.getProject().getLastModified() != temp.getProject()
+                    .getLastModified()
+                    || !project.getProject().getLastModified()
+                            .equals(temp.getProject().getLastModified())) {
+                throw new OutOfDateException("Incorrect timestamp");
+            }
+            try {
+                projectDao.updateProjectWrapper(id, project);
+            } catch (final Exception e) {
+                throw new DatabaseException("Can't update project with id "
+                        + id, e);
+            }
+        } else {
+            throw new InvalidEntityException(
+                    "Can't edit project. No project object provided.",
+                    Project.class, "id");
+        }
+
+    }
+
+    /**
+     * Edit one field of a project wrapper object.
+     * 
+     * @param project
+     *            the updated project wrapper
+     * @throws InvalidEntityException
+     *             if there is something wrong with either the projectwrapper or
+     *             associated objects
+     * @throws OutOfDateException
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws ClassNotFoundException
+     */
+    public void editProjectWrapper(final Integer id, final String object,
+            final String field, final String timestamp, final String data)
+            throws InvalidEntityException, OutOfDateException {
+        if (id != null) {
+            // might throw database exception if project does not already exist
+            final ProjectWrapper pw = getProjectWrapper(id.toString());
+            final boolean skipValidation = pw.getProject().getName()
+                    .equals("New Project");
+            // great, no exception, means an project with this id does already
+            // exist,
+            // Compare timestamps to prevent accidental overwrite
+            final boolean force = timestamp.equals("force");
+            if (!force && !timestamp.equals(pw.getProject().getLastModified())) {
+                throw new OutOfDateException(
+                        "Incorrect timestamp. Project has been modified since you last loaded it.");
+            }
+            boolean deep = false;
+            final boolean attachment = object.contains("Attachments");
+            String method = "get" + object;
+            Class<?> pojoClass = null;
+            if (object.contains("_")) {
+                deep = true;
+                method = "get" + object.split("_")[0];
+            }
+            try {
+                if (object.equals("projectFacilities")) {
+                    final List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
+                    for (final String facId : data.split(",")) {
+                        final ProjectFacility pf = new ProjectFacility();
+                        pf.setProjectId(id);
+                        pf.setFacilityId(Integer.valueOf(facId));
+                        projectFacilities.add(pf);
+                    }
+                    pw.setProjectFacilities(projectFacilities);
+                } else {
+                    final Class<ProjectWrapper> c = ProjectWrapper.class;
+                    Method getPojo = c.getDeclaredMethod(method);
+                    Object pojo = getPojo.invoke(pw);
+                    pojoClass = pojo.getClass();
+                    if (deep) {
+                        method = "get";
+                        try {
+                            Integer.parseInt(object.split("_")[1]);
+                            getPojo = pojoClass.getDeclaredMethod(method,
+                                    int.class);
+                            pojo = getPojo.invoke(pojo,
+                                    Integer.parseInt(object.split("_")[1]));
+                        } catch (final NumberFormatException e) {
+                            method = "get" + object.split("_")[1];
+                            getPojo = pojoClass.getDeclaredMethod(method);
+                            pojo = getPojo.invoke(pojo);
+                        }
+                        pojoClass = pojo.getClass();
+                    }
+                    if (attachment) {
+                        method = "getAttachments";
+                        getPojo = pojoClass.getDeclaredMethod(method);
+                        pojo = getPojo.invoke(pojo);
+                        pojoClass = pojo.getClass();
+                        method = "get";
+                        getPojo = pojoClass
+                                .getDeclaredMethod(method, int.class);
+                        pojo = getPojo.invoke(pojo,
+                                Integer.parseInt(object.split("_")[3]));
+                        pojoClass = pojo.getClass();
+                    }
+                    method = "set" + field;
+                    // Try integers first, floats if that fails, then fallback
+                    // to string
+                    try {
+                        try {
+                            final Integer intData = Integer.valueOf(data);
+                            final Method set = pojoClass.getDeclaredMethod(
+                                    method, Integer.class);
+                            set.invoke(pojo, intData);
+                        } catch (final Exception e) {
+                            final Float floatData = Float.valueOf(data);
+                            final Method set = pojoClass.getDeclaredMethod(
+                                    method, Float.class);
+                            set.invoke(pojo, floatData);
+                        }
+                    } catch (final Exception e) {
+                        final Method set = pojoClass.getDeclaredMethod(method,
+                                String.class);
+                        set.invoke(pojo, data);
+                    }
+                }
+                if (pw.getProject().getProjectCode().equals("nesi")) {
+                    pw.getProject().setProjectCode(
+                            projectDao.getNextProjectCode("nesi"));
+                }
+                if (!pw.getProject().getHostInstitution().trim().equals("")
+                        && (pw.getProject().getProjectCode() == null || pw
+                                .getProject().getProjectCode().trim()
+                                .equals(""))) {
+                    final String projectCode = projectDao.getNextProjectCode(pw
+                            .getProject().getHostInstitution());
+                    pw.getProject().setProjectCode(projectCode);
+                }
+                if (!skipValidation) {
+                    validateProject(pw);
+                }
+                projectDao.updateProjectWrapper(id, pw);
+            } catch (final NoSuchMethodException e) {
+                throw new InvalidEntityException(pojoClass.getName() + "."
+                        + method + " is not a valid method",
+                        ProjectWrapper.class, object);
+            } catch (final InvocationTargetException e) {
+                throw new InvalidEntityException("Unable to " + method
+                        + " for " + pw.getProject().getProjectCode(),
+                        ProjectWrapper.class, object);
+            } catch (final IllegalAccessException e) {
+                throw new InvalidEntityException("It is illegal to fetch "
+                        + object, ProjectWrapper.class, object);
+            } catch (final ClassNotFoundException e) {
+                throw new InvalidEntityException(object
+                        + " is not a valid POJO", ProjectWrapper.class, object);
+            } catch (final IllegalArgumentException e) {
+                throw new InvalidEntityException(data + " does not match "
+                        + pojoClass.getName() + "." + method
+                        + "'s expected parameter", ProjectWrapper.class, object);
+            } catch (final Exception e) {
+                throw new DatabaseException(e.getMessage(), e);
+            }
+        } else {
+            throw new InvalidEntityException(
+                    "Can't edit project. No id provided.", Project.class, "id");
+        }
+
+    }
+
+    /**
+     * Get all projects that contain the specified filter string
+     * (case-insensitive) in one or more of the project properties.
+     * 
+     * Mind, this returns only the Project object, not the ProjectWrapper ones
+     * (see: {@link #getProjects()}.
+     * 
+     * @param filter
+     *            the filter string, can't be empty
      * @return all projects matching the filter
      */
     public List<Project> filterProjects(String filter) {
 
         if (StringUtils.isEmpty(filter)) {
-            throw new IllegalArgumentException("Can't filter projects using empty string, use getProjects method instead.");
+            throw new IllegalArgumentException(
+                    "Can't filter projects using empty string, use getProjects method instead.");
         }
 
         filter = filter.toLowerCase();
-        List<Project> filtered = new LinkedList<Project>();
+        final List<Project> filtered = new LinkedList<Project>();
 
-        for (Project p : getProjects()) {
-            if (p.getName().toLowerCase().contains(filter) || p.getDescription().toLowerCase().contains(filter) ||
-                    p.getHostInstitution().toLowerCase().contains(filter) || p.getNotes() != null && p.getNotes().toLowerCase().contains(filter) ||
-                    p.getProjectCode().toLowerCase().contains(filter) || p.getProjectTypeName().toLowerCase().contains(filter) ||
-                    p.getRequirements() != null && p.getRequirements().toLowerCase().contains(filter) || p.getTodo() != null && p.getTodo().toLowerCase().contains(filter))
+        for (final Project p : getProjects()) {
+            if (p.getName().toLowerCase().contains(filter)
+                    || p.getDescription().toLowerCase().contains(filter)
+                    || p.getHostInstitution().toLowerCase().contains(filter)
+                    || p.getNotes() != null
+                    && p.getNotes().toLowerCase().contains(filter)
+                    || p.getProjectCode().toLowerCase().contains(filter)
+                    || p.getProjectTypeName().toLowerCase().contains(filter)
+                    || p.getRequirements() != null
+                    && p.getRequirements().toLowerCase().contains(filter)
+                    || p.getTodo() != null
+                    && p.getTodo().toLowerCase().contains(filter)) {
                 filtered.add(p);
+            }
         }
 
         return filtered;
@@ -203,508 +558,281 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Edit a project wrapper object.
-     *
-     * @param project the updated project wrapper
-     * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
-     * @throws OutOfDateException 
-     */
-    public void editProjectWrapper(@PathVariable Integer id, @RequestBody ProjectWrapper project) throws InvalidEntityException, OutOfDateException {
-
-        validateProject(project);
-        if (project.getProject() != null) {
-            // might throw database exception if project does not already exist
-            ProjectWrapper temp = getProjectWrapper(id.toString());
-
-            project.getProject().setId(id);
-
-            // great, no exception, means an project with this id does already exist,
-            // Compare timestamps to prevent accidental overwrite
-            if (project.getProject().getLastModified() != temp.getProject().getLastModified() || !project.getProject().getLastModified().equals(temp.getProject().getLastModified())) {
-            	throw new OutOfDateException("Incorrect timestamp");
-            }
-            try {
-                projectDao.updateProjectWrapper(id, project);
-            } catch (Exception e) {
-                throw new DatabaseException("Can't update project with id " + id, e);
-            }
-        } else {
-            throw new InvalidEntityException("Can't edit project. No project object provided.", Project.class, "id");
-        }
-
-    }
-    
-    /**
-     * Edit one field of a project wrapper object.
-     *
-     * @param project the updated project wrapper
-     * @throws InvalidEntityException if there is something wrong with either the projectwrapper or associated objects
-     * @throws OutOfDateException 
-     * @throws InvocationTargetException 
-     * @throws IllegalArgumentException 
-     * @throws IllegalAccessException 
-     * @throws SecurityException 
-     * @throws NoSuchMethodException 
-     * @throws ClassNotFoundException 
-     */
-    public void editProjectWrapper(Integer id, String object, String field, String timestamp, String data) throws InvalidEntityException, OutOfDateException {
-        if (id != null) {
-            // might throw database exception if project does not already exist
-            ProjectWrapper pw = getProjectWrapper(id.toString());
-            boolean skipValidation = pw.getProject().getName().equals("New Project");
-            // great, no exception, means an project with this id does already exist,
-            // Compare timestamps to prevent accidental overwrite
-            boolean force = timestamp.equals("force");
-            if (!force && !timestamp.equals(pw.getProject().getLastModified())) {
-            	throw new OutOfDateException("Incorrect timestamp. Project has been modified since you last loaded it.");
-            }
-            boolean deep = false;
-            boolean attachment = object.contains("Attachments");
-            String method = "get" + object;
-            Class<?> pojoClass = null;
-            if (object.contains("_")) {
-            	deep = true;
-            	method = "get" + object.split("_")[0];
-            }
-            try {
-            	if (object.equals("projectFacilities")) {
-            		List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
-            		for (String facId : data.split(",")) {
-            			ProjectFacility pf = new ProjectFacility();
-            			pf.setProjectId(id);
-            			pf.setFacilityId(Integer.valueOf(facId));
-            			projectFacilities.add(pf);
-            		}
-					pw.setProjectFacilities(projectFacilities);
-            	} else {
-	            	Class<ProjectWrapper> c = ProjectWrapper.class;
-	            	Method getPojo = c.getDeclaredMethod (method);
-	            	Object pojo = getPojo.invoke (pw);
-	            	pojoClass = pojo.getClass();
-	            	if (deep) {
-	            		method = "get";
-	            		try {
-	            			Integer.parseInt(object.split("_")[1]);
-	            			getPojo = pojoClass.getDeclaredMethod(method, int.class);
-		            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[1]));
-	            		} catch (NumberFormatException e) {
-	            			method = "get" + object.split("_")[1];
-	            			getPojo = pojoClass.getDeclaredMethod(method);
-		            		pojo = getPojo.invoke(pojo);
-	            		}
-	            		pojoClass = pojo.getClass();
-	            	}
-	            	if (attachment) {
-	            		method = "getAttachments";
-	            		getPojo = pojoClass.getDeclaredMethod(method);
-	            		pojo = getPojo.invoke(pojo);
-	            		pojoClass = pojo.getClass();
-	            		method = "get";
-            			getPojo = pojoClass.getDeclaredMethod(method, int.class);
-	            		pojo = getPojo.invoke(pojo, Integer.parseInt(object.split("_")[3]));
-	            		pojoClass = pojo.getClass();
-	            	}
-		            method = "set" + field;
-		            // Try integers first, floats if that fails, then fallback to string
-		            try {
-		            	try {
-		            		Integer intData = Integer.valueOf(data);
-		            		Method set = pojoClass.getDeclaredMethod (method, Integer.class);
-				            set.invoke (pojo, intData);
-		            	} catch (Exception e) {
-		            		Float floatData = Float.valueOf(data);
-		            		Method set = pojoClass.getDeclaredMethod (method, Float.class);
-				            set.invoke (pojo, floatData);
-		            	}
-		            } catch (Exception e) {
-		            	Method set = pojoClass.getDeclaredMethod (method, String.class);
-			            set.invoke (pojo, data);
-		            }
-            	}
-            	if (pw.getProject().getProjectCode().equals("nesi")) {
-                	pw.getProject().setProjectCode(this.projectDao.getNextProjectCode("nesi"));
-                }
-            	if (!pw.getProject().getHostInstitution().trim().equals("") && (pw.getProject().getProjectCode()==null || pw.getProject().getProjectCode().trim().equals(""))) {
-                	String projectCode = this.projectDao.getNextProjectCode(pw.getProject().getHostInstitution());
-                	pw.getProject().setProjectCode(projectCode);
-                }
-            	if (!skipValidation) this.validateProject(pw);
-	            projectDao.updateProjectWrapper(id, pw);
-            } catch (NoSuchMethodException e) {
-            	throw new InvalidEntityException(pojoClass.getName() + "." + method + " is not a valid method", ProjectWrapper.class, object);
-            } catch (InvocationTargetException e) {
-            	throw new InvalidEntityException("Unable to " + method + " for " + pw.getProject().getProjectCode(), ProjectWrapper.class, object);
-            } catch (IllegalAccessException e) {
-            	throw new InvalidEntityException("It is illegal to fetch " + object, ProjectWrapper.class, object);
-            } catch (ClassNotFoundException e) {
-            	throw new InvalidEntityException(object + " is not a valid POJO", ProjectWrapper.class, object);
-            } catch (IllegalArgumentException e) {
-            	throw new InvalidEntityException(data + " does not match " + pojoClass.getName() + "." + method + "'s expected parameter", ProjectWrapper.class, object);
-			} catch (Exception e) {
-                throw new DatabaseException(e.getMessage(), e);
-            }
-        } else {
-            throw new InvalidEntityException("Can't edit project. No id provided.", Project.class, "id");
-        }
-
-    }
-
-    /**
-     * Delete the project wrapper object with the specified id.
-     *
-     * @param id the id
-     */
-    public void delete( Integer id) {
-
-        try {
-            this.projectDao.deleteProjectWrapper(id);
-        } catch (Exception e) {
-            throw new DatabaseException("Can't delete ProjectWrapper with id " + id, e);
-        }
-
-    }
-    
-    /**
-     * Remove the specified adviser or researcher from this project
-     *
-     * @param id the id
-     */
-    public void removeObjectLink(Integer id, int oid, String type) {
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(id);
-			if (type.equals("adviser")) {
-				List<APLink> aTmp = new LinkedList<APLink>();
-				for (APLink a : pw.getApLinks()) {
-					if (!a.getAdviserId().equals(oid)) aTmp.add(a);
-				}
-				pw.setApLinks(aTmp);
-			} else if (type.equals("researcher")){
-				List<RPLink> rTmp = new LinkedList<RPLink>();
-				for (RPLink r : pw.getRpLinks()) {
-					if (!r.getResearcherId().equals(oid)) rTmp.add(r);
-				}
-				pw.setRpLinks(rTmp);
-			} else if (type.equals("kpi")) {
-				pw.getProjectKpis().remove(oid);
-			} else if (type.equals("researchoutput")) {
-				pw.getResearchOutputs().remove(oid);
-			} else if (type.equals("review")) {
-				pw.getReviews().remove(oid);
-			} else if (type.equals("followup")) {
-				pw.getFollowUps().remove(oid);
-			} else if (type.equals("adviseraction")) {
-				pw.getAdviserActions().remove(oid);
-			} else if (type.equals("property")) {
-				this.projectDao.deleteProjectProperty(Integer.valueOf(oid));
-			} else if (type.contains("Attachments")) {
-				//pw.getAdviserActions().get(0).getAttachments().remove(0);
-				String obj = type.split("_")[0];
-				int nid = Integer.parseInt(type.split("_")[2]);
-				Class<?> c = ProjectWrapper.class;
-            	Method m = c.getDeclaredMethod ("get" + obj);
-            	//pw.getAdviserActions()
-            	Object o = m.invoke (pw);
-            	c =  o.getClass();
-            	m = c.getDeclaredMethod("get", int.class);
-            	//.get(oid)
-            	o = m.invoke(o, oid);
-            	c = o.getClass();
-            	m = c.getDeclaredMethod("getAttachments");
-            	//.getAttachments()
-            	o = m.invoke(o);
-            	c = o.getClass();
-            	m = c.getDeclaredMethod("remove", int.class);
-            	//.remove(nid)
-            	m.invoke(o, nid);
-			}
-			
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(id, pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't delete " + oid, e);
-		}
-    }
-    
-    /**
-     * Add the specified adviser to this project
-     *
-     * @param id the id
-     * @throws InvalidEntityException 
-     */
-    public void addAdviser(APLink al) throws InvalidEntityException {
-    	if (al.getAdviserId()==null || al.getAdviserId().equals(0)) {
-    		throw new InvalidEntityException("Not a valid adviser", Adviser.class, "APLink");
-    	}
-    	try {        	
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(al.getProjectId());
-			pw.getApLinks().add(al);
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(al.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + al.getProjectId(), e);
-		}
-    }
-    
-    /**
-     * Add the specified researcher to this project
-     *
-     * @param id the id
-     * @throws InvalidEntityException 
-     */
-    public void addResearcher(RPLink rl) throws InvalidEntityException {
-    	if (rl.getResearcherId()==null || rl.getResearcherId().equals(0)) {
-    		throw new InvalidEntityException("Not a valid researcher", Researcher.class, "RPLink");
-    	}
-    	try {
-			ProjectWrapper pw = this.projectDao.getProjectWrapperById(rl.getProjectId());
-			pw.getRpLinks().add(rl);
-			this.validateProject(pw);
-			this.projectDao.updateProjectWrapper(rl.getProjectId(), pw);
-		} catch (Exception e) {
-			throw new DatabaseException("Can't fetch project with id " + rl.getProjectId(), e);
-		}
-    }
-    
-    /**
-     * Add the specified project_kpi to this project
-     *
-     * @param id the id
-     * @throws InvalidEntityException 
-     */
-    public void addKpi(ProjectKpi pk) throws Exception {
-		ProjectWrapper pw = this.projectDao.getProjectWrapperById(pk.getProjectId());
-		pw.getProjectKpis().add(pk);
-		this.validateProject(pw);
-		try {
-			this.projectDao.updateProjectWrapper(pk.getProjectId(), pw);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage(), e);
-		}
-    }
-    
-    /**
-     * Add the specified research_output to this project
-     *
-     * @param id the id
-     * @throws Exception 
-     */
-    public void addResearchOutput(ResearchOutput ro) throws Exception {
-		ProjectWrapper pw = this.projectDao.getProjectWrapperById(ro.getProjectId());
-		pw.getResearchOutputs().add(ro);
-		this.validateProject(pw);
-		this.projectDao.updateProjectWrapper(ro.getProjectId(), pw);
-    }
-    
-    /**
-     * Add the specified project_kpi to this project
-     *
-     * @param id the id
-     * @throws Exception 
-     */
-    public void addReview(Review r) throws Exception {
-		ProjectWrapper pw = this.projectDao.getProjectWrapperById(r.getProjectId());
-		pw.getReviews().add(r);
-		this.validateProject(pw);
-		this.projectDao.updateProjectWrapper(r.getProjectId(), pw);
-    }
-    
-    /**
-     * Add the specified project_kpi to this project
-     *
-     * @param id the id
-     * @throws Exception 
-     */
-    public void addFollowUp(FollowUp f) throws Exception {
-		ProjectWrapper pw = this.projectDao.getProjectWrapperById(f.getProjectId());
-		pw.getFollowUps().add(f);
-		this.validateProject(pw);
-		this.projectDao.updateProjectWrapper(f.getProjectId(), pw);
-    }
-    
-    /**
-     * Add the specified project_kpi to this project
-     *
-     * @param id the id
-     * @throws Exception 
-     */
-    public void addAdviserAction(AdviserAction aa) throws Exception {
-		ProjectWrapper pw = this.projectDao.getProjectWrapperById(aa.getProjectId());
-		pw.getAdviserActions().add(aa);
-		this.validateProject(pw);
-		this.projectDao.updateProjectWrapper(aa.getProjectId(), pw);
-    }
-    
-    /**
-     * Add the specified attachment to the project
-     *
-     * @param id the id
-     * @throws Exception 
-     */
-    public void addAttachment(Attachment a) throws Exception {
-		ProjectWrapper pw = this.projectDao.getProjectWrapperById(a.getProjectId());
-		Integer oid = 0;
-		if (a.getAdviserActionId()!=null) {
-			oid = a.getAdviserActionId();
-			a.setAdviserActionId(pw.getAdviserActions().get(oid).getId());
-			pw.getAdviserActions().get(oid).getAttachments().add(a);
-		} else if (a.getFollowUpId()!=null) {
-			oid = a.getFollowUpId();
-			a.setFollowUpId(pw.getFollowUps().get(oid).getId());
-			pw.getFollowUps().get(oid).getAttachments().add(a);
-		} else if (a.getReviewId()!=null) {
-			oid = a.getReviewId();
-			a.setReviewId(pw.getReviews().get(oid).getId());
-			pw.getReviews().get(oid).getAttachments().add(a);
-		}
-		this.validateProject(pw);
-		this.projectDao.updateProjectWrapper(a.getProjectId(), pw);
-    }
-    
-    /**
-     * Add/Edit the specified project property
-     *
-     * @param id the id
-     * @throws Exception 
-     */
-    
-    public void upsertProperty(ProjectProperty p) throws Exception {
-		if (p.getId()!=null) {
-			ProjectProperty old = this.projectDao.getProjectProperty(p.getId());
-			if (p.getPropname()!=null) old.setPropname(p.getPropname());
-			if (p.getPropvalue()!=null) old.setPropvalue(p.getPropvalue());
-			if (p.getFacilityId()!=null) old.setFacilityId(p.getFacilityId());
-			p = old;
-		}
-    	this.projectDao.upsertProjectProperty(p);
-    }
-
-    /**
-     * Creates a new project in the database.
-     *
-     * @param pw the projectWrapper object
-     * @return the id of the new project
-     */
-    public synchronized Integer createProjectWrapper(ProjectWrapper pw) throws InvalidEntityException {
-    	validateProject(pw);
-        Project p = pw.getProject();
-
-        if (p.getId() != null) {
-            throw new IllegalArgumentException("Can't create project that already has an id.");
-        }
-
-        if (pw.getProject().getProjectCode().equals("nesi")) {
-        	pw.getProject().setProjectCode(this.projectDao.getNextProjectCode("nesi"));
-        }
-        if (!p.getHostInstitution().trim().equals("") && (p.getProjectCode()==null || p.getProjectCode().trim().equals(""))) {
-        	String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
-        	pw.getProject().setProjectCode(projectCode);
-        }
-        try {
-            Integer pid = this.projectDao.createProjectWrapper(pw);
-            return pid;
-        } catch (Exception e) {
-            throw new DatabaseException("Could not create Project in database.", e);
-        }
-
-    }
-    
-    /**
-     * Returns a list of institutions.
-     *
-     * @return a list of institutions
-     * @throws Exception 
-     */
-    public List<String> getInstitutions() throws Exception {
-    	return this.projectDao.getInstitutions();
-    }
-    
-    /**
      * Returns a list of facilities.
-     *
+     * 
      * @return a list of facilities
-     * @throws Exception 
+     * @throws Exception
      */
     public List<Facility> getFacilities() throws Exception {
-    	return this.projectDao.getFacilities();
+        return projectDao.getFacilities();
     }
-    
+
     /**
-     * Returns a list of sites.
-     *
-     * @return a list of sites
-     * @throws Exception 
+     * Returns a list of institutions.
+     * 
+     * @return a list of institutions
+     * @throws Exception
      */
-    public List<Site> getSites() throws Exception {
-    	return this.projectDao.getSites();
+    public List<String> getInstitutions() throws Exception {
+        return projectDao.getInstitutions();
     }
-    
-    /**
-     * Returns a list of ProjectStatuses.
-     *
-     * @return a list of ProjectStatuses
-     * @throws Exception 
-     */
-    public List<ProjectStatus> getProjectStatuses() throws Exception {
-    	return this.projectDao.getProjectStatuses();
-    }
-    
-    /**
-     * Returns a list of ProjectTypes.
-     *
-     * @return a list of ProjectTypes
-     * @throws Exception 
-     */
-    public List<ProjectType> getProjectTypes() throws Exception {
-    	return this.projectDao.getProjectTypes();
-    }
-    
-    /**
-     * Returns a list of Kpis.
-     *
-     * @return a list of Kpis
-     * @throws Exception 
-     */
-    public List<Kpi> getKpis() throws Exception {
-    	return this.projectDao.getKpis();
-    }
-    
+
     /**
      * Returns a list of KpiCodes.
-     *
+     * 
      * @return a list of KpiCodes
-     * @throws Exception 
+     * @throws Exception
      */
     public List<KpiCode> getKpiCodes() throws Exception {
-    	return this.projectDao.getKpiCodes();
+        return projectDao.getKpiCodes();
     }
-    
+
+    /**
+     * Returns a list of Kpis.
+     * 
+     * @return a list of Kpis
+     * @throws Exception
+     */
+    public List<Kpi> getKpis() throws Exception {
+        return projectDao.getKpis();
+    }
+
+    /**
+     * Get the timestamp of the most recently modified project.
+     * 
+     * @return a timestamp
+     */
+    public String getLastModified() {
+        return projectDao.getLastModifiedForTable("project");
+    }
+
     /**
      * Returns a list of all KPIS reported for all projects.
-     *
+     * 
      * @return a list of ProjectKpis
-     * @throws Exception 
+     * @throws Exception
      */
     public List<ProjectKpi> getProjectKpis() throws Exception {
-    	return this.projectDao.getProjectKpis();
+        return projectDao.getProjectKpis();
     }
-    
+
+    /**
+     * Gets the project properties associated with the specified project id.
+     * 
+     * @param projectId
+     *            the project
+     * @return the ProjectProperties
+     */
+    public List<ProjectProperty> getProjectProperties(final Integer id) {
+        try {
+            return projectDao.getProjectProperties(id);
+        } catch (final Exception e) {
+            throw new DatabaseException("Could not retrieve properties", e);
+        }
+    }
+
+    /**
+     * Get all projects in the database.
+     * 
+     * Mind, this doesn't return project wrapper objects, just the plain
+     * objects. We could change that, not sure about performance in that case.
+     * 
+     * @return all projects
+     */
+    public List<Project> getProjects() {
+        try {
+            final List<Project> ps = projectDao.getProjects();
+            return ps;
+        } catch (final Exception e) {
+            throw new DatabaseException("Could not retrieve projects", e);
+        }
+    }
+
+    /**
+     * Returns a list of ProjectStatuses.
+     * 
+     * @return a list of ProjectStatuses
+     * @throws Exception
+     */
+    public List<ProjectStatus> getProjectStatuses() throws Exception {
+        return projectDao.getProjectStatuses();
+    }
+
+    /**
+     * Returns a list of ProjectTypes.
+     * 
+     * @return a list of ProjectTypes
+     * @throws Exception
+     */
+    public List<ProjectType> getProjectTypes() throws Exception {
+        return projectDao.getProjectTypes();
+    }
+
+    /**
+     * Utility method that forwards to {@link #getProjectWrapper(String)}.
+     * 
+     * @param id
+     *            the id of the project
+     * @return the projectWrapper object
+     */
+    public ProjectWrapper getProjectWrapper(final Integer id) {
+        return getProjectWrapper(id.toString());
+    }
+
+    /**
+     * Gets the project (with associted objects) with the specified id or
+     * project code.
+     * 
+     * @param projectIdOrCode
+     *            the project id or project code
+     * @return the Project
+     */
+    public ProjectWrapper getProjectWrapper(final String projectIdOrCode) {
+
+        try {
+            final int i = Integer.parseInt(projectIdOrCode);
+            try {
+                final ProjectWrapper pw = projectDao.getProjectWrapperById(i);
+                return pw;
+            } catch (final Exception e) {
+                throw new DatabaseException(
+                        "Could not retrieve project with id: "
+                                + projectIdOrCode, e);
+            }
+        } catch (final Exception e) {
+            try {
+                final ProjectWrapper pw = projectDao
+                        .getProjectWrapperByProjectCode(projectIdOrCode);
+                return pw;
+            } catch (final Exception e2) {
+                throw new DatabaseException(
+                        "Could not retrieve project with code: "
+                                + projectIdOrCode, e2);
+            }
+        }
+
+    }
+
     /**
      * Returns a list of all Research Output reported for all projects.
-     *
+     * 
      * @return a list of ResearchOutput
-     * @throws Exception 
+     * @throws Exception
      */
     public List<ResearchOutput> getResearchOutput() throws Exception {
-    	return this.projectDao.getResearchOutput();
+        return projectDao.getResearchOutput();
     }
-    
+
     /**
      * Returns a list of possible Research Output types.
-     *
+     * 
      * @return a list of Research Output types
-     * @throws Exception 
+     * @throws Exception
      */
     public List<ResearchOutputType> getROTypes() throws Exception {
-    	return this.projectDao.getResearchOutputTypes();
+        return projectDao.getResearchOutputTypes();
+    }
+
+    /**
+     * Returns a list of sites.
+     * 
+     * @return a list of sites
+     * @throws Exception
+     */
+    public List<Site> getSites() throws Exception {
+        return projectDao.getSites();
+    }
+
+    /**
+     * Remove the specified adviser or researcher from this project
+     * 
+     * @param id
+     *            the id
+     */
+    public void removeObjectLink(final Integer id, final int oid,
+            final String type) {
+        try {
+            final ProjectWrapper pw = projectDao.getProjectWrapperById(id);
+            if (type.equals("adviser")) {
+                final List<APLink> aTmp = new LinkedList<APLink>();
+                for (final APLink a : pw.getApLinks()) {
+                    if (!a.getAdviserId().equals(oid)) {
+                        aTmp.add(a);
+                    }
+                }
+                pw.setApLinks(aTmp);
+            } else if (type.equals("researcher")) {
+                final List<RPLink> rTmp = new LinkedList<RPLink>();
+                for (final RPLink r : pw.getRpLinks()) {
+                    if (!r.getResearcherId().equals(oid)) {
+                        rTmp.add(r);
+                    }
+                }
+                pw.setRpLinks(rTmp);
+            } else if (type.equals("kpi")) {
+                pw.getProjectKpis().remove(oid);
+            } else if (type.equals("researchoutput")) {
+                pw.getResearchOutputs().remove(oid);
+            } else if (type.equals("review")) {
+                pw.getReviews().remove(oid);
+            } else if (type.equals("followup")) {
+                pw.getFollowUps().remove(oid);
+            } else if (type.equals("adviseraction")) {
+                pw.getAdviserActions().remove(oid);
+            } else if (type.equals("property")) {
+                projectDao.deleteProjectProperty(Integer.valueOf(oid));
+            } else if (type.contains("Attachments")) {
+                // pw.getAdviserActions().get(0).getAttachments().remove(0);
+                final String obj = type.split("_")[0];
+                final int nid = Integer.parseInt(type.split("_")[2]);
+                Class<?> c = ProjectWrapper.class;
+                Method m = c.getDeclaredMethod("get" + obj);
+                // pw.getAdviserActions()
+                Object o = m.invoke(pw);
+                c = o.getClass();
+                m = c.getDeclaredMethod("get", int.class);
+                // .get(oid)
+                o = m.invoke(o, oid);
+                c = o.getClass();
+                m = c.getDeclaredMethod("getAttachments");
+                // .getAttachments()
+                o = m.invoke(o);
+                c = o.getClass();
+                m = c.getDeclaredMethod("remove", int.class);
+                // .remove(nid)
+                m.invoke(o, nid);
+            }
+
+            validateProject(pw);
+            projectDao.updateProjectWrapper(id, pw);
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't delete " + oid, e);
+        }
+    }
+
+    /**
+     * Add/Edit the specified project property
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+
+    public void upsertProperty(ProjectProperty p) throws Exception {
+        if (p.getId() != null) {
+            final ProjectProperty old = projectDao
+                    .getProjectProperty(p.getId());
+            if (p.getPropname() != null) {
+                old.setPropname(p.getPropname());
+            }
+            if (p.getPropvalue() != null) {
+                old.setPropvalue(p.getPropvalue());
+            }
+            if (p.getFacilityId() != null) {
+                old.setFacilityId(p.getFacilityId());
+            }
+            p = old;
+        }
+        projectDao.upsertProjectProperty(p);
     }
 }
