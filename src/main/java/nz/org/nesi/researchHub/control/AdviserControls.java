@@ -397,7 +397,13 @@ public class AdviserControls extends AbstractControl {
      * @throws Exception
      */
     public void rollback(Integer id) throws Exception {
-        projectDao.rollbackForTable("adviser", id);
+        List<Change> changes = this.getChanges(null);
+        for (Change change : changes) {
+            if (change.getId().equals(id)) return;
+            Adviser a = this.getAdviser(change.getTbl_id());
+            this.editAdviser(a.getId(), change.getField(), "force",
+                    change.getOld_val());
+        }
     }
 
     /**

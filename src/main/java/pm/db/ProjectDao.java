@@ -147,8 +147,6 @@ public interface ProjectDao {
 
     void logChange(Change c) throws Exception;
 
-    public void rollbackForTable(String table, Integer id) throws Exception;
-
     public void updateAdviser(Adviser a);
 
     public void updateProjectWrapper(int projectId, ProjectWrapper pw)

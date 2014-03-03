@@ -855,7 +855,16 @@ public class ProjectControls extends AbstractControl {
      * @throws Exception
      */
     public void rollback(Integer id) throws Exception {
-        projectDao.rollbackForTable("project", id);
+        List<Change> changes = this.getChanges(null);
+        for (Change change : changes) {
+            if (change.getId().equals(id)) return;
+            ProjectWrapper pw = this.getProjectWrapper(change.getTbl_id());
+            String[] bits = change.getField().split("_");
+            String obj = bits[0];
+            String field = change.getField().replace(obj + "_", "");
+            this.editProjectWrapper(change.getTbl_id(), obj, field, "force",
+                    change.getOld_val());
+        }
     }
 
     /**

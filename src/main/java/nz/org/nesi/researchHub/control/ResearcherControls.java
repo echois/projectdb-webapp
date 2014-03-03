@@ -393,7 +393,13 @@ public class ResearcherControls extends AbstractControl {
      * @throws Exception
      */
     public void rollback(Integer id) throws Exception {
-        projectDao.rollbackForTable("researcher", id);
+        List<Change> changes = this.getChanges(null);
+        for (Change change : changes) {
+            if (change.getId().equals(id)) return;
+            Researcher r = this.getResearcher(change.getTbl_id());
+            this.editResearcher(r.getId(), change.getField(), "force",
+                    change.getOld_val());
+        }
     }
 
     /**

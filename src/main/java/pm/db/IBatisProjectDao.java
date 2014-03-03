@@ -1,6 +1,5 @@
 package pm.db;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -902,64 +901,6 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     @Override
     public void logChange(final Change c) throws Exception {
         getSqlSession().insert("pm.db.logChange", c);
-    }
-
-    @Override
-    public void rollbackForTable(String table, Integer id) throws Exception {
-        List<Change> changes = this.getChangeLogForTable(table);
-        Class c;
-        for (Change change : changes) {
-            if (change.getId().equals(id)) return;
-            String method = "set" + change.getField();
-            switch (change.getTbl()) {
-            case "adviser":
-                Adviser a = this.getAdviserById(change.getTbl_id());
-                c = Adviser.class;
-                try {
-                    Integer intData = Integer.valueOf(change.getOld_val());
-                    final Method set = c.getDeclaredMethod(method,
-                            Integer.class);
-                    set.invoke(a, intData);
-                } catch (Exception e) {
-                    final Method set = c
-                            .getDeclaredMethod(method, String.class);
-                    set.invoke(a, change.getOld_val());
-                }
-                this.updateAdviser(a);
-                break;
-            case "researcher":
-                Researcher r = this.getResearcherById(change.getTbl_id());
-                c = Researcher.class;
-                try {
-                    Integer intData = Integer.valueOf(change.getOld_val());
-                    final Method set = c.getDeclaredMethod(method,
-                            Integer.class);
-                    set.invoke(r, intData);
-                } catch (Exception e) {
-                    final Method set = c
-                            .getDeclaredMethod(method, String.class);
-                    set.invoke(r, change.getOld_val());
-                }
-                this.updateResearcher(r);
-                break;
-            case "project":
-                ProjectWrapper pw = this.getProjectWrapperById(change
-                        .getTbl_id());
-                c = ProjectWrapper.class;
-                try {
-                    Integer intData = Integer.valueOf(change.getOld_val());
-                    final Method set = c.getDeclaredMethod(method,
-                            Integer.class);
-                    set.invoke(pw, intData);
-                } catch (Exception e) {
-                    final Method set = c
-                            .getDeclaredMethod(method, String.class);
-                    set.invoke(pw, change.getOld_val());
-                }
-                this.updateProjectWrapper(change.getTbl_id(), pw);
-                break;
-            }
-        }
     }
 
     @Override
