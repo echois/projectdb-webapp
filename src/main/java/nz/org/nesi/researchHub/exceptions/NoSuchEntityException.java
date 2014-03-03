@@ -13,33 +13,40 @@ import com.mangofactory.swagger.annotations.ApiError;
 @ApiError(code = 500, reason = "No such entity in the database")
 public class NoSuchEntityException extends Exception {
 
-    private Class entityClass;
-    private Integer id;
+	private Class entityClass;
+	private Integer id;
 
-    public NoSuchEntityException() {
-        super();
-    }
+	public NoSuchEntityException() {
+		super();
+	}
 
-    public NoSuchEntityException(final String msg, final Class entityClass,
-            final Integer id) {
-        super(msg);
-        this.entityClass = entityClass;
-        this.id = id;
-    }
+	public NoSuchEntityException(final String msg, final Class entityClass,
+			final Integer id) {
+		super(msg);
+		this.entityClass = entityClass;
+		this.id = id;
+	}
 
-    public Class getEntityClass() {
-        return entityClass;
-    }
+	public NoSuchEntityException(final String msg, final Class entityClass,
+			final Integer id, final Exception e) {
+		super(msg, e);
+		this.entityClass = entityClass;
+		this.id = id;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public Class getEntityClass() {
+		return entityClass;
+	}
 
-    public void setEntityClass(final Class entityClass) {
-        this.entityClass = entityClass;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(final Integer id) {
-        this.id = id;
-    }
+	public void setEntityClass(final Class entityClass) {
+		this.entityClass = entityClass;
+	}
+
+	public void setId(final Integer id) {
+		this.id = id;
+	}
 }
