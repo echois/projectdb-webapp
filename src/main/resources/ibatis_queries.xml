@@ -6,7 +6,32 @@
 <mapper namespace="pm.db">
 
 	<cache />
-	
+
+	<insert id="logChange" parameterType="pm.pojo.Change">
+		INSERT INTO changelog (
+		`adviserId`,
+		`tbl`,
+		`tbl_id`,
+		`field`,
+		`new_val`,
+		`old_val`
+		) values (
+		#{adviserId},
+		#{tbl},
+		#{tbl_id},
+		#{field},		
+		#{new_val},
+		#{old_val}
+		)
+	</insert>
+
+	<select id="getChangeLogForTable" parameterType="java.lang.String"
+		resultType="pm.pojo.Change">
+		SELECT * FROM changelog
+		WHERE tbl=#{table}
+		ORDER BY timestamp DESC
+	</select>
+
 	<select id="getLastModifiedForTable" parameterType="String"
 		resultType="java.lang.String">
 		SELECT MAX(lastModified)
@@ -46,7 +71,8 @@
 		SELECT *
 		FROM adviser
 		WHERE id IN
-		( SELECT adviserId FROM adviser_properties WHERE propname='drupalId'
+		( SELECT adviserId FROM
+		adviser_properties WHERE propname='drupalId'
 		AND propvalue=#{id} )
 	</select>
 
@@ -54,7 +80,8 @@
 		resultType="java.lang.String">
 		SELECT propvalue
 		FROM adviser_properties
-		WHERE propname='drupalId' AND adviserId=#{id}
+		WHERE
+		propname='drupalId' AND adviserId=#{id}
 	</select>
 
 	<select id="getSiteById" parameterType="java.lang.Integer"
@@ -67,7 +94,8 @@
 	<select id="getKpiById" resultType="pm.pojo.Kpi">
 		SELECT *
 		FROM kpi
-		WHERE id = #{id}
+		WHERE id =
+		#{id}
 	</select>
 
 	<select id="getInstitutionalRoleById" parameterType="java.lang.Integer"
@@ -140,14 +168,16 @@
 	<select id="getAdvisers" resultType="pm.pojo.Adviser">
 		SELECT *
 		FROM adviser
-		ORDER BY fullName
+		ORDER BY
+		fullName
 	</select>
 
 	<select id="getNumProjectsForAdviser" parameterType="java.lang.Integer"
 		resultType="java.lang.Integer">
 		SELECT COUNT(*)
 		FROM adviser_project as ap
-		INNER JOIN project as p on p.id=ap.projectId
+		INNER JOIN project
+		as p on p.id=ap.projectId
 		WHERE adviserId = #{id} AND
 		adviserRoleId = 1
 		AND p.statusId!=4
@@ -156,17 +186,21 @@
 
 	<select id="getResearchersOnProject" resultType="pm.pojo.Researcher">
 		SELECT *
-		FROM researcher
+		FROM
+		researcher
 		WHERE id IN
-		( SELECT researcherId FROM researcher_project WHERE projectId=#{id} )
+		( SELECT researcherId FROM researcher_project
+		WHERE projectId=#{id} )
 		ORDER BY fullName
 	</select>
 
 	<select id="getAdvisersOnProject" resultType="pm.pojo.Adviser">
 		SELECT *
-		FROM adviser
+		FROM
+		adviser
 		WHERE id IN
-		( SELECT adviserId FROM adviser_project WHERE projectId=#{id} )
+		( SELECT adviserId FROM adviser_project WHERE
+		projectId=#{id} )
 		ORDER BY fullName
 	</select>
 
@@ -192,7 +226,8 @@
 	<select id="getKpiCodes" resultType="pm.pojo.KpiCode">
 		SELECT *
 		FROM kpicode
-		ORDER BY id
+		ORDER BY
+		id
 	</select>
 
 	<select id="getKpiCodeNameById" parameterType="java.lang.Integer"
@@ -207,7 +242,8 @@
 		SELECT *
 		FROM facility
 		WHERE id IN
-		( SELECT facilityId FROM project_facility WHERE projectId=#{id} )
+		( SELECT facilityId FROM
+		project_facility WHERE projectId=#{id} )
 		ORDER BY name
 	</select>
 
@@ -249,7 +285,8 @@
 
 	<select id="getResearcherRoles" resultType="pm.pojo.ResearcherRole">
 		SELECT *
-		FROM researcherrole
+		FROM
+		researcherrole
 		ORDER BY id
 	</select>
 
@@ -261,7 +298,8 @@
 
 	<select id="getInstitutionalRoles" resultType="pm.pojo.InstitutionalRole">
 		SELECT *
-		FROM institutionalrole
+		FROM
+		institutionalrole
 		ORDER BY name
 	</select>
 
@@ -336,7 +374,8 @@
 
 	<select id="getProjectStatuses" resultType="pm.pojo.ProjectStatus">
 		SELECT *
-		FROM project_status
+		FROM
+		project_status
 		ORDER BY id
 	</select>
 
@@ -349,7 +388,8 @@
 
 	<select id="getResearcherStatuses" resultType="pm.pojo.ResearcherStatus">
 		SELECT *
-		FROM researcher_status
+		FROM
+		researcher_status
 		ORDER BY id
 	</select>
 
@@ -397,7 +437,8 @@
 		SELECT *
 		FROM project
 		WHERE id IN
-		( SELECT projectId FROM researcher_project WHERE researcherId=#{id} )
+		( SELECT projectId FROM
+		researcher_project WHERE researcherId=#{id} )
 	</select>
 
 	<select id="getProjectsForAdviserId" parameterType="java.lang.Integer"
@@ -405,7 +446,8 @@
 		SELECT *
 		FROM project
 		WHERE id IN
-		( SELECT projectId FROM adviser_project WHERE
+		( SELECT projectId FROM
+		adviser_project WHERE
 		adviserId=#{id}
 		)
 	</select>
@@ -441,17 +483,20 @@
 		#{requirements}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
 	<insert id="createRPLink" parameterType="pm.pojo.RPLink">
-		INSERT INTO researcher_project (
+		INSERT INTO
+		researcher_project (
 		researcherId,
 		projectId,
 		researcherRoleId,
 		notes
-		) values (
+		)
+		values (
 		#{researcherId},
 		#{projectId},
 		#{researcherRoleId},
@@ -460,7 +505,8 @@
 	</insert>
 
 	<insert id="createAPLink" parameterType="pm.pojo.APLink">
-		INSERT INTO adviser_project (
+		INSERT INTO
+		adviser_project (
 		adviserId,
 		projectId,
 		adviserRoleId,
@@ -504,7 +550,8 @@
 		#{notes}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
@@ -533,7 +580,8 @@
 		#{notes}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
@@ -550,18 +598,21 @@
 		#{notes}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
 	<insert id="upsertProjectProperty" parameterType="pm.pojo.ProjectProperty">
-		REPLACE INTO project_properties (
+		REPLACE INTO
+		project_properties (
 		id,
 		projectId,
 		facilityId,
 		propname,
 		propvalue
-		) values (
+		) values
+		(
 		#{id},
 		#{projectId},
 		#{facilityId},
@@ -583,19 +634,22 @@
 		#{notes}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
 	<insert id="createResearchOutput" parameterType="pm.pojo.ResearchOutput">
-		INSERT INTO researchoutput (
+		INSERT INTO
+		researchoutput (
 		projectId,
 		adviserId,
 		typeId,
 		description,
 		link,
 		date
-		) values (
+		)
+		values (
 		#{projectId},
 		#{adviserId},
 		#{typeId},
@@ -606,7 +660,8 @@
 	</insert>
 
 	<insert id="createAttachment" parameterType="pm.pojo.Attachment">
-		INSERT INTO attachment (
+		INSERT INTO
+		attachment (
 		projectId,
 		followUpId,
 		reviewId,
@@ -638,12 +693,14 @@
 		#{action}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
 	<insert id="createProjectFacility" parameterType="pm.pojo.ProjectFacility">
-		INSERT INTO project_facility (
+		INSERT INTO
+		project_facility (
 		projectId,
 		facilityId
 		) values (
@@ -653,7 +710,8 @@
 	</insert>
 
 	<insert id="createProjectKpi" parameterType="pm.pojo.ProjectKpi">
-		INSERT INTO project_kpi (
+		INSERT INTO
+		project_kpi (
 		kpiId,
 		projectId,
 		date,
@@ -682,9 +740,11 @@
 		hostInstitution = #{hostInstitution},
 		startDate = #{startDate},
 		nextReviewDate = #{nextReviewDate},
-		nextFollowUpDate = #{nextFollowUpDate},
+		nextFollowUpDate =
+		#{nextFollowUpDate},
 		endDate = #{endDate},
-		requirements = #{requirements},
+		requirements =
+		#{requirements},
 		notes = #{notes},
 		todo = #{todo},
 		lastModified = now()
@@ -692,17 +752,21 @@
 	</update>
 
 	<update id="updateResearcher" parameterType="pm.pojo.Researcher">
-		UPDATE researcher set
+		UPDATE researcher
+		set
 		fullName = #{fullName},
 		preferredName = #{preferredName},
-		statusId = #{statusId},
+		statusId =
+		#{statusId},
 		pictureUrl = #{pictureUrl},
 		email = #{email},
-		phone = #{phone},
+		phone =
+		#{phone},
 		institution = #{institution},
 		division = #{division},
 		department = #{department},
-		institutionalRoleId = #{institutionalRoleId},
+		institutionalRoleId =
+		#{institutionalRoleId},
 		startDate = #{startDate},
 		endDate = #{endDate},
 		notes = #{notes}
@@ -719,7 +783,8 @@
 		division = #{division},
 		department = #{department},
 		startDate = #{startDate},
-		endDate = #{endDate},
+		endDate =
+		#{endDate},
 		notes = #{notes}
 		WHERE id = #{id}
 	</update>
@@ -730,7 +795,8 @@
 	</delete>
 
 	<delete id="deleteResearcher" parameterType="java.lang.Integer">
-		DELETE FROM researcher
+		DELETE FROM
+		researcher
 		WHERE id = #{id}
 	</delete>
 
@@ -740,94 +806,114 @@
 	</delete>
 
 	<delete id="deleteRPLinks" parameterType="java.lang.Integer">
-		DELETE FROM researcher_project
+		DELETE FROM
+		researcher_project
 		WHERE
 		projectId = #{id}
 	</delete>
 
 	<delete id="deleteRPLink" parameterType="java.util.Map">
-		DELETE FROM researcher_project
+		DELETE FROM
+		researcher_project
 		WHERE
 		researcherId = #{researcherId} AND
-		projectId = #{projectId}
+		projectId =
+		#{projectId}
 	</delete>
 
 	<delete id="deleteAPLinks" parameterType="java.lang.Integer">
-		DELETE FROM adviser_project
+		DELETE FROM
+		adviser_project
 		WHERE
 		projectId = #{id}
 	</delete>
 
 	<delete id="deleteAPLink" parameterType="java.util.Map">
-		DELETE FROM adviser_project
+		DELETE FROM
+		adviser_project
 		WHERE
 		adviserId = #{adviserId} AND
-		projectId = #{projectId}
+		projectId =
+		#{projectId}
 	</delete>
 
 	<delete id="deleteReviews" parameterType="java.lang.Integer">
-		DELETE FROM projectreview
+		DELETE FROM
+		projectreview
 		WHERE projectId = #{id}
 	</delete>
 
 	<delete id="deleteReview" parameterType="java.lang.Integer">
-		DELETE FROM projectreview
+		DELETE FROM
+		projectreview
 		WHERE id = #{id}
 	</delete>
 
 	<delete id="deleteFollowUps" parameterType="java.lang.Integer">
-		DELETE FROM projectfollowup
+		DELETE FROM
+		projectfollowup
 		WHERE projectId = #{id}
 	</delete>
 
 	<delete id="deleteFollowUp" parameterType="java.lang.Integer">
-		DELETE FROM projectfollowup
+		DELETE FROM
+		projectfollowup
 		WHERE id = #{id}
 	</delete>
 
 	<delete id="deleteResearchOutputs" parameterType="java.lang.Integer">
-		DELETE FROM researchoutput
+		DELETE FROM
+		researchoutput
 		WHERE projectId = #{id}
 	</delete>
 
 	<delete id="deleteResearchOutput" parameterType="java.lang.Integer">
-		DELETE FROM researchoutput
+		DELETE FROM
+		researchoutput
 		WHERE id = #{id}
 	</delete>
 
 	<delete id="deleteAdviserActions" parameterType="java.lang.Integer">
-		DELETE FROM adviseraction
+		DELETE FROM
+		adviseraction
 		WHERE projectId = #{id}
 	</delete>
 
 	<delete id="deleteProjectFacilities" parameterType="java.lang.Integer">
-		DELETE FROM project_facility
+		DELETE FROM
+		project_facility
 		WHERE projectId = #{id}
 	</delete>
 
 	<delete id="deleteAdviserAction" parameterType="java.lang.Integer">
-		DELETE FROM adviseraction
+		DELETE FROM
+		adviseraction
 		WHERE id = #{id}
 	</delete>
 
 	<delete id="deleteFacilityFromProject" parameterType="java.util.Map">
-		DELETE FROM project_facility
+		DELETE FROM
+		project_facility
 		WHERE projectId = #{projectId} AND
-		facilityId = #{facilityId}
+		facilityId =
+		#{facilityId}
 	</delete>
 
 	<delete id="deleteProjectKpis" parameterType="java.lang.Integer">
-		DELETE FROM project_kpi
+		DELETE FROM
+		project_kpi
 		WHERE projectId = #{id}
 	</delete>
 
 	<delete id="deleteProjectKpi" parameterType="java.lang.Integer">
-		DELETE FROM project_kpi
+		DELETE FROM
+		project_kpi
 		WHERE id = #{id}
 	</delete>
 
 	<delete id="deleteProjectProperty" parameterType="java.lang.Integer">
-		DELETE FROM project_properties
+		DELETE FROM
+		project_properties
 		WHERE id = #{id}
 	</delete>
 
@@ -845,31 +931,40 @@
 
 	<select id="getResearchOutputTypes" resultType="pm.pojo.ResearchOutputType">
 		SELECT *
-		FROM researchoutputtype
+		FROM
+		researchoutputtype
 		ORDER BY name
 	</select>
 
 	<select id="getAffiliations" resultType="pm.pojo.Affiliation">
-		SELECT DISTINCT IFNULL(i.name,'') as institution, '' as division, '' as
+		SELECT DISTINCT
+		IFNULL(i.name,'') as institution, '' as division, '' as
 		department
-		FROM institution i
+		FROM
+		institution i
 
 		UNION
 
-		SELECT IFNULL(i.name,'') as institution, IFNULL(d.name,'') as division, ''
+		SELECT IFNULL(i.name,'') as institution,
+		IFNULL(d.name,'') as division, ''
 		as department
 		FROM institution i
-		LEFT JOIN division d on i.id = d.institutionId
+		LEFT
+		JOIN division d on i.id = d.institutionId
 
 		UNION
 
-		SELECT IFNULL(i.name,'') AS institution, IFNULL(di.name,'') AS division,
-		IFNULL(de.name,'') AS department
+		SELECT IFNULL(i.name,'')
+		AS institution, IFNULL(di.name,'') AS division,
+		IFNULL(de.name,'') AS
+		department
 		FROM institution i
-		LEFT JOIN division di ON i.id = di.institutionId
+		LEFT JOIN division di ON i.id =
+		di.institutionId
 		LEFT JOIN department de on di.id = de.divisionId
 
-		ORDER BY institution, division, department
+		ORDER
+		BY institution, division, department
 	</select>
 
 	<select id="getInstitutions" resultType="java.lang.String">
@@ -893,30 +988,36 @@
 		#{projectString}
 		)
 		<selectKey keyProperty="id" resultType="int">
-			SELECT LAST_INSERT_ID() AS id
+			SELECT
+			LAST_INSERT_ID() AS id
 		</selectKey>
 	</insert>
 
 	<update id="updateTempProjectLastVisited" parameterType="java.util.Map">
-		UPDATE tempproject set
+		UPDATE
+		tempproject set
 		lastVisited = #{lastVisited}
 		WHERE id = #{id}
 	</update>
 
 	<update id="updateTempProject" parameterType="pm.pojo.TempProject">
-		UPDATE tempproject set
+		UPDATE tempproject
+		set
 		lastVisited = #{lastVisited},
 		projectString = #{projectString}
-		WHERE id = #{id}
+		WHERE
+		id = #{id}
 	</update>
 
 	<delete id="deleteTempProject" parameterType="java.lang.Integer">
-		DELETE FROM tempproject
+		DELETE FROM
+		tempproject
 		WHERE id = #{id}
 	</delete>
 
 	<delete id="deleteExpiredTempProjects" parameterType="java.lang.Long">
-		DELETE FROM tempproject
+		DELETE FROM
+		tempproject
 		WHERE lastVisited &lt; #{maxTimestamp}
 	</delete>
 
@@ -947,7 +1048,8 @@
 		resultType="java.lang.String">
 		SELECT MAX( projectCode )
 		FROM `project`
-		WHERE `projectCode` LIKE CONCAT(#{code}, '%')
+		WHERE `projectCode`
+		LIKE CONCAT(#{code}, '%')
 	</select>
 
 	<select id="getInstitutionCodeFromName" parameterType="java.lang.String"
@@ -961,16 +1063,19 @@
 		resultType="pm.pojo.ResearcherProperty">
 		SELECT *
 		FROM `researcher_properties`
-		WHERE researcherId=#{id}
+		WHERE
+		researcherId=#{id}
 	</select>
 
 	<insert id="upsertResearcherProperty" parameterType="pm.pojo.ResearcherProperty">
-		REPLACE INTO researcher_properties (
+		REPLACE INTO
+		researcher_properties (
 		researcherId,
 		siteId,
 		propname,
 		propvalue
-		) values (
+		) values
+		(
 		#{researcherId},
 		#{siteId},
 		#{propname},

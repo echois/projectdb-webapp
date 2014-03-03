@@ -5,6 +5,7 @@ import java.util.List;
 import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
+import pm.pojo.Change;
 import pm.pojo.Facility;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
@@ -57,6 +58,8 @@ public interface ProjectDao {
             throws Exception;
 
     public List<Affiliation> getAffiliations() throws Exception;
+
+    List<Change> getChangeLogForTable(String table) throws Exception;
 
     public String getDrupalIdByAdviserId(Integer id) throws Exception;
 
@@ -141,6 +144,10 @@ public interface ProjectDao {
     public List<ResearchOutputType> getResearchOutputTypes() throws Exception;
 
     public List<Site> getSites() throws Exception;
+
+    void logChange(Change c) throws Exception;
+
+    public void rollbackForTable(String table, Integer id) throws Exception;
 
     public void updateAdviser(Adviser a);
 

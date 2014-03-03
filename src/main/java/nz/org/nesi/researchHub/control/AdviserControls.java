@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
@@ -18,6 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
+import pm.pojo.Change;
 import pm.pojo.Project;
 
 /**
@@ -144,19 +146,28 @@ public class AdviserControls extends AbstractControl {
      * 
      * @param adviser
      *            the updated adviser object
-     * @throws NoSuchEntityException
-     *             if no Adviser with the specified
-     * @throws InvalidEntityException
-     *             if updated Adviser object doesn't have an id specified
-     * @throws OutOfDateException
+     * @throws Exception
      */
     public void editAdviser(final Integer id, final String field,
-            final String timestamp, final String data)
-            throws NoSuchEntityException, InvalidEntityException,
-            OutOfDateException {
+            final String timestamp, final String data) throws Exception {
         if (id != null) {
             // check whether an researcher with this id exists
             final Adviser temp = getAdviser(id);
+            Change ch = new Change();
+            ch.setTbl_id(id);
+            ch.setTbl("adviser");
+            ch.setField(field);
+            ch.setAdviserId(1);
+            ch.setNew_val(data);
+            final Class<Adviser> c = Adviser.class;
+            String method = "get" + field;
+            try {
+                final Method get = c.getDeclaredMethod(method);
+                Object result = get.invoke(temp);
+                ch.setOld_val(result.toString());
+            } catch (Exception e) {
+
+            }
             // great, no exception, means an researcher with this id does
             // already exist, now let's merge those two
             // Compare timestamps to prevent accidental overwrite
@@ -165,8 +176,8 @@ public class AdviserControls extends AbstractControl {
                 throw new OutOfDateException(
                         "Incorrect timestamp. Adviser has been modified since you last loaded it.");
             }
-            final String method = "set" + field;
-            final Class<Adviser> c = Adviser.class;
+            method = "set" + field;
+
             try {
                 // Try use the parameter as an integer
                 final Integer intData = Integer.valueOf(data);
@@ -185,7 +196,7 @@ public class AdviserControls extends AbstractControl {
             }
             validateAdviser(temp);
             projectDao.updateAdviser(temp);
-
+            projectDao.logChange(ch);
         } else {
             throw new InvalidEntityException(
                     "Can't edit adviser. No id provided.", Adviser.class, "id");
@@ -296,6 +307,24 @@ public class AdviserControls extends AbstractControl {
     }
 
     /**
+     * Returns a list of changes. If no id is given, it returns all changes.
+     * 
+     * @return a list of Changes
+     * @throws Exception
+     */
+    public List<Change> getChanges(Integer id) throws Exception {
+        List<Change> all = projectDao.getChangeLogForTable("adviser");
+        if (id == null) return all;
+        List<Change> filtered = new LinkedList<Change>();
+        for (Change c : all) {
+            if (c.getTbl_id().equals(id)) {
+                filtered.add(c);
+            }
+        }
+        return filtered;
+    }
+
+    /**
      * Returns the adviser with the specified drupal id.
      * 
      * @param id
@@ -359,6 +388,16 @@ public class AdviserControls extends AbstractControl {
                     "Can't get projects for adviser with id " + advisorId, e);
         }
         return ps;
+    }
+
+    /**
+     * Rollback to a given change id.
+     * 
+     * @return a list of Changes
+     * @throws Exception
+     */
+    public void rollback(Integer id) throws Exception {
+        projectDao.rollbackForTable("adviser", id);
     }
 
     /**

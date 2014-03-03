@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pm.pojo.APLink;
 import pm.pojo.AdviserAction;
 import pm.pojo.Attachment;
+import pm.pojo.Change;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
@@ -191,6 +192,27 @@ public class ProjectControllerRest {
         return projectControls.filterProjects(filter);
     }
 
+    @RequestMapping(value = "/changes", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Get all changes",
+                  notes = "Returns a list of all changes made",
+                  responseClass = "Change")
+    public List<Change> getAllChanges() throws Exception {
+        return projectControls.getChanges(null);
+    }
+
+    @RequestMapping(value = "/changes/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Get changes",
+                  notes = "Returns a list of changes made filtered by project id",
+                  responseClass = "Change")
+    public List<Change> getChanges(
+            @ApiParam(value = "Adviser id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        return projectControls.getChanges(id);
+    }
+
     @RequestMapping(value = "/fac", method = RequestMethod.GET)
     @ApiOperation(value = "Get facilities",
                   notes = "Returns a list of possible project facilities")
@@ -324,6 +346,17 @@ public class ProjectControllerRest {
             @ApiParam(value = "Object type. adviser, researcher, kpi etc",
                       required = true) @PathVariable final String type) {
         projectControls.removeObjectLink(id, oid, type);
+    }
+
+    @RequestMapping(value = "/rollback/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Rollback to some revision",
+                  notes = "Reverts to the specified revision",
+                  responseClass = "Void")
+    public void rollback(
+            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        projectControls.rollback(id);
     }
 
     @RequestMapping(value = "/prop", method = RequestMethod.PUT)

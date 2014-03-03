@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
+import pm.pojo.Change;
 import pm.pojo.Project;
 
 import com.mangofactory.swagger.annotations.ApiErrors;
@@ -91,8 +92,7 @@ public class AdviserControllerRest {
                       value = "A timestamp indicating the last time the adviser was modified. Used as a consistency check. Set to force to bypass (not recommended)",
                       required = true) @PathVariable final String timestamp,
             @ApiParam(value = "The new value for the field", required = true) @RequestBody final String data)
-            throws NoSuchEntityException, InvalidEntityException,
-            OutOfDateException {
+            throws Exception {
         adviserControls.editAdviser(id, field, timestamp, data);
     }
 
@@ -148,6 +148,27 @@ public class AdviserControllerRest {
         return adviserControls.getAllAdvisers();
     }
 
+    @RequestMapping(value = "/changes", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Get all changes",
+                  notes = "Returns a list of all changes made",
+                  responseClass = "Change")
+    public List<Change> getAllChanges() throws Exception {
+        return adviserControls.getChanges(null);
+    }
+
+    @RequestMapping(value = "/changes/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Get changes",
+                  notes = "Returns a list of changes made filtered by adviser id",
+                  responseClass = "Change")
+    public List<Change> getChanges(
+            @ApiParam(value = "Adviser id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        return adviserControls.getChanges(id);
+    }
+
     @RequestMapping(value = "/{id}/drupal", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(
@@ -179,6 +200,17 @@ public class AdviserControllerRest {
     public List<Project> getProjectsForAdviser(
             @ApiParam(value = "Adviser id", required = true) @PathVariable final Integer id) {
         return adviserControls.getProjectsForAdviser(id);
+    }
+
+    @RequestMapping(value = "/rollback/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Rollback to some revision",
+                  notes = "Reverts to the specified revision",
+                  responseClass = "Void")
+    public void rollback(
+            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        adviserControls.rollback(id);
     }
 
 }

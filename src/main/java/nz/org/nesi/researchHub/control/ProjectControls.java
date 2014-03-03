@@ -20,6 +20,7 @@ import pm.pojo.APLink;
 import pm.pojo.Adviser;
 import pm.pojo.AdviserAction;
 import pm.pojo.Attachment;
+import pm.pojo.Change;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
 import pm.pojo.Kpi;
@@ -391,6 +392,12 @@ public class ProjectControls extends AbstractControl {
         if (id != null) {
             // might throw database exception if project does not already exist
             final ProjectWrapper pw = getProjectWrapper(id.toString());
+            Change ch = new Change();
+            ch.setTbl_id(id);
+            ch.setTbl("project");
+            ch.setField(field + "_" + object);
+            ch.setAdviserId(1);
+            ch.setNew_val(data);
             final boolean skipValidation = pw.getProject().getName()
                     .equals("New Project");
             // great, no exception, means an project with this id does already
@@ -411,6 +418,11 @@ public class ProjectControls extends AbstractControl {
             }
             try {
                 if (object.equals("projectFacilities")) {
+                    String facs = "";
+                    for (ProjectFacility pf : pw.getProjectFacilities()) {
+                        facs += pf.getFacilityId() + ",";
+                    }
+                    ch.setOld_val(facs);
                     final List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
                     for (final String facId : data.split(",")) {
                         final ProjectFacility pf = new ProjectFacility();
@@ -450,6 +462,13 @@ public class ProjectControls extends AbstractControl {
                         pojo = getPojo.invoke(pojo,
                                 Integer.parseInt(object.split("_")[3]));
                         pojoClass = pojo.getClass();
+                    }
+                    method = "get" + field;
+                    try {
+                        Method get = pojoClass.getDeclaredMethod(method);
+                        ch.setOld_val(get.invoke(pojo).toString());
+                    } catch (Exception e) {
+
                     }
                     method = "set" + field;
                     // Try integers first, floats if that fails, then fallback
@@ -555,6 +574,24 @@ public class ProjectControls extends AbstractControl {
 
         return filtered;
 
+    }
+
+    /**
+     * Returns a list of changes. If no id is given, it returns all changes.
+     * 
+     * @return a list of Changes
+     * @throws Exception
+     */
+    public List<Change> getChanges(Integer id) throws Exception {
+        List<Change> all = projectDao.getChangeLogForTable("project");
+        if (id == null) return all;
+        List<Change> filtered = new LinkedList<Change>();
+        for (Change c : all) {
+            if (c.getTbl_id().equals(id)) {
+                filtered.add(c);
+            }
+        }
+        return filtered;
     }
 
     /**
@@ -808,6 +845,16 @@ public class ProjectControls extends AbstractControl {
         } catch (final Exception e) {
             throw new DatabaseException("Can't delete " + oid, e);
         }
+    }
+
+    /**
+     * Rollback to a given change id.
+     * 
+     * @return a list of Changes
+     * @throws Exception
+     */
+    public void rollback(Integer id) throws Exception {
+        projectDao.rollbackForTable("project", id);
     }
 
     /**
