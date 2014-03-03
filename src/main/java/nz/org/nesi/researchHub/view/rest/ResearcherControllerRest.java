@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pm.pojo.Change;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
@@ -76,8 +77,7 @@ public class ResearcherControllerRest {
                       value = "A timestamp indicating the last time the researcher was modified. Used as a consistency check. Set to force to bypass (not recommended)",
                       required = true) @PathVariable final String timestamp,
             @ApiParam(value = "The new value for the field", required = true) @RequestBody final String data)
-            throws NoSuchEntityException, InvalidEntityException,
-            OutOfDateException {
+            throws Exception {
         researcherControls.editResearcher(id, field, timestamp, data);
     }
 
@@ -111,12 +111,33 @@ public class ResearcherControllerRest {
         return researcherControls.getAffiliations();
     }
 
+    @RequestMapping(value = "/changes", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Get all changes",
+                  notes = "Returns a list of all changes made",
+                  responseClass = "Change")
+    public List<Change> getAllChanges() throws Exception {
+        return researcherControls.getChanges(null);
+    }
+
     @ApiOperation(value = "Get all researchers",
                   notes = "Returns all known researchers")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public List<Researcher> getAllResearchers() {
         return researcherControls.getAllResearchers();
+    }
+
+    @RequestMapping(value = "/changes/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Get changes",
+                  notes = "Returns a list of changes made filtered by researcher id",
+                  responseClass = "Change")
+    public List<Change> getChanges(
+            @ApiParam(value = "Researcher id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        return researcherControls.getChanges(id);
     }
 
     @ApiOperation(
@@ -183,6 +204,17 @@ public class ResearcherControllerRest {
     @ResponseBody
     public List<ResearcherStatus> getStatuses() throws Exception {
         return researcherControls.getStatuses();
+    }
+
+    @RequestMapping(value = "/rollback/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Rollback to some revision",
+                  notes = "Reverts to the specified revision",
+                  responseClass = "Void")
+    public void rollback(
+            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        researcherControls.rollback(id);
     }
 
     @ApiOperation(value = "Upsert researcher property",

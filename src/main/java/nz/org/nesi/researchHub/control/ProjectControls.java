@@ -507,6 +507,7 @@ public class ProjectControls extends AbstractControl {
                     validateProject(pw);
                 }
                 projectDao.updateProjectWrapper(id, pw);
+                projectDao.logChange(ch);
             } catch (final NoSuchMethodException e) {
                 throw new InvalidEntityException(pojoClass.getName() + "."
                         + method + " is not a valid method",

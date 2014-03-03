@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import pm.pojo.Change;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
@@ -108,18 +109,28 @@ public class ResearcherControls extends AbstractControl {
      * 
      * @param researcher
      *            the updated researcher object
-     * @throws OutOfDateException
-     *             , Exception
-     * @throws NoSuchEntityException
-     * @throws InvalidEntityException
+     * @throws Exception
      */
     public void editResearcher(final Integer id, final String field,
-            final String timestamp, final String data)
-            throws OutOfDateException, NoSuchEntityException,
-            InvalidEntityException {
+            final String timestamp, final String data) throws Exception {
         if (id != null) {
             // check whether an researcher with this id exists
             final Researcher temp = getResearcher(id);
+            Change ch = new Change();
+            ch.setTbl_id(id);
+            ch.setTbl("researcher");
+            ch.setField(field);
+            ch.setAdviserId(1);
+            ch.setNew_val(data);
+            final Class<Researcher> c = Researcher.class;
+            String method = "get" + field;
+            try {
+                final Method get = c.getDeclaredMethod(method);
+                Object result = get.invoke(temp);
+                ch.setOld_val(result.toString());
+            } catch (Exception e) {
+
+            }
             // great, no exception, means an researcher with this id does
             // already exist, now let's merge those two
             // Compare timestamps to prevent accidental overwrite
@@ -128,8 +139,7 @@ public class ResearcherControls extends AbstractControl {
                 throw new OutOfDateException(
                         "Incorrect timestamp. Researcher has been modified since you last loaded it.");
             }
-            final String method = "set" + field;
-            final Class<Researcher> c = Researcher.class;
+            method = "set" + field;
             try {
                 // Try use the parameter as an integer
                 final Integer intData = Integer.valueOf(data);
@@ -148,6 +158,7 @@ public class ResearcherControls extends AbstractControl {
             }
             validateResearcher(temp);
             projectDao.updateResearcher(temp);
+            projectDao.logChange(ch);
         } else {
             throw new InvalidEntityException(
                     "Can't edit researcher. No id provided.", Researcher.class,
@@ -249,6 +260,24 @@ public class ResearcherControls extends AbstractControl {
         }
 
         return rl;
+    }
+
+    /**
+     * Returns a list of changes. If no id is given, it returns all changes.
+     * 
+     * @return a list of Changes
+     * @throws Exception
+     */
+    public List<Change> getChanges(Integer id) throws Exception {
+        List<Change> all = projectDao.getChangeLogForTable("researcher");
+        if (id == null) return all;
+        List<Change> filtered = new LinkedList<Change>();
+        for (Change c : all) {
+            if (c.getTbl_id().equals(id)) {
+                filtered.add(c);
+            }
+        }
+        return filtered;
     }
 
     /**
@@ -355,6 +384,16 @@ public class ResearcherControls extends AbstractControl {
      */
     public List<ResearcherStatus> getStatuses() throws Exception {
         return projectDao.getResearcherStatuses();
+    }
+
+    /**
+     * Rollback to a given change id.
+     * 
+     * @return a list of Changes
+     * @throws Exception
+     */
+    public void rollback(Integer id) throws Exception {
+        projectDao.rollbackForTable("researcher", id);
     }
 
     /**
