@@ -61,6 +61,8 @@ public class AdviserControlsTest {
 		adviser = new Adviser() {
 			{
 				setFullName("TestName");
+				setPhone(null);
+				setEmail(null);
 			}
 		};
 
@@ -98,6 +100,14 @@ public class AdviserControlsTest {
 
 		when(adviserControls.getAdviser(1)).thenReturn(adviser);
 		when(adviserControls.getProjectsForAdviser(1)).thenReturn(projects);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testGetAdviserWithInvalidData() throws Exception {
+
+		when(projectDaoMock.getAdviserById(1)).thenReturn(adviser);
+		when(adviserControls.getAdviser(1)).thenReturn(adviser);
+		adviserControls.getAdviser(0).equals(adviser);
 	}
 
 	@Test
@@ -204,6 +214,8 @@ public class AdviserControlsTest {
 			{
 				setFullName("TestNewName");
 				setId(1);
+				setPhone(null);
+				setEmail(null);
 			}
 		};
 		when(projectDaoMock.getAdviserById(1)).thenReturn(newadviser);
@@ -218,17 +230,23 @@ public class AdviserControlsTest {
 		all.add(new Adviser() {
 			{
 				setFullName("TestName");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		});
 		all.add(new Adviser() {
 			{
 				setFullName("New Adviser");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		});
 
 		Adviser newadviser = new Adviser() {
 			{
 				setFullName("New Adviser");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		};
 
