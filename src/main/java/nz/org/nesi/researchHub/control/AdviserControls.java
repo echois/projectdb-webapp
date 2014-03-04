@@ -362,9 +362,14 @@ public class AdviserControls extends AbstractControl {
      * Get the timestamp of the most recently modified adviser.
      * 
      * @return a timestamp
+     * @throws Exception
      */
-    public String getLastModified() {
-        return projectDao.getLastModifiedForTable("adviser");
+    public String getLastModified(Integer id) throws Exception {
+        if (id == null) {
+            return projectDao.getLastModifiedForTable("adviser");
+        } else {
+            return projectDao.getAdviserById(id).getLastModified();
+        }
     }
 
     /**
