@@ -636,12 +636,19 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Get the timestamp of the most recently modified project.
+     * Get the timestamp of the most recently modified project, or the specified
+     * project
      * 
      * @return a timestamp
+     * @throws Exception
      */
-    public String getLastModified() {
-        return projectDao.getLastModifiedForTable("project");
+    public String getLastModified(Integer id) throws Exception {
+        if (id == null) {
+            return projectDao.getLastModifiedForTable("project");
+        } else {
+            return projectDao.getProjectWrapperById(id).getProject()
+                    .getLastModified();
+        }
     }
 
     /**

@@ -245,13 +245,24 @@ public class ProjectControllerRest {
         return projectControls.getKpis();
     }
 
-    @RequestMapping(value = "/age", method = RequestMethod.GET)
+    @RequestMapping(value = "/last_modified", method = RequestMethod.GET)
     @ApiOperation(
                   value = "Get Timestamp",
                   notes = "Returns a timestamp indicating the most recently modified project. Useful for caching.")
     @ResponseBody
     public String getLastModified() throws Exception {
-        return projectControls.getLastModified();
+        return projectControls.getLastModified(null);
+    }
+
+    @RequestMapping(value = "/{id}/last_modified", method = RequestMethod.GET)
+    @ApiOperation(
+                  value = "Get Timestamp",
+                  notes = "Returns a timestamp the age of this project. Useful for caching.")
+    @ResponseBody
+    public String getLastModified(
+            @ApiParam(value = "Project id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        return projectControls.getLastModified(id);
     }
 
     @RequestMapping(value = "/akpis", method = RequestMethod.GET)

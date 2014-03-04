@@ -149,13 +149,24 @@ public class ResearcherControllerRest {
         return researcherControls.getInstitutionalRoles();
     }
 
-    @RequestMapping(value = "/age", method = RequestMethod.GET)
+    @RequestMapping(value = "/last_modified", method = RequestMethod.GET)
     @ApiOperation(
                   value = "Get Timestamp",
                   notes = "Returns a timestamp indicating the most recently modified researcher. Useful for caching.")
     @ResponseBody
     public String getLastModified() throws Exception {
-        return researcherControls.getLastModified();
+        return researcherControls.getLastModified(null);
+    }
+
+    @RequestMapping(value = "/{id}/last_modified", method = RequestMethod.GET)
+    @ApiOperation(
+                  value = "Get Timestamp",
+                  notes = "Returns a timestamp indicating the age of this researcher object. Useful for caching.")
+    @ResponseBody
+    public String getLastModified(
+            @ApiParam(value = "Internal researcher id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        return researcherControls.getLastModified(id);
     }
 
     @ApiOperation(value = "Get project for researcher",

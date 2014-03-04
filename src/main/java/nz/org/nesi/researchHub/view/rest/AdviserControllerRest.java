@@ -182,13 +182,24 @@ public class AdviserControllerRest {
         return adviserControls.getDrupalIdByAdviserId(id);
     }
 
-    @RequestMapping(value = "/age", method = RequestMethod.GET)
+    @RequestMapping(value = "/last_modified", method = RequestMethod.GET)
     @ApiOperation(
                   value = "Get Timestamp",
                   notes = "Returns a timestamp indicating the most recently modified adviser. Useful for caching.")
     @ResponseBody
     public String getLastModified() throws Exception {
-        return adviserControls.getLastModified();
+        return adviserControls.getLastModified(null);
+    }
+
+    @RequestMapping(value = "/{id}/last_modified", method = RequestMethod.GET)
+    @ApiOperation(
+                  value = "Get Timestamp",
+                  notes = "Returns a timestamp indicating the age of this adviser object. Useful for caching.")
+    @ResponseBody
+    public String getLastModified(
+            @ApiParam(value = "Adviser id", required = true) @PathVariable final Integer id)
+            throws Exception {
+        return adviserControls.getLastModified(id);
     }
 
     @RequestMapping(value = "/{id}/projects", method = RequestMethod.GET)
