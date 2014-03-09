@@ -57,6 +57,8 @@ public class ResearcherControlsTest {
 		researcher = new Researcher() {
 			{
 				setFullName("TestName");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		};
 
@@ -186,6 +188,8 @@ public class ResearcherControlsTest {
 			{
 				setFullName("TestNewName");
 				setId(1);
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		};
 		when(projectDaoMock.getResearcherById(1)).thenReturn(newresearcher);
@@ -200,17 +204,23 @@ public class ResearcherControlsTest {
 		all.add(new Researcher() {
 			{
 				setFullName("TestName");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		});
 		all.add(new Researcher() {
 			{
 				setFullName("New Researcher");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		});
 
 		Researcher newresearcher = new Researcher() {
 			{
 				setFullName("New Researcher");
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		};
 

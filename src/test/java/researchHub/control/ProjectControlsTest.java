@@ -190,7 +190,7 @@ public class ProjectControlsTest {
 		projectControls.createProjectWrapper(newprojectWrapper);
 	}
 
-	@Test(expected = InvalidEntityException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testCreateProjectWithId() throws Exception {
 
 		final Project newproject = new Project() {
@@ -293,7 +293,7 @@ public class ProjectControlsTest {
 		when(projectControls.createProjectWrapper(newpw)).thenReturn(1);
 	}
 
-	@Test(expected = InvalidEntityException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testCreateProjectWithNoHCPFacilities() throws Exception {
 		project.setProjectCode("pc0001");
 		project.setId(1);
