@@ -67,7 +67,7 @@ public class ProjectControllerRest {
     @ResponseBody
     public void addAPLink(
             @ApiParam(value = "APLink object", required = true) @RequestBody final APLink al)
-            throws InvalidEntityException {
+            throws Exception {
         projectControls.addAdviser(al);
     }
 

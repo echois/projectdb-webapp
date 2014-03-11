@@ -39,6 +39,8 @@ import pm.pojo.Researcher;
 import pm.pojo.Review;
 import pm.pojo.Site;
 
+import common.util.CustomException;
+
 /**
  * Project: project_management
  * <p/>
@@ -121,9 +123,9 @@ public class ProjectControls extends AbstractControl {
      * 
      * @param id
      *            the id
-     * @throws InvalidEntityException
+     * @throws Exception
      */
-    public void addAdviser(final APLink al) throws InvalidEntityException {
+    public void addAdviser(final APLink al) throws Exception {
         if (al.getAdviserId() == null || al.getAdviserId().equals(0)) {
             throw new InvalidEntityException("Not a valid adviser",
                     Adviser.class, "APLink");
@@ -134,8 +136,8 @@ public class ProjectControls extends AbstractControl {
             pw.getApLinks().add(al);
             validateProject(pw);
             projectDao.updateProjectWrapper(al.getProjectId(), pw);
-        } catch (final Exception e) {
-            throw new DatabaseException(e.getMessage() + al.getProjectId(), e);
+        } catch (final CustomException e) {
+            throw new DatabaseException(e.getCustomMsg() + al.getProjectId(), e);
         }
     }
 
