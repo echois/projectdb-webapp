@@ -135,8 +135,7 @@ public class ProjectControls extends AbstractControl {
             validateProject(pw);
             projectDao.updateProjectWrapper(al.getProjectId(), pw);
         } catch (final Exception e) {
-            throw new DatabaseException("Can't fetch project with id "
-                    + al.getProjectId(), e);
+            throw new DatabaseException(e.getMessage() + al.getProjectId(), e);
         }
     }
 
