@@ -117,7 +117,7 @@ public class Researcher implements Serializable {
     }
 
     public void setEmail(final String email) {
-        this.email = email;
+        this.email = email.trim();
     }
 
     public void setEndDate(final String endDate) {
