@@ -61,8 +61,8 @@ public class AdviserControlsTest {
 		adviser = new Adviser() {
 			{
 				setFullName("TestName");
-				setPhone(null);
-				setEmail(null);
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		};
 
@@ -214,8 +214,8 @@ public class AdviserControlsTest {
 			{
 				setFullName("TestNewName");
 				setId(1);
-				setPhone(null);
-				setEmail(null);
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
 			}
 		};
 		when(projectDaoMock.getAdviserById(1)).thenReturn(newadviser);

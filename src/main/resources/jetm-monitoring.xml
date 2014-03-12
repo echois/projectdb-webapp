@@ -39,7 +39,9 @@
 		<property name="beanNames">
 			<list>
 				<value>adviserControllerRest</value>
-				<value>projectControllerRest</value>
+                <value>projectControllerRest</value>
+                <value>researcherControllerRest</value>
+                <value>bulkControllerRest</value>
 				<value>adviserControls</value>
 				<value>researcherControls</value>
 				<value>projectControls</value>
