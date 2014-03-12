@@ -429,16 +429,18 @@ public class ResearcherControls extends AbstractControl {
      */
     private void validateResearcher(final Researcher r)
             throws InvalidEntityException {
-        if (r.getFullName().trim().equals("")) {
+        if (r.getFullName() == null || r.getFullName().trim().equals("")) {
             throw new InvalidEntityException("Researcher name cannot be empty",
                     Researcher.class, "name");
         }
-        if (r.getPhone().trim() != "" && !r.getPhone().matches(".+[0-9].+")) {
+        if (r.getPhone() == null || r.getPhone().trim() != ""
+                && !r.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Researcher.class,
                     "phone");
         }
-        if (r.getEmail().trim() != "" && !r.getEmail().matches(".+@.+[.].+")) {
+        if (r.getEmail() == null || r.getEmail().trim() != ""
+                && !r.getEmail().matches(".+@.+[.].+")) {
             throw new InvalidEntityException("Not a valid email",
                     Researcher.class, "email");
         }
