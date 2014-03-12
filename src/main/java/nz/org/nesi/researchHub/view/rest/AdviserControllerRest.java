@@ -44,7 +44,7 @@ public class AdviserControllerRest {
     @ApiOperation(value = "Create new adviser",
                   notes = "Returns the generated adviser id, if successful",
                   responseClass = "Integer")
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public Integer createAdviser(
             @ApiParam(value = "Adviser object", required = true) @RequestBody final Adviser adviser)

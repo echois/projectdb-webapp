@@ -44,7 +44,7 @@ public class ResearcherControllerRest {
     @ApiOperation(
                   value = "Create researcher",
                   notes = "Create a researcher based on the given researcher object. Returns new id if successfull")
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public Integer createResearcher(
             @ApiParam(value = "Researcher object", required = true) @RequestBody final Researcher researcher)

@@ -1,18 +1,43 @@
 package nz.org.nesi.researchHub.view.rest;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import java.util.List;
+
 import nz.org.nesi.researchHub.control.ProjectControls;
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import pm.pojo.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import pm.pojo.APLink;
+import pm.pojo.AdviserAction;
+import pm.pojo.Attachment;
+import pm.pojo.Change;
+import pm.pojo.Facility;
+import pm.pojo.FollowUp;
+import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
+import pm.pojo.Project;
+import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
+import pm.pojo.ProjectStatus;
+import pm.pojo.ProjectType;
+import pm.pojo.ProjectWrapper;
+import pm.pojo.RPLink;
+import pm.pojo.ResearchOutput;
+import pm.pojo.ResearchOutputType;
+import pm.pojo.Review;
+import pm.pojo.Site;
+
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Project: project_management
@@ -26,7 +51,7 @@ public class ProjectControllerRest {
 
     @Autowired
     private ProjectControls projectControls;
-    
+
     @Autowired
     private ResearcherControls researcherControls;
 
@@ -116,7 +141,7 @@ public class ProjectControllerRest {
         projectControls.addResearcher(rl);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     @ApiOperation(
                   value = "Create project",
                   notes = "Creates a new project from the given object. Returns the new project id if successfull")
@@ -358,6 +383,5 @@ public class ProjectControllerRest {
             throws Exception {
         projectControls.upsertProperty(p);
     }
-
 
 }
