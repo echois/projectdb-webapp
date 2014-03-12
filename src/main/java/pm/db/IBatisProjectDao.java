@@ -117,7 +117,6 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
-    @RequireAdviser
     public synchronized Integer createProjectWrapper(final ProjectWrapper pw)
             throws Exception {
         createProject(pw.getProject());
@@ -167,7 +166,6 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
-    @RequireAdviser
     public Integer createResearcher(final Researcher r) throws Exception {
         getSqlSession().insert("pm.db.createResearcher", r);
         return r.getId();
