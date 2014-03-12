@@ -66,7 +66,7 @@ public class ResearcherControllerRest {
                   value = "Edit researcher",
                   notes = "Update a single field in a researcher object. The timestamp included must match the last modified time of the adviser, otherwise an OutOfDateException will be thrown")
     @RequestMapping(value = "/{id}/{field}/{timestamp}/",
-                    method = RequestMethod.POST)
+                    method = RequestMethod.PUT)
     @ResponseBody
     public void editResearcher(
             @ApiParam(value = "Researcher id", required = true) @PathVariable final Integer id,

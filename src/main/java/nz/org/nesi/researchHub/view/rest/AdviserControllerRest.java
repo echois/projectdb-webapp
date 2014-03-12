@@ -67,7 +67,7 @@ public class AdviserControllerRest {
                   value = "Edit adviser",
                   notes = "Update an adviser by posting the entire adviser object",
                   responseClass = "void")
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
     public void editAdviser(
             @ApiParam(value = "Adviser object", required = true) @PathVariable final Adviser adviser)
