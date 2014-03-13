@@ -2,6 +2,9 @@ package nz.org.nesi.researchHub.control;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -492,6 +495,8 @@ public class ProjectControls extends AbstractControl {
                         set.invoke(pojo, data);
                     }
                 }
+
+                // Auto project code logic
                 if (pw.getProject().getProjectCode().equals("nesi")) {
                     pw.getProject().setProjectCode(
                             projectDao.getNextProjectCode("nesi"));
@@ -503,6 +508,24 @@ public class ProjectControls extends AbstractControl {
                     final String projectCode = projectDao.getNextProjectCode(pw
                             .getProject().getHostInstitution());
                     pw.getProject().setProjectCode(projectCode);
+                }
+
+                // Auto Date logic
+                final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                if (pw.getProject().getStartDate().trim().equals("")) {
+                    final Date startDate = new Date();
+                    pw.getProject().setStartDate(df.format(startDate));
+                }
+                if (pw.getProject().getNextReviewDate().trim().equals("")) {
+                    final Date nextReview = new Date();
+                    nextReview.setYear(nextReview.getYear() + 1);
+                    pw.getProject().setNextReviewDate(df.format(nextReview));
+                }
+                if (pw.getProject().getNextFollowUpDate().trim().equals("")) {
+                    final Date nextFollowUp = new Date();
+                    nextFollowUp.setMonth(nextFollowUp.getMonth() + 3);
+                    pw.getProject()
+                            .setNextFollowUpDate(df.format(nextFollowUp));
                 }
                 if (!skipValidation) {
                     validateProject(pw);
