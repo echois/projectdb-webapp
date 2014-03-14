@@ -37,7 +37,8 @@ public class AuditFilter implements Filter {
             String remoteAddr = request.getHeader(remoteAddrHeader);
 
             // Comment out for testing
-            if (!request.getRemoteAddr().equals(proxyIp)) {
+            if (!request.getRemoteAddr().equals(proxyIp)
+                    && !proxyIp.equals("*")) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 log.error("Denying access from host " + request.getRemoteAddr()
                         + " (doesn't match " + proxyIp + ")");
