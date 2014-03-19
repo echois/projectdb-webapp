@@ -292,16 +292,16 @@ public class ProjectControls extends AbstractControl {
                     "Can't create project that already has an id.");
         }
 
-        if (pw.getProject().getProjectCode().equals("nesi")) {
-            pw.getProject().setProjectCode(
-                    projectDao.getNextProjectCode("nesi"));
-        }
         if (!p.getHostInstitution().trim().equals("")
                 && (p.getProjectCode() == null || p.getProjectCode().trim()
                         .equals(""))) {
             final String projectCode = projectDao.getNextProjectCode(p
                     .getHostInstitution());
             pw.getProject().setProjectCode(projectCode);
+        }
+        if (pw.getProject().getProjectCode().equals("nesi")) {
+            pw.getProject().setProjectCode(
+                    projectDao.getNextProjectCode("nesi"));
         }
         try {
             final Integer pid = projectDao.createProjectWrapper(pw);
@@ -749,7 +749,7 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Gets the project (with associted objects) with the specified id or
+     * Gets the project (with associated objects) with the specified id or
      * project code.
      * 
      * @param projectIdOrCode
