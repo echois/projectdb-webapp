@@ -44,6 +44,13 @@
 		FROM project
 		WHERE id = #{id}
 	</select>
+	
+	<select id="getProjectByCode" parameterType="String"
+		resultType="pm.pojo.Project">
+		SELECT *
+		FROM project
+		WHERE projectCode = #{code}
+	</select>
 
 	<select id="getResearcherById" parameterType="java.lang.Integer"
 		resultType="pm.pojo.Researcher">
