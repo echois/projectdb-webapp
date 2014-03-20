@@ -518,7 +518,38 @@
 		#{notes}
 		)
 	</insert>
+	
+	<select id="getAffiliationByInstitutionCode" parameterType="java.lang.String"
+		resultType="pm.pojo.Affiliation">
+		SELECT DISTINCT
+		IFNULL(i.name,'') as institution, IFNULL(i.code,'') as institutionCode, '' as division, '' as divisionCode, '' as
+		department, '' as departmentCode
+		FROM
+		institution i where i.code= #{institutionCode}
 
+		UNION
+
+		SELECT IFNULL(i.name,'') as institution, '' as institutionCode,
+		IFNULL(d.name,'') as division,  IFNULL(d.code, '') as divisionCode,''
+		as department, '' as departmentCode
+		FROM institution i
+		JOIN division d on i.id = d.institutionId and i.code = #{institutionCode}
+
+		UNION
+
+		SELECT IFNULL(i.name,'')
+		AS institution, IFNULL(i.code,'') as institutionCode, IFNULL(di.name,'') AS division,
+		IFNULL(di.code,'') as divisionCode, IFNULL(de.name,'') AS
+		department, IFNULL(de.name,'') as departmentCode
+		FROM institution i
+		JOIN division di ON i.id = di.institutionId and i.code = #{institutionCode}
+		JOIN department de on di.id = de.divisionId
+
+		ORDER
+		BY institution, division, department
+		
+	</select>
+	
 	<insert id="createResearcher" parameterType="pm.pojo.Researcher">
 		INSERT INTO researcher (
 		fullName,
@@ -935,7 +966,25 @@
 		researchoutputtype
 		ORDER BY name
 	</select>
-
+	
+	<insert id="createInstitution" parameterType="pm.pojo.Affiliation">
+		INSERT INTO	institution(name, code) 
+		values (#{institution}, #{institutionCode})
+	</insert>
+	
+	<insert id="createDivision" parameterType="pm.pojo.Affiliation">
+		INSERT INTO	division(institutionId, name, code) 
+		SELECT id, #{division}, #{divisionCode}
+		FROM institution
+		WHERE code=#{institutionCode}
+	</insert>
+	
+	<insert id="createDepartment" parameterType="pm.pojo.Affiliation">
+		INSERT INTO department(institutionId, divisionId, name, code)
+        SELECT i.id, d.id, #{department},#{departmentCode}
+        FROM institution i, division d where i.code=#{institutionCode} and d.code=#{divisionCode}
+    </insert>
+    
 	<select id="getAffiliations" resultType="pm.pojo.Affiliation">
 		SELECT DISTINCT
 		IFNULL(i.name,'') as institution, '' as division, '' as
@@ -965,12 +1014,6 @@
 
 		ORDER
 		BY institution, division, department
-	</select>
-
-	<select id="getInstitutions" resultType="java.lang.String">
-		SELECT DISTINCT name
-		FROM institution
-		ORDER BY name
 	</select>
 
 	<!-- Temp projects -->

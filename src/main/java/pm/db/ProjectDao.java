@@ -158,4 +158,21 @@ public interface ProjectDao {
 
     public void upsertResearcherProperty(ResearcherProperty r);
 
+	//public void createAffiliation(Affiliation affiliation) throws Exception;
+	
+	public void createInstitution(Affiliation af) throws Exception;
+	
+	public void createDivision(Affiliation af) throws Exception;
+	
+	public void createDepartment(Affiliation af) throws Exception;
+	
+	//public void getInstitution(String institutionCode) throws Exception;
+	
+	//public void getDepartment(String departmentCode) throws Exception;
+	
+	public List<Affiliation> getAffiliationsByInstitutionCode(String institutionCode) throws Exception;
+	
+
+	//public void deleteAffiliation(Integer id);
+
 }

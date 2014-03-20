@@ -105,7 +105,24 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         getSqlSession().insert("pm.db.createProject", p);
         return p.getId();
     }
+    
+    public void createInstitution(final Affiliation af) throws Exception{
+    	getSqlSession().insert("pm.db.createInstitution", af);
+    }
+    
+    public void createDivision(final Affiliation af) throws Exception{
+    	getSqlSession().insert("pm.db.createDivision", af);    	  	
+    }
 
+    public void createDepartment(final Affiliation af) throws Exception{
+    	getSqlSession().insert("pm.db.createDepartment",af);  
+    }
+    
+    public List<Affiliation> getAffiliationByInstitutionCode(final String institutionCode) {
+    	return  getSqlSession().selectOne("pm.db.getAffiliationByInstitutionCode", institutionCode);
+              
+    }
+    
     // TODO: handle facilities on project
     private void createProjectFacility(final ProjectFacility f)
             throws Exception {
@@ -174,6 +191,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     private void createResearchOutput(final ResearchOutput o) throws Exception {
         getSqlSession().insert("pm.db.createResearchOutput", o);
     }
+    
+    
 
     private Integer createReview(final Review r) throws Exception {
         getSqlSession().insert("pm.db.createReview", r);
@@ -985,4 +1004,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     public void upsertResearcherProperty(final ResearcherProperty p) {
         getSqlSession().update("upsertResearcherProperty", p);
     }
+
+	@Override
+	public List<Affiliation> getAffiliationsByInstitutionCode(
+			String institutionCode) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
