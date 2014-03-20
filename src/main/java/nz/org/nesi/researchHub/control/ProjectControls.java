@@ -292,16 +292,16 @@ public class ProjectControls extends AbstractControl {
                     "Can't create project that already has an id.");
         }
 
-        if (pw.getProject().getProjectCode().equals("nesi")) {
-            pw.getProject().setProjectCode(
-                    projectDao.getNextProjectCode("nesi"));
-        }
         if (!p.getHostInstitution().trim().equals("")
                 && (p.getProjectCode() == null || p.getProjectCode().trim()
                         .equals(""))) {
             final String projectCode = projectDao.getNextProjectCode(p
                     .getHostInstitution());
             pw.getProject().setProjectCode(projectCode);
+        }
+        if (pw.getProject().getProjectCode().equals("nesi")) {
+            pw.getProject().setProjectCode(
+                    projectDao.getNextProjectCode("nesi"));
         }
         try {
             final Integer pid = projectDao.createProjectWrapper(pw);
@@ -749,7 +749,7 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Gets the project (with associted objects) with the specified id or
+     * Gets the project (with associated objects) with the specified id or
      * project code.
      * 
      * @param projectIdOrCode
@@ -885,16 +885,25 @@ public class ProjectControls extends AbstractControl {
      * @return a list of Changes
      * @throws Exception
      */
-    public void rollback(Integer id) throws Exception {
-        List<Change> changes = this.getChanges(null);
+    public void rollback(Integer pid, Integer rid) throws Exception {
+        List<Change> changes = this.getChanges(pid);
+        boolean validRid = false;
         for (Change change : changes) {
-            if (change.getId().equals(id)) return;
-            ProjectWrapper pw = this.getProjectWrapper(change.getTbl_id());
+            if (change.getId().equals(rid)) {
+                validRid = true;
+            }
+        }
+        if (!validRid) {
+            throw new InvalidEntityException("Not a valid revision id",
+                    Change.class, "id");
+        }
+        for (Change change : changes) {
             String[] bits = change.getField().split("_");
             String obj = bits[0];
             String field = change.getField().replace(obj + "_", "");
-            this.editProjectWrapper(change.getTbl_id(), obj, field, "force",
+            this.editProjectWrapper(pid, obj, field, "force",
                     change.getOld_val());
+            if (change.getId().equals(rid)) return; // Reached desired revision
         }
     }
 

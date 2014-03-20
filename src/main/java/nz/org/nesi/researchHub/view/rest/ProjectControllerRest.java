@@ -363,15 +363,17 @@ public class ProjectControllerRest {
         projectControls.removeObjectLink(id, oid, type);
     }
 
-    @RequestMapping(value = "/rollback/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rollback/{uid}/{rid}", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value = "Rollback to some revision",
-                  notes = "Reverts to the specified revision",
+    @ApiOperation(
+                  value = "Rollback to some revision",
+                  notes = "Reverts the specified project to the specified revision",
                   responseClass = "Void")
     public void rollback(
-            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer id)
+            @ApiParam(value = "Project id", required = true) @PathVariable final Integer uid,
+            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer rid)
             throws Exception {
-        projectControls.rollback(id);
+        projectControls.rollback(uid, rid);
     }
 
     @RequestMapping(value = "/prop", method = RequestMethod.PUT)
