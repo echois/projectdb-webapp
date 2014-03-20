@@ -885,16 +885,25 @@ public class ProjectControls extends AbstractControl {
      * @return a list of Changes
      * @throws Exception
      */
-    public void rollback(Integer id) throws Exception {
-        List<Change> changes = this.getChanges(null);
+    public void rollback(Integer pid, Integer rid) throws Exception {
+        List<Change> changes = this.getChanges(pid);
+        boolean validRid = false;
         for (Change change : changes) {
-            if (change.getId().equals(id)) return;
-            ProjectWrapper pw = this.getProjectWrapper(change.getTbl_id());
+            if (change.getId().equals(rid)) {
+                validRid = true;
+            }
+        }
+        if (!validRid) {
+            throw new InvalidEntityException("Not a valid revision id",
+                    Change.class, "id");
+        }
+        for (Change change : changes) {
             String[] bits = change.getField().split("_");
             String obj = bits[0];
             String field = change.getField().replace(obj + "_", "");
-            this.editProjectWrapper(change.getTbl_id(), obj, field, "force",
+            this.editProjectWrapper(pid, obj, field, "force",
                     change.getOld_val());
+            if (change.getId().equals(rid)) return; // Reached desired revision
         }
     }
 

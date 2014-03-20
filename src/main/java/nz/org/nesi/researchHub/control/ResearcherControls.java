@@ -397,13 +397,22 @@ public class ResearcherControls extends AbstractControl {
      * @return a list of Changes
      * @throws Exception
      */
-    public void rollback(Integer id) throws Exception {
-        List<Change> changes = this.getChanges(null);
+    public void rollback(Integer uid, Integer rid) throws Exception {
+        List<Change> changes = this.getChanges(uid);
+        boolean validRid = false;
         for (Change change : changes) {
-            if (change.getId().equals(id)) return;
-            Researcher r = this.getResearcher(change.getTbl_id());
-            this.editResearcher(r.getId(), change.getField(), "force",
+            if (change.getId().equals(rid)) {
+                validRid = true;
+            }
+        }
+        if (!validRid) {
+            throw new InvalidEntityException("Not a valid revision id",
+                    Change.class, "id");
+        }
+        for (Change change : changes) {
+            this.editResearcher(uid, change.getField(), "force",
                     change.getOld_val());
+            if (change.getId().equals(rid)) return; // Reached desired revision
         }
     }
 

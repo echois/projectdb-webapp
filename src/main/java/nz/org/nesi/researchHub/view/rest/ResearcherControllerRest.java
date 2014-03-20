@@ -217,15 +217,17 @@ public class ResearcherControllerRest {
         return researcherControls.getStatuses();
     }
 
-    @RequestMapping(value = "/rollback/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rollback/{uid}/{rid}", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value = "Rollback to some revision",
-                  notes = "Reverts to the specified revision",
+    @ApiOperation(
+                  value = "Rollback to some revision",
+                  notes = "Reverts the specified researcher to the specified revision",
                   responseClass = "Void")
     public void rollback(
-            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer id)
+            @ApiParam(value = "Researcher id", required = true) @PathVariable final Integer uid,
+            @ApiParam(value = "Revision id", required = true) @PathVariable final Integer rid)
             throws Exception {
-        researcherControls.rollback(id);
+        researcherControls.rollback(uid, rid);
     }
 
     @ApiOperation(value = "Upsert researcher property",
