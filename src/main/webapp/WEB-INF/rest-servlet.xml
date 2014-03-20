@@ -21,6 +21,7 @@
 	<bean id="adviserControls" class="nz.org.nesi.researchHub.control.AdviserControls" />
 	<bean id="researcherControls" class="nz.org.nesi.researchHub.control.ResearcherControls" />
 	<bean id="projectControls" class="nz.org.nesi.researchHub.control.ProjectControls" />
+	<bean id="listControls" class="nz.org.nesi.researchHub.control.ListControls" />
 
 
 
