@@ -31,6 +31,7 @@ class FeatureContext extends MinkContext
     {
       // Initialize your context here
       $this->users = $parameters['users'];
+      $this->root = $parameters['base_url'];
     }
 
     /**
@@ -106,4 +107,100 @@ class FeatureContext extends MinkContext
     $this->getSession()->setRequestHeader("RemoteUser",$user);
   }
   
+  public function fetch_json($resource, $method = "GET", $postdata = "") {
+    $u = "nyou045@auckland.ac.nz";
+    // Create a stream
+    $opts = array(
+      'http'=>array(
+        'method'=> $method,
+        'ignore_errors' => true,
+        'content' => $postdata,
+        'header'=>"Accept: application/json\r\n" .
+                  "Content-Type: application/json\r\n" .
+                  "RemoteUser: $u\r\n" .
+                  "User-Agent: drupal\r\n"
+      )
+    );
+    $context = stream_context_create($opts);
+    $url = $this->root . $resource;
+    //print $url;
+    //print $postdata;
+    $this->response = file_get_contents($url, false, $context);
+    if (is_numeric($this->response)) $this->id=$this->response;
+    return $this->response;
+  }
+  
+  /**
+   * @When /^I "([^"]*)" "([^"]*)" to "([^"]*)"$/
+   */
+  public function iPostTo($method, $json, $endpoint)
+  {
+    $json = str_replace("'", '"', $json);
+    if (strpos($endpoint, "id")) {
+      if (isset($this->id)) {
+        $endpoint = str_replace("id", $this->id, $endpoint);
+        print "Substituted id for " . $this->id;
+      } else {
+        throw new Exception("Unable to substitute id - id not set!");
+      }
+    }
+    $this->fetch_json($endpoint, $method, $json);
+    
+  }
+  
+  /**
+  * @Then /^the response contains "([^"]*)"$/
+  */
+  public function theResponseContains($arg1)
+  {
+    if (strpos($this->response, $arg1)===false) {
+      throw new Exception("$arg1 was not found in " . $this->response);
+    }
+  }
+  
+  /**
+  * @Then /^the response doesn't contain "([^"]*)"$/
+  */
+  public function theResponseDoesntContain($arg1)
+  {
+    if (strpos($this->response, $arg1)!==false) {
+      throw new Exception("$arg1 was found in the response");
+    }
+  }
+  
+  /**
+   * @Then /^the response is JSON$/
+   */
+  public function theResponseIsJson()
+  {
+    $data = json_decode($this->response);
+
+    if (empty($data)) {
+      throw new Exception("Response was not JSON\n" . $this->response);
+    }
+  }
+  
+  /**
+   * @When /^I print last response$/
+   */
+  public function iPrintLastResponse()
+  {
+    print $this->response;
+  }
+  
+  /**
+  * @When /^I load the "([^"]*)" with name "([^"]*)"$/
+  */
+  public function iLoadTheWithName($arg1, $arg2)
+  {
+    $json = $this->fetch_json($arg1 . "s/");
+    $list = json_decode($json);
+    foreach ($list as $a) {
+      if (isset($a->fullName) && $a->fullName==$arg2 || isset($a->name) && $a->name==$arg2) {
+        $this->id = $a->id;
+        return;
+      }
+    }
+    throw new Exception("No $arg1 with name $arg2");
+  }
 }

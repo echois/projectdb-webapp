@@ -12,12 +12,10 @@ default:
         adviser: 'behat-adviser'
         adviser2: 'behat-adviser2'
         admin: 'behat-admin'
+      base_url: 'https://projects.test.nesi.org.nz/projectdb/rest/'
   extensions:
     Behat\MinkExtension\Extension:
-      base_url: 'http://localhost:8080/pm/html/'
+      base_url: 'https://projects.test.nesi.org.nz/projectdb/rest/'
       default_session: 'goutte'
-      goutte:
-        guzzle_parameters:
-          curl.options:
-            CURLOPT_PORT: 8080
+      goutte: ~
       selenium2: ~
