@@ -1022,6 +1022,12 @@
 		ORDER
 		BY institution, division, department
 	</select>
+	
+	<select id="getInstitutions" resultType="java.lang.String">
+		SELECT DISTINCT name
+		FROM institution
+		ORDER BY name
+	</select>
 
 	<!-- Temp projects -->
 
