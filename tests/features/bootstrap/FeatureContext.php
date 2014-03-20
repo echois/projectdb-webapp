@@ -131,17 +131,25 @@ class FeatureContext extends MinkContext
   }
   
   /**
-   * @When /^I "([^"]*)" "([^"]*)" to "([^"]*)"$/
+   * @When /^I "([^"]*)" "([^"]*)" at "([^"]*)"$/
    */
-  public function iPostTo($method, $json, $endpoint)
+  public function iRestAt($method, $json, $endpoint)
   {
     $json = str_replace("'", '"', $json);
     if (strpos($endpoint, "id")) {
       if (isset($this->id)) {
         $endpoint = str_replace("id", $this->id, $endpoint);
-        print "Substituted id for " . $this->id;
+        print "Substituted id with " . $this->id;
       } else {
         throw new Exception("Unable to substitute id - id not set!");
+      }
+    }
+    if (strpos($endpoint, "rev")) {
+      if (isset($this->rid)) {
+        $endpoint = str_replace("rev", $this->rid, $endpoint);
+        print "Substituted rev with " . $this->rid;
+      } else {
+        throw new Exception("Unable to substitute rid - rid not set!");
       }
     }
     $this->fetch_json($endpoint, $method, $json);
@@ -198,6 +206,10 @@ class FeatureContext extends MinkContext
     foreach ($list as $a) {
       if (isset($a->fullName) && $a->fullName==$arg2 || isset($a->name) && $a->name==$arg2) {
         $this->id = $a->id;
+        return;
+      }
+      if (isset($a->new_val) && $a->new_val==$arg2) {
+        $this->rid = $a->id;
         return;
       }
     }
