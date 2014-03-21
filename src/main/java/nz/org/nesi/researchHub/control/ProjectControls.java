@@ -399,7 +399,7 @@ public class ProjectControls extends AbstractControl {
             Change ch = new Change();
             ch.setTbl_id(id);
             ch.setTbl("project");
-            ch.setField(field + "_" + object);
+            ch.setField(object + "_" + field);
             ch.setAdviserId(1);
             ch.setNew_val(data);
             final boolean skipValidation = pw.getProject().getName()

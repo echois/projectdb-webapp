@@ -28,6 +28,8 @@ Feature: Perform REST actions and check that they respond as expected
     When I "GET" "" at "advisers/id"
     Then the response contains "bat@cave"
     
+    
+    
   @nojs @researcher @edit
   Scenario: Create an researcher
     When I "POST" "{'fullName':'!Chuck Norris', 'preferredName': 'Chuck', 'phone':'1234', 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'affiliation':'Milky Way -- Earth -- Antartica', 'institutionalRoleId': 1, 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://www.oassf.com/en/media/images/Chuck-Norris-Card.jpg'}" at "researchers/"
@@ -41,7 +43,6 @@ Feature: Perform REST actions and check that they respond as expected
     When I "GET" "" at "researchers/id"
     Then the response contains "chuck@space"
     Then I "POST" "!Flash Gordon" at "researchers/id/FullName/force/"
-    Then I print last response
     Then I "GET" "" at "researchers/changes/id"
     Then the response contains "!Chuck Norris"
     And the response contains "!Flash Gordon"
@@ -55,13 +56,47 @@ Feature: Perform REST actions and check that they respond as expected
     When I "GET" "" at "researchers/id"
     Then the response contains "chuck@space"
     
-  @nojs @adviser @delete
+    
+    
+  @nojs @project @edit
+  Scenario: Create an project
+    When I "POST" "{'project':{'name':'!Save The World', 'description': 'Nothing to fear but fear itself', 'startDate':'', 'statusId':'1', 'projectTypeId':'1', 'projectCode':'test00001', 'hostInstitution':'Planet Earth', 'endDate': '', 'nextReviewDate':'', 'nextFollowUpDate':'', 'requirements':'A lot of firepower', 'notes':'~~~~~', 'todo':'First, do no harm'}}" at "projects/"
+    Then I "GET" "" at "projects/id"
+    Then the response contains "test00001"
+    
+  @nojs @project @edit
+  Scenario: Edit the project, check it was changelogged
+    When I load the "project" with name "!Save The World"
+    When I "GET" "" at "projects/id"
+    Then the response contains "test00001"
+    Then I "POST" "!Save some of the world" at "projects/id/Project/Name/force/"
+    Then I "GET" "" at "projects/changes/id"
+    Then the response contains "!Save some of the world"
+    And the response contains "!Save The World"
+    
+  @nojs @project @rollback
+  Scenario: Perform a rollback
+    When I load the "project" with name "!Save some of the world"
+    When I load the "projects/change" with name "!Save some of the world"
+    Then I "GET" "" at "projects/rollback/id/rev"
+    When I load the "project" with name "!Save The World"
+    When I "GET" "" at "projects/id"
+    Then the response contains "test00001"
+    
+    
+    
+  @nojs @adviser @delete @cleanup
   Scenario: Delete the adviser
     When I load the "adviser" with name "!Batman"
     Then I "DELETE" "" at "advisers/id"
     
-  @nojs @researcher @delete
+  @nojs @researcher @delete @cleanup
   Scenario: Delete the researcher
     When I load the "researcher" with name "!Chuck Norris"
     Then I "DELETE" "" at "researchers/id"
+    
+  @nojs @project @delete @cleanup
+  Scenario: Delete the project
+    When I load the "project" with name "!Save The World"
+    Then I "DELETE" "" at "projects/id"
     
