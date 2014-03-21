@@ -30,8 +30,7 @@ Feature: Perform REST actions and check that they respond as expected
     
   @nojs @researcher @edit
   Scenario: Create an researcher
-    When I "POST" "{'fullName':'!Chuck Norris', 'phone':1234, 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'institution':'Milky Way', 'divison':'Earth', 'department':'Antartica', 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://www.oassf.com/en/media/images/Chuck-Norris-Card.jpg'}" at "researchers/"
-    Then I print last response
+    When I "POST" "{'fullName':'!Chuck Norris', 'preferredName': 'Chuck', 'phone':'1234', 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'affiliation':'Milky Way -- Earth -- Antartica', 'institutionalRoleId': 1, 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://www.oassf.com/en/media/images/Chuck-Norris-Card.jpg'}" at "researchers/"
     Then the response doesn't contain "already exists"
     Then I "GET" "" at "researchers/id"
     Then the response contains "chuck@space"
@@ -42,6 +41,7 @@ Feature: Perform REST actions and check that they respond as expected
     When I "GET" "" at "researchers/id"
     Then the response contains "chuck@space"
     Then I "POST" "!Flash Gordon" at "researchers/id/FullName/force/"
+    Then I print last response
     Then I "GET" "" at "researchers/changes/id"
     Then the response contains "!Chuck Norris"
     And the response contains "!Flash Gordon"
