@@ -63,5 +63,5 @@ Feature: Perform REST actions and check that they respond as expected
   @nojs @researcher @delete
   Scenario: Delete the researcher
     When I load the "researcher" with name "!Chuck Norris"
-    Then I "DELETE" "" at "advisers/id"
+    Then I "DELETE" "" at "researchers/id"
     
