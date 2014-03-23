@@ -526,37 +526,6 @@
 		)
 	</insert>
 	
-	<select id="getAffiliationByInstitutionCode" parameterType="java.lang.String"
-		resultType="pm.pojo.Affiliation">
-		SELECT DISTINCT
-		IFNULL(i.name,'') as institution, IFNULL(i.code,'') as institutionCode, '' as division, '' as divisionCode, '' as
-		department, '' as departmentCode
-		FROM
-		institution i where i.code= #{institutionCode}
-
-		UNION
-
-		SELECT IFNULL(i.name,'') as institution, '' as institutionCode,
-		IFNULL(d.name,'') as division,  IFNULL(d.code, '') as divisionCode,''
-		as department, '' as departmentCode
-		FROM institution i
-		JOIN division d on i.id = d.institutionId and i.code = #{institutionCode}
-
-		UNION
-
-		SELECT IFNULL(i.name,'')
-		AS institution, IFNULL(i.code,'') as institutionCode, IFNULL(di.name,'') AS division,
-		IFNULL(di.code,'') as divisionCode, IFNULL(de.name,'') AS
-		department, IFNULL(de.name,'') as departmentCode
-		FROM institution i
-		JOIN division di ON i.id = di.institutionId and i.code = #{institutionCode}
-		JOIN department de on di.id = de.divisionId
-
-		ORDER
-		BY institution, division, department
-		
-	</select>
-	
 	<insert id="createResearcher" parameterType="pm.pojo.Researcher">
 		INSERT INTO researcher (
 		fullName,
@@ -1021,6 +990,34 @@
 
 		ORDER
 		BY institution, division, department
+	</select>
+
+    <select id="getAffiliationsByInstitutionCode" parameterType="java.lang.String"
+		resultType="pm.pojo.Affiliation">
+		SELECT DISTINCT IFNULL(i.name,'')
+		AS institution, IFNULL(i.code,'') as institutionCode, IFNULL(di.name,'') AS division,
+		IFNULL(di.code,'') as divisionCode, IFNULL(de.name,'') AS
+		department, IFNULL(de.code,'') as departmentCode
+		FROM institution i
+		JOIN division di ON i.id = di.institutionId and i.code = #{institutionCode}
+		LEFT JOIN department de on di.id = de.divisionId
+		
+		ORDER
+		BY institution, division, department		
+	</select>
+	
+	<select id="getAffiliationsByDivisionCode" parameterType="java.lang.String"
+		resultType="pm.pojo.Affiliation">
+		SELECT DISTINCT IFNULL(i.name,'')
+		AS institution, IFNULL(i.code,'') as institutionCode, IFNULL(di.name,'') AS division,
+		IFNULL(di.code,'') as divisionCode, IFNULL(de.name,'') AS
+		department, IFNULL(de.code,'') as departmentCode
+		FROM institution i
+		JOIN division di ON i.id = di.institutionId and di.code = #{divisionCode}
+		JOIN department de on di.id = de.divisionId
+
+		ORDER
+		BY institution, division, department		
 	</select>
 	
 	<select id="getInstitutions" resultType="java.lang.String">
