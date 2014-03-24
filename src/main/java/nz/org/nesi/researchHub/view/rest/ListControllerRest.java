@@ -42,19 +42,25 @@ public class ListControllerRest {
 		return listControls.getAllAffiliations();
 	}
 
-	@RequestMapping(value = "/affil/create", method = RequestMethod.POST)
-	@ApiOperation(value = "Create list",
-					notes = "Creates a new affiliation from the given object.")
+	@ApiOperation(
+					value = "Get all affiliations",
+					notes = "Returns a list of strings that indicate affiliations")
+	@RequestMapping(value = "/affil/strings", method = RequestMethod.GET)
 	@ResponseBody
-	public final void createAffiliation(
-			@ApiParam(value = "Affiliation object", required = true) @RequestBody final Affiliation affiliation)
-			throws InvalidEntityException {
-		listControls.createAffiliation(affiliation);
+	public List<String> getAffiliationStrings() throws Exception {
+
+		try {
+			return listControls.getAffiliationStrings();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@ApiOperation(
 					value = "Get all affiliations on specific institution",
-					notes = "Returns a list of objects that indicate affiliations by institution")
+					notes = "Returns a list of objects that indicate affiliations by institution code")
 	@RequestMapping(value = "/affil/inst/{institutionCode}",
 					method = RequestMethod.GET)
 	@ResponseBody
@@ -65,9 +71,19 @@ public class ListControllerRest {
 		return listControls.getAffiliationsByInstitutionCode(institutionCode);
 	}
 
+	@RequestMapping(value = "/affil/create", method = RequestMethod.POST)
+	@ApiOperation(value = "Create affiliation",
+					notes = "Creates a new affiliation from the given object.")
+	@ResponseBody
+	public final void createAffiliation(
+			@ApiParam(value = "Affiliation object", required = true) @RequestBody final Affiliation affiliation)
+			throws InvalidEntityException {
+		listControls.createAffiliation(affiliation);
+	}
+
 	@ApiOperation(
 					value = "Get all divisions on specific institution",
-					notes = "Returns a list of strings that indicate divisions by institution")
+					notes = "Returns a list of strings that indicate divisions by institution code")
 	@RequestMapping(value = "/affil/inst/dilist/{institutionCode}",
 					method = RequestMethod.GET)
 	@ResponseBody
@@ -81,7 +97,7 @@ public class ListControllerRest {
 
 	@ApiOperation(
 					value = "Get all departments on specific division",
-					notes = "Returns a list of strings that indicate departments by division")
+					notes = "Returns a list of strings that indicate departments by division code")
 	@RequestMapping(value = "/affil/divi/delist/{divisionCode}",
 					method = RequestMethod.GET)
 	@ResponseBody
@@ -95,7 +111,7 @@ public class ListControllerRest {
 
 	@ApiOperation(
 					value = "Get all affiliations on specific division",
-					notes = "Returns a list of objects that indicate affiliations by division")
+					notes = "Returns a list of objects that indicate affiliations by division code")
 	@RequestMapping(value = "/affil/divi/{divisionCode}",
 					method = RequestMethod.GET)
 	@ResponseBody
@@ -105,22 +121,6 @@ public class ListControllerRest {
 			throws NoSuchEntityException {
 
 		return listControls.getAffiliationsByDivisionCode(divisionCode);
-	}
-
-	@ApiOperation(
-					value = "Get all affiliations on specific division",
-					notes = "Returns a list of objects that indicate affiliations by division")
-	@RequestMapping(value = "/affil/strings", method = RequestMethod.GET)
-	@ResponseBody
-	public List<String> getAffiliationStrings() throws Exception {
-
-		try {
-			return listControls.getAffiliationStrings();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	// TODO: To add validation to generate unique code

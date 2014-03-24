@@ -963,26 +963,24 @@
     
 	<select id="getAffiliations" resultType="pm.pojo.Affiliation">
 		SELECT DISTINCT
-		IFNULL(i.name,'') as institution, '' as division, '' as
-		department
+		IFNULL(i.name,'') as institution, IFNULL(i.code,'') as institutionCode, 
+		'' as division, '' as divisionCode, '' as department, '' as departmentCode
 		FROM
 		institution i
 
 		UNION
 
-		SELECT IFNULL(i.name,'') as institution,
-		IFNULL(d.name,'') as division, ''
-		as department
+		SELECT IFNULL(i.name,'') as institution, IFNULL(i.code,'') as institutionCode,
+		IFNULL(d.name,'') as division, IFNULL(d.code,'') as divisionCode, '' as department, '' as departmentCode
 		FROM institution i
 		LEFT
 		JOIN division d on i.id = d.institutionId
 
 		UNION
 
-		SELECT IFNULL(i.name,'')
-		AS institution, IFNULL(di.name,'') AS division,
-		IFNULL(de.name,'') AS
-		department
+		SELECT IFNULL(i.name,'') AS institution, IFNULL(i.code,'') as institutionCode,
+		IFNULL(di.name,'') AS division, IFNULL(di.code,'') as divisionCode,
+		IFNULL(de.name,'') AS department, IFNULL(de.code,'') as departmentCode
 		FROM institution i
 		LEFT JOIN division di ON i.id =
 		di.institutionId
