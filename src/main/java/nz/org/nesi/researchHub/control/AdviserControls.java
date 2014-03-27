@@ -158,7 +158,7 @@ public class AdviserControls extends AbstractControl {
             ch.setTbl_id(id);
             ch.setTbl("adviser");
             ch.setField(field);
-            ch.setAdviserId(1);
+            ch.setAdviserId(this.authzAspect.getAdviserId());
             ch.setNew_val(data);
             final Class<Adviser> c = Adviser.class;
             String method = "get" + field;
