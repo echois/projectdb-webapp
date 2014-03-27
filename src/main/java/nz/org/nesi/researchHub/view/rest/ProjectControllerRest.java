@@ -5,7 +5,6 @@ import java.util.List;
 import nz.org.nesi.researchHub.control.ProjectControls;
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
-import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -182,7 +181,7 @@ public class ProjectControllerRest {
                       value = "A timestamp indicating the last time the adviser was modified. Used as a consistency check. Set to force to bypass (not recommended)",
                       required = true) @PathVariable final String timestamp,
             @ApiParam(value = "The new value for the field", required = true) @RequestBody final String data)
-            throws InvalidEntityException, OutOfDateException {
+            throws Exception {
         projectControls.editProjectWrapper(id, object, field, timestamp, data);
     }
 

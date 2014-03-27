@@ -379,10 +379,7 @@ public class ProjectControls extends AbstractControl {
      * 
      * @param project
      *            the updated project wrapper
-     * @throws InvalidEntityException
-     *             if there is something wrong with either the projectwrapper or
-     *             associated objects
-     * @throws OutOfDateException
+     * @throws Exception
      * @throws InvocationTargetException
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
@@ -392,7 +389,7 @@ public class ProjectControls extends AbstractControl {
      */
     public void editProjectWrapper(final Integer id, final String object,
             final String field, final String timestamp, final String data)
-            throws InvalidEntityException, OutOfDateException {
+            throws Exception {
         if (id != null) {
             // might throw database exception if project does not already exist
             final ProjectWrapper pw = getProjectWrapper(id.toString());
@@ -400,7 +397,7 @@ public class ProjectControls extends AbstractControl {
             ch.setTbl_id(id);
             ch.setTbl("project");
             ch.setField(object + "_" + field);
-            ch.setAdviserId(1);
+            ch.setAdviserId(this.authzAspect.getAdviserId());
             ch.setNew_val(data);
             final boolean skipValidation = pw.getProject().getName()
                     .equals("New Project");

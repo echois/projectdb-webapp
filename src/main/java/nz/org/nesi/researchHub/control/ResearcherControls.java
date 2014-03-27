@@ -121,7 +121,7 @@ public class ResearcherControls extends AbstractControl {
             ch.setTbl_id(id);
             ch.setTbl("researcher");
             ch.setField(field);
-            ch.setAdviserId(1);
+            ch.setAdviserId(this.authzAspect.getAdviserId());
             ch.setNew_val(data);
             final Class<Researcher> c = Researcher.class;
             String method = "get" + field;

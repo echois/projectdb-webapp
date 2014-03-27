@@ -20,6 +20,13 @@ public class AuthzAspect {
     private ProjectDao projectDao;
     private String remoteUserHeader;
 
+    public Integer getAdviserId() throws Exception {
+        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest();
+        String user = request.getHeader(remoteUserHeader);
+        return projectDao.getAdviserByTuakiriUniqueId(user).getId();
+    }
+
     public ProjectDao getProjectDao() {
         return projectDao;
     }
@@ -28,7 +35,7 @@ public class AuthzAspect {
         return remoteUserHeader;
     }
 
-    private String getTuakiriUniqueIdFromRequest() {
+    public String getTuakiriUniqueIdFromRequest() {
         final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes()).getRequest();
         String user = request.getHeader(remoteUserHeader);

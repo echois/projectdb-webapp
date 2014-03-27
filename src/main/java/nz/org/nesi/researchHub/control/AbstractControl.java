@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
 
 import common.util.AffiliationUtil;
@@ -20,12 +21,12 @@ import common.util.AffiliationUtil;
 @Controller
 public class AbstractControl {
 
-    // @Autowired
-    // protected TempProjectManager tempProjectManager;
-    // @Autowired
-    // protected AuthzAspect authzAspect;
     @Autowired
     protected AffiliationUtil affiliationUtil;
+    // @Autowired
+    // protected TempProjectManager tempProjectManager;
+    @Autowired
+    protected AuthzAspect authzAspect;
     // @Value("${remoteUserHeader}")
     // protected String remoteUserHeader;
     // @Value("${heatmapBaseUserUrl}")
