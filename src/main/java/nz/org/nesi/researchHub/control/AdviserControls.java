@@ -493,7 +493,7 @@ public class AdviserControls extends AbstractControl {
             }
             break;
         case "Email":
-            if (data.trim().equals("") || data.matches(".+@.+[.].+")) {
+            if (data.trim().equals("") || !data.matches(".+@.+[.].+")) {
                 throw new InvalidEntityException("Not a valid email",
                         Adviser.class, "email");
             }
