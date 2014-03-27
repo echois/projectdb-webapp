@@ -113,6 +113,7 @@ public class ResearcherControls extends AbstractControl {
      */
     public void editResearcher(final Integer id, final String field,
             final String timestamp, final String data) throws Exception {
+        validateResearcher(field, data);
         if (id != null) {
             // check whether an researcher with this id exists
             final Researcher temp = getResearcher(id);
@@ -156,7 +157,6 @@ public class ResearcherControls extends AbstractControl {
                             + method + " is not valid", Researcher.class, "id");
                 }
             }
-            validateResearcher(temp);
             projectDao.updateResearcher(temp);
             projectDao.logChange(ch);
         } else {
@@ -442,14 +442,14 @@ public class ResearcherControls extends AbstractControl {
             throw new InvalidEntityException("Researcher name cannot be empty",
                     Researcher.class, "name");
         }
-        if (r.getPhone() == null || r.getPhone().trim() != ""
-                && !r.getPhone().matches(".+[0-9].+")) {
+        if (r.getPhone() == null || r.getPhone().trim().equals("")
+                || !r.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Researcher.class,
                     "phone");
         }
-        if (r.getEmail() == null || r.getEmail().trim() != ""
-                && !r.getEmail().matches(".+@.+[.].+")) {
+        if (r.getEmail() == null || r.getEmail().trim().equals("")
+                || !r.getEmail().matches(".+@.+[.].+")) {
             throw new InvalidEntityException("Not a valid email",
                     Researcher.class, "email");
         }
@@ -463,6 +463,50 @@ public class ResearcherControls extends AbstractControl {
                         + " already exists in the database", Researcher.class,
                         "name");
             }
+        }
+    }
+
+    /**
+     * Validates a field.
+     * 
+     * @param a
+     *            the researcher object
+     * @throws InvalidEntityException
+     *             if there is something wrong with the adviser object
+     */
+    private void validateResearcher(String field, String data)
+            throws InvalidEntityException {
+        switch (field) {
+        case "FullName":
+            if (data.trim().equals("")) {
+                throw new InvalidEntityException(
+                        "Researcher name cannot be empty", Researcher.class,
+                        "name");
+            }
+            if (data.equals("New Adviser")) {
+                return;
+            }
+            for (final Researcher other : getAllResearchers()) {
+                if (data.equals(other.getFullName())) {
+                    throw new InvalidEntityException(data
+                            + " already exists in the database",
+                            Researcher.class, "name");
+                }
+            }
+            break;
+        case "Phone":
+            if (data.trim().equals("") || !data.matches(".+[0-9].+")) {
+                throw new InvalidEntityException(
+                        "Phone must contain at least one digit",
+                        Researcher.class, "phone");
+            }
+            break;
+        case "Email":
+            if (data.trim().equals("") || data.matches(".+@.+[.].+")) {
+                throw new InvalidEntityException("Not a valid email",
+                        Researcher.class, "email");
+            }
+            break;
         }
     }
 }

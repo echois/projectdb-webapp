@@ -150,6 +150,7 @@ public class AdviserControls extends AbstractControl {
      */
     public void editAdviser(final Integer id, final String field,
             final String timestamp, final String data) throws Exception {
+        validateAdviser(field, data);
         if (id != null) {
             // check whether an researcher with this id exists
             final Adviser temp = getAdviser(id);
@@ -194,7 +195,6 @@ public class AdviserControls extends AbstractControl {
                             + id, e);
                 }
             }
-            validateAdviser(temp);
             projectDao.updateAdviser(temp);
             projectDao.logChange(ch);
         } else {
@@ -425,21 +425,23 @@ public class AdviserControls extends AbstractControl {
      * Validates the adviser object.
      * 
      * @param a
-     *            the project wrapper
+     *            the adviser object
      * @throws InvalidEntityException
      *             if there is something wrong with the adviser object
      */
     private void validateAdviser(final Adviser a) throws InvalidEntityException {
-        if (a.getFullName().trim().equals("")) {
+        if (a.getFullName() == null || a.getFullName().trim().equals("")) {
             throw new InvalidEntityException("Adviser name cannot be empty",
                     Adviser.class, "name");
         }
-        if (a.getPhone().trim() != "" && !a.getPhone().matches(".+[0-9].+")) {
+        if (a.getPhone() == null || a.getPhone().trim().equals("")
+                || !a.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Adviser.class,
                     "phone");
         }
-        if (a.getEmail().trim() != "" && !a.getEmail().matches(".+@.+[.].+")) {
+        if (a.getFullName() == null || a.getEmail().trim().equals("")
+                || !a.getEmail().matches(".+@.+[.].+")) {
             throw new InvalidEntityException("Not a valid email",
                     Adviser.class, "email");
         }
@@ -456,4 +458,46 @@ public class AdviserControls extends AbstractControl {
         }
     }
 
+    /**
+     * Validates a field.
+     * 
+     * @param a
+     *            the adviser object
+     * @throws InvalidEntityException
+     *             if there is something wrong with the adviser object
+     */
+    private void validateAdviser(String field, String data)
+            throws InvalidEntityException {
+        switch (field) {
+        case "FullName":
+            if (data.trim().equals("")) {
+                throw new InvalidEntityException(
+                        "Adviser name cannot be empty", Adviser.class, "name");
+            }
+            if (data.equals("New Adviser")) {
+                return;
+            }
+            for (final Adviser other : getAllAdvisers()) {
+                if (data.equals(other.getFullName())) {
+                    throw new InvalidEntityException(data
+                            + " already exists in the database", Adviser.class,
+                            "name");
+                }
+            }
+            break;
+        case "Phone":
+            if (data.trim().equals("") || !data.matches(".+[0-9].+")) {
+                throw new InvalidEntityException(
+                        "Phone must contain at least one digit", Adviser.class,
+                        "phone");
+            }
+            break;
+        case "Email":
+            if (data.trim().equals("") || data.matches(".+@.+[.].+")) {
+                throw new InvalidEntityException("Not a valid email",
+                        Adviser.class, "email");
+            }
+            break;
+        }
+    }
 }
