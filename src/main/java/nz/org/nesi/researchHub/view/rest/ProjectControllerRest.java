@@ -3,7 +3,6 @@ package nz.org.nesi.researchHub.view.rest;
 import java.util.List;
 
 import nz.org.nesi.researchHub.control.ProjectControls;
-import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,6 @@ public class ProjectControllerRest {
 
     @Autowired
     private ProjectControls projectControls;
-
-    @Autowired
-    private ResearcherControls researcherControls;
 
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation(value = "Add Adviser Action",

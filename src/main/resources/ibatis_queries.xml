@@ -29,7 +29,7 @@
 		resultType="pm.pojo.Change">
 		SELECT * FROM changelog
 		WHERE tbl=#{table}
-		ORDER BY timestamp DESC
+		ORDER BY id DESC
 	</select>
 
 	<select id="getLastModifiedForTable" parameterType="String"
