@@ -95,6 +95,31 @@ public class ProjectControls extends AbstractControl {
         if (pw.getProject().getName().equals("New Project")) {
             return; // Don't check HPC until the project has a real name
         }
+        // At least one HPC
+        if (pw.getProjectFacilities().isEmpty()) {
+            throw new InvalidEntityException(
+                    "There must be at least one HPC facility associated with the project",
+                    Project.class, "facility");
+        }
+
+        if (pw.getProject().getProjectCode() == null
+                || pw.getProject().getProjectCode().isEmpty()) {
+            throw new InvalidEntityException("There must be a project code",
+                    Project.class, "projectCode");
+        }
+
+        if (pw.getProject().getDescription() == null
+                || pw.getProject().getDescription().isEmpty()) {
+            throw new InvalidEntityException("There must be a description",
+                    Project.class, "description");
+        }
+
+        if (pw.getProject().getHostInstitution() == null
+                || pw.getProject().getHostInstitution().isEmpty()) {
+            throw new InvalidEntityException(
+                    "There must be a host institution", Project.class,
+                    "hostInstitution");
+        }
 
         for (final RPLink rp : pw.getRpLinks()) {
             for (final RPLink other : pw.getRpLinks()) {
