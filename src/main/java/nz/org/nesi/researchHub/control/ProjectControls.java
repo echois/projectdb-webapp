@@ -10,6 +10,7 @@ import java.util.List;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 
 import org.apache.commons.lang.StringUtils;
@@ -928,5 +929,20 @@ public class ProjectControls extends AbstractControl {
             p = old;
         }
         projectDao.upsertProjectProperty(p);
+    }
+
+    /**
+     * Validates an project object, by id.
+     * 
+     * @param a
+     *            the project id
+     * @throws InvalidEntityException
+     *             if there is something wrong with the project object
+     * @throws NoSuchEntityException
+     */
+    public void validateProject(final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        ProjectWrapper pw = getProjectWrapper(id);
+        validateProject(pw);
     }
 }

@@ -429,6 +429,21 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
+     * Validates an researcher object, by id.
+     * 
+     * @param a
+     *            the researcher id
+     * @throws InvalidEntityException
+     *             if there is something wrong with the researcher object
+     * @throws NoSuchEntityException
+     */
+    public void validateResearcher(final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        Researcher r = getResearcher(id);
+        validateResearcher(r);
+    }
+
+    /**
      * Validates the researcher object.
      * 
      * @param a
@@ -509,4 +524,5 @@ public class ResearcherControls extends AbstractControl {
             break;
         }
     }
+
 }

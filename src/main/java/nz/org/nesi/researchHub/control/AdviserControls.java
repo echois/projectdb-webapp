@@ -459,6 +459,21 @@ public class AdviserControls extends AbstractControl {
     }
 
     /**
+     * Validates an adviser object, by id.
+     * 
+     * @param a
+     *            the adviser id
+     * @throws InvalidEntityException
+     *             if there is something wrong with the adviser object
+     * @throws NoSuchEntityException
+     */
+    public void validateAdviser(final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        Adviser a = getAdviser(id);
+        validateAdviser(a);
+    }
+
+    /**
      * Validates a field.
      * 
      * @param a

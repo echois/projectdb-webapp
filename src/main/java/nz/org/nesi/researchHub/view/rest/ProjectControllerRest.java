@@ -4,6 +4,7 @@ import java.util.List;
 
 import nz.org.nesi.researchHub.control.ProjectControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -379,6 +380,18 @@ public class ProjectControllerRest {
             @ApiParam(value = "ProjectProperty object", required = true) @RequestBody final ProjectProperty p)
             throws Exception {
         projectControls.upsertProperty(p);
+    }
+
+    @RequestMapping(value = "/{id}/validate", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Validate",
+                  notes = "Validates the project wrapper object (check mandatory fields set etc)",
+                  responseClass = "void")
+    public void validateProject(
+            @ApiParam(value = "Project id", required = true) @PathVariable final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        projectControls.validateProject(id);
     }
 
 }
