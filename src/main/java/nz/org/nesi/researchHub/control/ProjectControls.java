@@ -82,30 +82,14 @@ public class ProjectControls extends AbstractControl {
      */
     public static void validateProject(final ProjectWrapper pw)
             throws InvalidEntityException {
-        if (pw.getProject().getName() == null) {
-            throw new InvalidEntityException("Project does not have a title",
-                    Project.class, "name");
-        }
-        if (pw.getProject().getName().trim().equals("")) {
-            pw.setErrorMessage("A project must have a title");
+        if (pw.getProject().getName() == null
+                || pw.getProject().getName().trim().equals("")) {
             throw new InvalidEntityException("Project does not have a title",
                     Project.class, "name");
         }
 
         if (pw.getProject().getName().equals("New Project")) {
             return; // Don't check HPC until the project has a real name
-        }
-        // At least one HPC
-        if (pw.getProjectFacilities().isEmpty()) {
-            throw new InvalidEntityException(
-                    "There must be at least one HPC facility associated with the project",
-                    Project.class, "facility");
-        }
-
-        if (pw.getProject().getProjectCode() == null
-                || pw.getProject().getProjectCode().isEmpty()) {
-            throw new InvalidEntityException("There must be a project code",
-                    Project.class, "projectCode");
         }
 
         if (pw.getProject().getDescription() == null
@@ -119,6 +103,18 @@ public class ProjectControls extends AbstractControl {
             throw new InvalidEntityException(
                     "There must be a host institution", Project.class,
                     "hostInstitution");
+        }
+        // At least one HPC
+        if (pw.getProjectFacilities().isEmpty()) {
+            throw new InvalidEntityException(
+                    "There must be at least one HPC facility associated with the project",
+                    Project.class, "facility");
+        }
+
+        if (pw.getProject().getProjectCode() == null
+                || pw.getProject().getProjectCode().isEmpty()) {
+            throw new InvalidEntityException("There must be a project code",
+                    Project.class, "projectCode");
         }
 
         for (final RPLink rp : pw.getRpLinks()) {
