@@ -434,6 +434,9 @@ public class AdviserControls extends AbstractControl {
             throw new InvalidEntityException("Adviser name cannot be empty",
                     Adviser.class, "name");
         }
+        if (a.getFullName().equals("New Adviser")) {
+            return;
+        }
         if (a.getPhone() == null || a.getPhone().trim().equals("")
                 || !a.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
@@ -444,9 +447,6 @@ public class AdviserControls extends AbstractControl {
                 || !a.getEmail().matches(".+@.+[.].+")) {
             throw new InvalidEntityException("Not a valid email",
                     Adviser.class, "email");
-        }
-        if (a.getFullName().equals("New Adviser")) {
-            return;
         }
         for (final Adviser other : getAllAdvisers()) {
             if (a.getFullName().equals(other.getFullName())

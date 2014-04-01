@@ -457,6 +457,9 @@ public class ResearcherControls extends AbstractControl {
             throw new InvalidEntityException("Researcher name cannot be empty",
                     Researcher.class, "name");
         }
+        if (r.getFullName().equals("New Researcher")) {
+            return;
+        }
         if (r.getPhone() == null || r.getPhone().trim().equals("")
                 || !r.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
@@ -467,9 +470,6 @@ public class ResearcherControls extends AbstractControl {
                 || !r.getEmail().matches(".+@.+[.].+")) {
             throw new InvalidEntityException("Not a valid email",
                     Researcher.class, "email");
-        }
-        if (r.getFullName().equals("New Researcher")) {
-            return;
         }
         for (final Researcher other : getAllResearchers()) {
             if (r.getFullName().equals(other.getFullName())
