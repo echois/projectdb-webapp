@@ -46,7 +46,7 @@
 					<th>#</th>
 					<th>Picture</th>
 					<th>Full Name</th>
-					<th># Projects (Primary Adviser)</th>
+					<th># Active Projects (Primary Adviser)</th>
 					<th>Institution</th>
 					<th>Division/Faculty</th>
 					<th>Department</th>
