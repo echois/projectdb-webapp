@@ -460,16 +460,16 @@ public class ResearcherControls extends AbstractControl {
         if (r.getFullName().equals("New Researcher")) {
             return;
         }
+        if (r.getEmail() == null || r.getEmail().trim().equals("")
+                || !r.getEmail().matches(".+@.+[.].+")) {
+            throw new InvalidEntityException("A valid email is required",
+                    Researcher.class, "email");
+        }
         if (r.getPhone() == null || r.getPhone().trim().equals("")
                 || !r.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Researcher.class,
                     "phone");
-        }
-        if (r.getEmail() == null || r.getEmail().trim().equals("")
-                || !r.getEmail().matches(".+@.+[.].+")) {
-            throw new InvalidEntityException("Not a valid email",
-                    Researcher.class, "email");
         }
         for (final Researcher other : getAllResearchers()) {
             if (r.getFullName().equals(other.getFullName())

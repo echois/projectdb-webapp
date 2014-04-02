@@ -437,16 +437,16 @@ public class AdviserControls extends AbstractControl {
         if (a.getFullName().equals("New Adviser")) {
             return;
         }
+        if (a.getEmail() == null || a.getEmail().trim().equals("")
+                || !a.getEmail().matches(".+@.+[.].+")) {
+            throw new InvalidEntityException("A valid email is required",
+                    Adviser.class, "email");
+        }
         if (a.getPhone() == null || a.getPhone().trim().equals("")
                 || !a.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Adviser.class,
                     "phone");
-        }
-        if (a.getFullName() == null || a.getEmail().trim().equals("")
-                || !a.getEmail().matches(".+@.+[.].+")) {
-            throw new InvalidEntityException("Not a valid email",
-                    Adviser.class, "email");
         }
         for (final Adviser other : getAllAdvisers()) {
             if (a.getFullName().equals(other.getFullName())
