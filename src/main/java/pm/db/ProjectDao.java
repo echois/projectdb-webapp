@@ -169,4 +169,7 @@ public interface ProjectDao {
 
 	public List<Affiliation> getAffiliationsByDivisionCode(String divisionCode)
 			throws Exception;
+
+	public List<Affiliation> getAffiliationsByDepartmentCode(
+			String departmentCode) throws Exception;
 }

@@ -1018,6 +1018,20 @@
 		BY institution, division, department		
 	</select>
 	
+		<select id="getAffiliationsByDepartmentCode" parameterType="java.lang.String"
+		resultType="pm.pojo.Affiliation">
+		SELECT DISTINCT IFNULL(i.name,'')
+		AS institution, IFNULL(i.code,'') as institutionCode, IFNULL(di.name,'') AS division,
+		IFNULL(di.code,'') as divisionCode, IFNULL(de.name,'') AS
+		department, IFNULL(de.code,'') as departmentCode
+		FROM institution i
+		JOIN division di ON i.id = di.institutionId
+		JOIN department de on di.id = de.divisionId and de.code= #{departmentCode}
+
+		ORDER
+		BY institution, division, department		
+	</select>
+	
 	<select id="getInstitutions" resultType="java.lang.String">
 		SELECT DISTINCT name
 		FROM institution

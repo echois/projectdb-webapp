@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import nz.org.nesi.researchHub.control.ListControls;
-import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +76,7 @@ public class ListControllerRest {
 	@ResponseBody
 	public final void createAffiliation(
 			@ApiParam(value = "Affiliation object", required = true) @RequestBody final Affiliation affiliation)
-			throws InvalidEntityException {
+			throws Exception {
 		listControls.createAffiliation(affiliation);
 	}
 
@@ -124,4 +123,5 @@ public class ListControllerRest {
 	}
 
 	// TODO: To add validation to generate unique code
+
 }
