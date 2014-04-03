@@ -1021,4 +1021,11 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		return afs;
 	}
 
+	@Override
+	public List<Affiliation> getAffiliationsByDepartmentCode(
+			String departmentCode) throws Exception {
+		final List<Affiliation> afs = getSqlSession().selectList(
+				"pm.db.getAffiliationsByDepartmentCode", departmentCode);
+		return afs;
+	}
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import nz.org.nesi.researchHub.control.ListControls;
-import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class ListControllerRest {
 
 	@ApiOperation(
 					value = "Get all affiliations",
-					notes = "Returns a list of strings that indicate all affiliations")
+					notes = "Returns a list of objects that indicate all affiliations")
 	@RequestMapping(value = "/affil", method = RequestMethod.GET)
 	@ResponseBody
 	public final List<Affiliation> getAffiliations() throws Exception {
@@ -48,14 +47,7 @@ public class ListControllerRest {
 	@RequestMapping(value = "/affil/strings", method = RequestMethod.GET)
 	@ResponseBody
 	public List<String> getAffiliationStrings() throws Exception {
-
-		try {
-			return listControls.getAffiliationStrings();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return listControls.getAffiliationStrings();
 	}
 
 	@ApiOperation(
@@ -77,7 +69,7 @@ public class ListControllerRest {
 	@ResponseBody
 	public final void createAffiliation(
 			@ApiParam(value = "Affiliation object", required = true) @RequestBody final Affiliation affiliation)
-			throws InvalidEntityException {
+			throws Exception {
 		listControls.createAffiliation(affiliation);
 	}
 
@@ -122,6 +114,4 @@ public class ListControllerRest {
 
 		return listControls.getAffiliationsByDivisionCode(divisionCode);
 	}
-
-	// TODO: To add validation to generate unique code
 }
