@@ -223,6 +223,12 @@ public class ProjectController extends GlobalController {
             pw.setErrorMessage("There must be at least one HPC facility associated with the project");
             return false;
         }
+
+        if (!pw.getProject().getProjectCode().matches("^[a-z]+\\d{5}$")) {
+            pw.setErrorMessage("There must be a valid project code");
+            return false;
+        }
+
         return true;
     }
 

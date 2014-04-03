@@ -112,9 +112,11 @@ public class ProjectControls extends AbstractControl {
         }
 
         if (pw.getProject().getProjectCode() == null
-                || pw.getProject().getProjectCode().isEmpty()) {
-            throw new InvalidEntityException("There must be a project code",
-                    Project.class, "projectCode");
+                || pw.getProject().getProjectCode().isEmpty()
+                || !pw.getProject().getProjectCode().matches("[a-z]+\\d{5}")) {
+            throw new InvalidEntityException(
+                    "There must be a valid project code", Project.class,
+                    "projectCode");
         }
 
         for (final RPLink rp : pw.getRpLinks()) {
