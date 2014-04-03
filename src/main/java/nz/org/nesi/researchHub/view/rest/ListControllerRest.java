@@ -34,7 +34,7 @@ public class ListControllerRest {
 
 	@ApiOperation(
 					value = "Get all affiliations",
-					notes = "Returns a list of strings that indicate all affiliations")
+					notes = "Returns a list of objects that indicate all affiliations")
 	@RequestMapping(value = "/affil", method = RequestMethod.GET)
 	@ResponseBody
 	public final List<Affiliation> getAffiliations() throws Exception {
