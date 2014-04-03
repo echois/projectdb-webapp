@@ -47,14 +47,7 @@ public class ListControllerRest {
 	@RequestMapping(value = "/affil/strings", method = RequestMethod.GET)
 	@ResponseBody
 	public List<String> getAffiliationStrings() throws Exception {
-
-		try {
-			return listControls.getAffiliationStrings();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return listControls.getAffiliationStrings();
 	}
 
 	@ApiOperation(
@@ -121,7 +114,4 @@ public class ListControllerRest {
 
 		return listControls.getAffiliationsByDivisionCode(divisionCode);
 	}
-
-	// TODO: To add validation to generate unique code
-
 }
