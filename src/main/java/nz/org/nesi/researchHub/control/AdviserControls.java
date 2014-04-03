@@ -158,7 +158,7 @@ public class AdviserControls extends AbstractControl {
             ch.setTbl_id(id);
             ch.setTbl("adviser");
             ch.setField(field);
-            ch.setAdviserId(1);
+            ch.setAdviserId(this.authzAspect.getAdviserId());
             ch.setNew_val(data);
             final Class<Adviser> c = Adviser.class;
             String method = "get" + field;
@@ -434,19 +434,19 @@ public class AdviserControls extends AbstractControl {
             throw new InvalidEntityException("Adviser name cannot be empty",
                     Adviser.class, "name");
         }
+        if (a.getFullName().equals("New Adviser")) {
+            return;
+        }
+        if (a.getEmail() == null || a.getEmail().trim().equals("")
+                || !a.getEmail().matches(".+@.+[.].+")) {
+            throw new InvalidEntityException("A valid email is required",
+                    Adviser.class, "email");
+        }
         if (a.getPhone() == null || a.getPhone().trim().equals("")
                 || !a.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Adviser.class,
                     "phone");
-        }
-        if (a.getFullName() == null || a.getEmail().trim().equals("")
-                || !a.getEmail().matches(".+@.+[.].+")) {
-            throw new InvalidEntityException("Not a valid email",
-                    Adviser.class, "email");
-        }
-        if (a.getFullName().equals("New Adviser")) {
-            return;
         }
         for (final Adviser other : getAllAdvisers()) {
             if (a.getFullName().equals(other.getFullName())
@@ -456,6 +456,21 @@ public class AdviserControls extends AbstractControl {
                         "name");
             }
         }
+    }
+
+    /**
+     * Validates an adviser object, by id.
+     * 
+     * @param a
+     *            the adviser id
+     * @throws InvalidEntityException
+     *             if there is something wrong with the adviser object
+     * @throws NoSuchEntityException
+     */
+    public void validateAdviser(final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        Adviser a = getAdviser(id);
+        validateAdviser(a);
     }
 
     /**

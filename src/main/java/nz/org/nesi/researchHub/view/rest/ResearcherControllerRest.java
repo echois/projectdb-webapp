@@ -239,4 +239,16 @@ public class ResearcherControllerRest {
         researcherControls.upsertProperty(r);
     }
 
+    @RequestMapping(value = "/{id}/validate", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Validate",
+                  notes = "Validates the researcher object (check mandatory fields set etc)",
+                  responseClass = "void")
+    public void validateResearcher(
+            @ApiParam(value = "Researcher id", required = true) @PathVariable final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        researcherControls.validateResearcher(id);
+    }
+
 }

@@ -226,4 +226,15 @@ public class AdviserControllerRest {
         adviserControls.rollback(uid, rid);
     }
 
+    @RequestMapping(value = "/{id}/validate", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Validate",
+                  notes = "Validates the adviser object (check mandatory fields set etc)",
+                  responseClass = "void")
+    public void validateAdviser(
+            @ApiParam(value = "Adviser id", required = true) @PathVariable final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        adviserControls.validateAdviser(id);
+    }
 }

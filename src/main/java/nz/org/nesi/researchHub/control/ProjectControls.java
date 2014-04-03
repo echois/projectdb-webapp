@@ -10,6 +10,7 @@ import java.util.List;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
 
 import org.apache.commons.lang.StringUtils;
@@ -81,18 +82,39 @@ public class ProjectControls extends AbstractControl {
      */
     public static void validateProject(final ProjectWrapper pw)
             throws InvalidEntityException {
-        if (pw.getProject().getName() == null) {
-            throw new InvalidEntityException("Project does not have a title",
-                    Project.class, "name");
-        }
-        if (pw.getProject().getName().trim().equals("")) {
-            pw.setErrorMessage("A project must have a title");
+        if (pw.getProject().getName() == null
+                || pw.getProject().getName().trim().equals("")) {
             throw new InvalidEntityException("Project does not have a title",
                     Project.class, "name");
         }
 
         if (pw.getProject().getName().equals("New Project")) {
             return; // Don't check HPC until the project has a real name
+        }
+
+        if (pw.getProject().getDescription() == null
+                || pw.getProject().getDescription().isEmpty()) {
+            throw new InvalidEntityException("There must be a description",
+                    Project.class, "description");
+        }
+
+        if (pw.getProject().getHostInstitution() == null
+                || pw.getProject().getHostInstitution().isEmpty()) {
+            throw new InvalidEntityException(
+                    "There must be a host institution", Project.class,
+                    "hostInstitution");
+        }
+        // At least one HPC
+        if (pw.getProjectFacilities().isEmpty()) {
+            throw new InvalidEntityException(
+                    "There must be at least one HPC facility associated with the project",
+                    Project.class, "facility");
+        }
+
+        if (pw.getProject().getProjectCode() == null
+                || pw.getProject().getProjectCode().isEmpty()) {
+            throw new InvalidEntityException("There must be a project code",
+                    Project.class, "projectCode");
         }
 
         for (final RPLink rp : pw.getRpLinks()) {
@@ -390,6 +412,7 @@ public class ProjectControls extends AbstractControl {
     public void editProjectWrapper(final Integer id, final String object,
             final String field, final String timestamp, final String data)
             throws Exception {
+        validateProject(object + "_" + field, data);
         if (id != null) {
             // might throw database exception if project does not already exist
             final ProjectWrapper pw = getProjectWrapper(id.toString());
@@ -399,8 +422,6 @@ public class ProjectControls extends AbstractControl {
             ch.setField(object + "_" + field);
             ch.setAdviserId(this.authzAspect.getAdviserId());
             ch.setNew_val(data);
-            final boolean skipValidation = pw.getProject().getName()
-                    .equals("New Project");
             // great, no exception, means an project with this id does already
             // exist,
             // Compare timestamps to prevent accidental overwrite
@@ -523,9 +544,6 @@ public class ProjectControls extends AbstractControl {
                     nextFollowUp.setMonth(nextFollowUp.getMonth() + 3);
                     pw.getProject()
                             .setNextFollowUpDate(df.format(nextFollowUp));
-                }
-                if (!skipValidation) {
-                    validateProject(pw);
                 }
                 projectDao.updateProjectWrapper(id, pw);
                 projectDao.logChange(ch);
@@ -928,5 +946,68 @@ public class ProjectControls extends AbstractControl {
             p = old;
         }
         projectDao.upsertProjectProperty(p);
+    }
+
+    /**
+     * Validates an project object, by id.
+     * 
+     * @param a
+     *            the project id
+     * @throws InvalidEntityException
+     *             if there is something wrong with the project object
+     * @throws NoSuchEntityException
+     */
+    public void validateProject(final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        ProjectWrapper pw = getProjectWrapper(id);
+        validateProject(pw);
+    }
+
+    /**
+     * Validates a field.
+     * 
+     * @param field
+     *            , data
+     * @throws InvalidEntityException
+     *             if there is something wrong with the project object
+     */
+    private void validateProject(String field, String data)
+            throws InvalidEntityException {
+        switch (field) {
+        case "Project_Name":
+            if (data == null || data.isEmpty()) {
+                throw new InvalidEntityException(
+                        "Project does not have a title", Project.class, "name");
+            }
+            break;
+        case "projectFacilities_all":
+            // At least one HPC
+            if (data == null || data.isEmpty()) {
+                throw new InvalidEntityException(
+                        "There must be at least one HPC facility associated with the project",
+                        Project.class, "facility");
+            }
+            break;
+        case "Project_ProjectCode":
+            if (data == null || data.isEmpty()) {
+                throw new InvalidEntityException(
+                        "There must be a project code", Project.class,
+                        "projectCode");
+            }
+            break;
+        case "Project_Description":
+            if (data == null || data.isEmpty()) {
+                throw new InvalidEntityException("There must be a description",
+                        Project.class, "description");
+            }
+            break;
+        case "Project_HostInstitution":
+            if (data == null || data.isEmpty()) {
+                throw new InvalidEntityException(
+                        "There must be a host institution", Project.class,
+                        "hostInstitution");
+            }
+            break;
+        }
     }
 }

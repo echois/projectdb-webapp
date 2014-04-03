@@ -429,6 +429,21 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
+     * Validates an researcher object, by id.
+     * 
+     * @param a
+     *            the researcher id
+     * @throws InvalidEntityException
+     *             if there is something wrong with the researcher object
+     * @throws NoSuchEntityException
+     */
+    public void validateResearcher(final Integer id)
+            throws InvalidEntityException, NoSuchEntityException {
+        Researcher r = getResearcher(id);
+        validateResearcher(r);
+    }
+
+    /**
      * Validates the researcher object.
      * 
      * @param a
@@ -442,19 +457,19 @@ public class ResearcherControls extends AbstractControl {
             throw new InvalidEntityException("Researcher name cannot be empty",
                     Researcher.class, "name");
         }
+        if (r.getFullName().equals("New Researcher")) {
+            return;
+        }
+        if (r.getEmail() == null || r.getEmail().trim().equals("")
+                || !r.getEmail().matches(".+@.+[.].+")) {
+            throw new InvalidEntityException("A valid email is required",
+                    Researcher.class, "email");
+        }
         if (r.getPhone() == null || r.getPhone().trim().equals("")
                 || !r.getPhone().matches(".+[0-9].+")) {
             throw new InvalidEntityException(
                     "Phone must contain at least one digit", Researcher.class,
                     "phone");
-        }
-        if (r.getEmail() == null || r.getEmail().trim().equals("")
-                || !r.getEmail().matches(".+@.+[.].+")) {
-            throw new InvalidEntityException("Not a valid email",
-                    Researcher.class, "email");
-        }
-        if (r.getFullName().equals("New Researcher")) {
-            return;
         }
         for (final Researcher other : getAllResearchers()) {
             if (r.getFullName().equals(other.getFullName())
@@ -509,4 +524,5 @@ public class ResearcherControls extends AbstractControl {
             break;
         }
     }
+
 }

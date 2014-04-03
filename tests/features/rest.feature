@@ -60,7 +60,7 @@ Feature: Perform REST actions and check that they respond as expected
     
   @nojs @project @edit
   Scenario: Create an project
-    When I "POST" "{'project':{'name':'!Save The World', 'description': 'Nothing to fear but fear itself', 'startDate':'', 'statusId':'1', 'projectTypeId':'1', 'projectCode':'test00001', 'hostInstitution':'Planet Earth', 'endDate': '', 'nextReviewDate':'', 'nextFollowUpDate':'', 'requirements':'A lot of firepower', 'notes':'~~~~~', 'todo':'First, do no harm'}}" at "projects/"
+    When I "POST" "{'project':{'name':'!Save The World', 'description': 'Nothing to fear but fear itself', 'startDate':'', 'statusId':'1', 'projectTypeId':'1', 'projectCode':'test00001', 'hostInstitution':'Planet Earth', 'endDate': '', 'nextReviewDate':'', 'nextFollowUpDate':'', 'requirements':'A lot of firepower', 'notes':'~~~~~', 'todo':'First, do no harm'},'projectFacilities':[{'facilityId':1}]}" at "projects/"
     Then I "GET" "" at "projects/id"
     Then the response contains "test00001"
     

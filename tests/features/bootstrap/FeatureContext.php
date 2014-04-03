@@ -152,8 +152,12 @@ class FeatureContext extends MinkContext
         throw new Exception("Unable to substitute rid - rid not set!");
       }
     }
-    $this->fetch_json($endpoint, $method, $json);
+    $result = $this->fetch_json($endpoint, $method, $json);
     
+    $obj = json_decode($result);
+    if (!empty($obj->message)) {
+      throw new Exception($obj->message);
+    }
   }
   
   /**
