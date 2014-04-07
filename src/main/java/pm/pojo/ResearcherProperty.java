@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class ResearcherProperty implements Serializable {
 
+    private Integer id;
     private String propname;
     private String propvalue;
     private Integer researcherId;
@@ -57,5 +58,13 @@ public class ResearcherProperty implements Serializable {
 
     public void setTimestamp(final String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
