@@ -1021,5 +1021,14 @@ public class ProjectControls extends AbstractControl {
             }
             break;
         }
+        if (field.matches("ProjectKpis_\\d+_Value")) {
+            try {
+                Float.parseFloat(data);
+            } catch (NumberFormatException e) {
+                throw new InvalidEntityException(
+                        "Kpi value must be a valid float (decimal number)",
+                        ProjectKpi.class, "value");
+            }
+        }
     }
 }
