@@ -119,7 +119,10 @@ public class ProjectControls extends AbstractControl {
                     "projectCode");
         }
 
+        int POCount = 0, PACount = 0;
+
         for (final RPLink rp : pw.getRpLinks()) {
+            if (rp.getResearcherRoleId().equals(1)) POCount++;
             for (final RPLink other : pw.getRpLinks()) {
                 if (rp.getResearcherId().equals(other.getResearcherId())
                         && !rp.getResearcherRoleId().equals(
@@ -131,7 +134,12 @@ public class ProjectControls extends AbstractControl {
             }
         }
 
+        if (POCount == 0 || POCount > 1) throw new InvalidEntityException(
+                "A project must have exactly one Project Owner",
+                ProjectWrapper.class, "rpLinks");
+
         for (final APLink ap : pw.getApLinks()) {
+            if (ap.getAdviserRoleId().equals(1)) PACount++;
             for (final APLink other : pw.getApLinks()) {
                 if (ap.getAdviserId().equals(other.getAdviserId())
                         && !ap.getAdviserRoleId().equals(
@@ -142,6 +150,10 @@ public class ProjectControls extends AbstractControl {
                 }
             }
         }
+
+        if (PACount == 0 || PACount > 1) throw new InvalidEntityException(
+                "A project must have exactly one Primary Adviser",
+                ProjectWrapper.class, "apLinks");
 
     }
 
