@@ -10,6 +10,7 @@ public class ResearchOutput implements Serializable {
     private String description;
     private Integer id;
     private String link;
+    private String projectCode;
     private Integer projectId;
     private String type;
     private Integer typeId;
@@ -84,6 +85,14 @@ public class ResearchOutput implements Serializable {
 
     public void setTypeId(final Integer typeId) {
         this.typeId = typeId;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 
 }

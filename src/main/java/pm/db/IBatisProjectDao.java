@@ -871,10 +871,13 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         for (final ResearchOutput ro : l) {
             final Adviser a = (Adviser) getSqlSession().selectOne(
                     "pm.db.getAdviserById", ro.getAdviserId());
+            final Project p = (Project) getSqlSession().selectOne(
+                    "pm.db.getProjectById", ro.getProjectId());
             final ResearchOutputType tmp = (ResearchOutputType) getSqlSession()
                     .selectOne("pm.db.getResearchOutputTypeById",
                             ro.getTypeId());
             ro.setType(tmp.getName());
+            ro.setProjectCode(p.getProjectCode());
             ro.setAdviserName(a.getFullName());
         }
         return l;
