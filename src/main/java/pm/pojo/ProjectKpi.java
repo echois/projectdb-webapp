@@ -14,6 +14,7 @@ public class ProjectKpi implements Serializable {
     private String kpiTitle;
     private String kpiType;
     private String notes;
+    private String projectCode;
     private Integer projectId;
     private Float value;
 
@@ -111,5 +112,13 @@ public class ProjectKpi implements Serializable {
 
     public void setValue(final Float value) {
         this.value = value;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 }

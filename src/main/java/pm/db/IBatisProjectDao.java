@@ -641,12 +641,15 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
                     pk.getKpiId());
             final Adviser tmp = (Adviser) getSqlSession().selectOne(
                     "pm.db.getAdviserById", pk.getAdviserId());
+            final Project p = (Project) getSqlSession().selectOne(
+                    "pm.db.getProjectById", pk.getProjectId());
             if (tmp != null) {
                 pk.setAdviserName(tmp.getFullName());
             }
             pk.setKpiType(kpi.getType());
             pk.setKpiTitle(kpi.getTitle());
             pk.setCodeName(getKpiCodeNameById(pk.getCode()));
+            pk.setProjectCode(p.getProjectCode());
         }
         return l;
     }
