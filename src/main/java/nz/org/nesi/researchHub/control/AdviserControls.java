@@ -151,7 +151,10 @@ public class AdviserControls extends AbstractControl {
      * @throws Exception
      */
     public void editAdviser(final Integer id, final String field,
-            final String timestamp, final String data) throws Exception {
+            final String timestamp, String data) throws Exception {
+        if (field.equals("PictureUrl") && (data.equals("") || data == null)) {
+            data = "https://www.nesi.org.nz/sites/default/files/nesi_avatar.png";
+        }
         validateAdviser(field, data);
         if (id != null) {
             // check whether an researcher with this id exists
