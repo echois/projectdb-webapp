@@ -1,6 +1,8 @@
 package nz.org.nesi.researchHub.control;
 
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -448,6 +450,20 @@ public class AdviserControls extends AbstractControl {
                     "Phone must contain at least one digit", Adviser.class,
                     "phone");
         }
+        try {
+            URL picture = new URL(a.getPictureUrl());
+            HttpURLConnection connection = (HttpURLConnection) picture
+                    .openConnection();
+            connection.setRequestMethod("HEAD");
+            int code = connection.getResponseCode();
+            if (code != HttpURLConnection.HTTP_OK) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            throw new InvalidEntityException("Not a valid picture",
+                    Adviser.class, "picture");
+        }
+
         for (final Adviser other : getAllAdvisers()) {
             if (a.getFullName().equals(other.getFullName())
                     && (a.getId() == null || !a.getId().equals(other.getId()))) {
@@ -511,6 +527,21 @@ public class AdviserControls extends AbstractControl {
             if (data.trim().equals("") || !data.matches(".+@.+[.].+")) {
                 throw new InvalidEntityException("Not a valid email",
                         Adviser.class, "email");
+            }
+            break;
+        case "PictureUrl":
+            try {
+                URL picture = new URL(data);
+                HttpURLConnection connection = (HttpURLConnection) picture
+                        .openConnection();
+                connection.setRequestMethod("HEAD");
+                int code = connection.getResponseCode();
+                if (code != HttpURLConnection.HTTP_OK) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                throw new InvalidEntityException("Not a valid picture",
+                        Adviser.class, "picture");
             }
             break;
         }

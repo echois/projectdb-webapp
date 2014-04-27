@@ -1,6 +1,8 @@
 package nz.org.nesi.researchHub.control;
 
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -471,6 +473,19 @@ public class ResearcherControls extends AbstractControl {
                     "Phone must contain at least one digit", Researcher.class,
                     "phone");
         }
+        try {
+            URL picture = new URL(r.getPictureUrl());
+            HttpURLConnection connection = (HttpURLConnection) picture
+                    .openConnection();
+            connection.setRequestMethod("HEAD");
+            int code = connection.getResponseCode();
+            if (code != HttpURLConnection.HTTP_OK) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            throw new InvalidEntityException("Not a valid picture",
+                    Researcher.class, "picture");
+        }
         for (final Researcher other : getAllResearchers()) {
             if (r.getFullName().equals(other.getFullName())
                     && (r.getId() == null || !r.getId().equals(other.getId()))) {
@@ -520,6 +535,21 @@ public class ResearcherControls extends AbstractControl {
             if (data.trim().equals("") || !data.matches(".+@.+[.].+")) {
                 throw new InvalidEntityException("Not a valid email",
                         Researcher.class, "email");
+            }
+            break;
+        case "PictureUrl":
+            try {
+                URL picture = new URL(data);
+                HttpURLConnection connection = (HttpURLConnection) picture
+                        .openConnection();
+                connection.setRequestMethod("HEAD");
+                int code = connection.getResponseCode();
+                if (code != HttpURLConnection.HTTP_OK) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                throw new InvalidEntityException("Not a valid picture",
+                        Researcher.class, "picture");
             }
             break;
         }
