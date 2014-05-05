@@ -318,7 +318,6 @@ public class ProjectControls extends AbstractControl {
      */
     public synchronized Integer createProjectWrapper(final ProjectWrapper pw)
             throws InvalidEntityException {
-        validateProject(pw);
         final Project p = pw.getProject();
 
         if (p.getId() != null) {
@@ -326,7 +325,8 @@ public class ProjectControls extends AbstractControl {
                     "Can't create project that already has an id.");
         }
 
-        if (!p.getHostInstitution().trim().equals("")
+        if (pw.getProject().getHostInstitution() != null
+                && !p.getHostInstitution().trim().equals("")
                 && (p.getProjectCode() == null || p.getProjectCode().trim()
                         .equals(""))) {
             final String projectCode = projectDao.getNextProjectCode(p
@@ -338,6 +338,7 @@ public class ProjectControls extends AbstractControl {
                     projectDao.getNextProjectCode("nesi"));
         }
         try {
+            validateProject(pw);
             final Integer pid = projectDao.createProjectWrapper(pw);
             return pid;
         } catch (final Exception e) {
