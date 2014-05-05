@@ -477,6 +477,22 @@ public class ResearcherControls extends AbstractControl {
                     "phone");
         }
         try {
+            Integer roleId = r.getInstitutionalRoleId();
+            boolean valid = false;
+            for (InstitutionalRole ir : this.projectDao.getInstitutionalRoles()) {
+                if (roleId.equals(ir.getId())) {
+                    valid = true;
+                }
+            }
+            if (!valid) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            throw new InvalidEntityException(
+                    "Not a valid institutional role id", Researcher.class,
+                    "institutionalRoleId");
+        }
+        try {
             URL picture = new URL(r.getPictureUrl());
             HttpURLConnection connection = (HttpURLConnection) picture
                     .openConnection();
@@ -555,7 +571,25 @@ public class ResearcherControls extends AbstractControl {
                         Researcher.class, "picture");
             }
             break;
+        case "InstitutionalRoleId":
+            try {
+                Integer roleId = Integer.parseInt(data);
+                boolean valid = false;
+                for (InstitutionalRole ir : this.projectDao
+                        .getInstitutionalRoles()) {
+                    if (roleId.equals(ir.getId())) {
+                        valid = true;
+                    }
+                }
+                if (!valid) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                throw new InvalidEntityException(
+                        "Not a valid institutional role id", Researcher.class,
+                        "institutionalRoleId");
+            }
+            break;
         }
     }
-
 }
