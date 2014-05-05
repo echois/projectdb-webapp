@@ -32,7 +32,7 @@ Feature: Perform REST actions and check that they respond as expected
     
   @nojs @researcher @edit
   Scenario: Create an researcher
-    When I "POST" "{'fullName':'!Chuck Norris', 'preferredName': 'Chuck', 'phone':'1234', 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'affiliation':'Milky Way -- Earth -- Antartica', 'institutionalRoleId': 1, 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://www.oassf.com/en/media/images/Chuck-Norris-Card.jpg'}" at "researchers/"
+    When I "POST" "{'fullName':'!Chuck Norris', 'preferredName': 'Chuck', 'phone':'1234', 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'affiliation':'Milky Way -- Earth -- Antartica', 'institutionalRoleId': 1, 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://devops.com/wp-content/uploads/2014/03/Chuck-Norris-Card-1.jpg'}" at "researchers/"
     Then the response doesn't contain "already exists"
     Then I "GET" "" at "researchers/id"
     Then the response contains "chuck@space"
