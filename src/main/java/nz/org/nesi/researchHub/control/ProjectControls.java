@@ -337,8 +337,9 @@ public class ProjectControls extends AbstractControl {
             pw.getProject().setProjectCode(
                     projectDao.getNextProjectCode("nesi"));
         }
+
+        validateProject(pw);
         try {
-            validateProject(pw);
             final Integer pid = projectDao.createProjectWrapper(pw);
             return pid;
         } catch (final Exception e) {
