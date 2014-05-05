@@ -343,8 +343,8 @@ public class ProjectControls extends AbstractControl {
             final Integer pid = projectDao.createProjectWrapper(pw);
             return pid;
         } catch (final Exception e) {
-            throw new DatabaseException(
-                    "Could not create Project in database.", e);
+            throw new DatabaseException("Could not create Project in database."
+                    + e.getMessage(), e);
         }
 
     }

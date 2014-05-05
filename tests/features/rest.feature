@@ -32,7 +32,7 @@ Feature: Perform REST actions and check that they respond as expected
     
   @nojs @researcher @edit
   Scenario: Create an researcher
-    When I "POST" "{'fullName':'!Chuck Norris', 'preferredName': 'Chuck', 'phone':'1234', 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'affiliation':'Milky Way -- Earth -- Antartica', 'institutionalRoleId': 1, 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://devops.com/wp-content/uploads/2014/03/Chuck-Norris-Card-1.jpg'}" at "researchers/"
+    When I "POST" "{'fullName':'!Chuck Norris', 'preferredName': 'Chuck', 'phone':'1234', 'email':'chuck@space.com', 'startDate':'2020-02-20', 'endDate':'never', 'affiliation':'Milky Way -- Earth -- Antartica', 'institutionalRoleId': 1, 'notes':'Watch for the roundhouse kick', 'statusId':1, 'pictureUrl':'http://img2.wikia.nocookie.net/__cb20081118030612/tesfanon/images/5/5c/Chuck_Norris.jpg'}" at "researchers/"
     Then the response doesn't contain "already exists"
     Then I "GET" "" at "researchers/id"
     Then the response contains "chuck@space"
@@ -60,7 +60,7 @@ Feature: Perform REST actions and check that they respond as expected
     
   @nojs @project @edit
   Scenario: Create an project
-    When I "POST" "{'project':{'name':'!Save The World', 'description': 'Nothing to fear but fear itself', 'startDate':'', 'statusId':'1', 'projectTypeId':'1', 'projectCode':'test00001', 'hostInstitution':'Planet Earth', 'endDate': '', 'nextReviewDate':'', 'nextFollowUpDate':'', 'requirements':'A lot of firepower', 'notes':'~~~~~', 'todo':'First, do no harm'},'projectFacilities':[{'facilityId':1}]}" at "projects/"
+    When I "POST" "{'project':{'name':'!Save The World', 'description': 'Nothing to fear but fear itself', 'startDate':'', 'statusId':'1', 'projectTypeId':'1', 'projectCode':'test00001', 'hostInstitution':'Planet Earth', 'endDate': '', 'nextReviewDate':'', 'nextFollowUpDate':'', 'requirements':'A lot of firepower', 'notes':'~~~~~', 'todo':'First, do no harm'},'projectFacilities':[{'facilityId':1}], 'apLinks':[{'adviserId':1, 'adviserRoleId':1}], 'rpLinks':[{'researcherId':1, 'researcherRoleId':1}]}" at "projects/"
     Then I "GET" "" at "projects/id"
     Then the response contains "test00001"
     
