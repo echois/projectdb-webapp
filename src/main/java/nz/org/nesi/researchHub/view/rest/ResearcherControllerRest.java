@@ -211,7 +211,7 @@ public class ResearcherControllerRest {
 
     @ApiOperation(
                   value = "Get some researchers",
-                  notes = "Returns all researchers with the specified parameter")
+                  notes = "Returns all active researchers with the specified parameter")
     @RequestMapping(value = "/{field}/{data}", method = RequestMethod.GET)
     @ResponseBody
     public List<Researcher> getResearchersWhere(

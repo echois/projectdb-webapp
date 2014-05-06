@@ -63,7 +63,7 @@
 		resultType="pm.pojo.Researcher">
 		SELECT *
 		FROM researcher
-		WHERE ${field} = #{data}
+		WHERE ${field} = #{data} AND statusId=1
 		ORDER BY fullName
 	</select>
 
