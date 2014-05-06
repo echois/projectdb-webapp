@@ -64,6 +64,7 @@
 		SELECT *
 		FROM researcher
 		WHERE ${field} = #{data}
+		ORDER BY fullName
 	</select>
 
 	<select id="getAdviserById" parameterType="java.lang.Integer"
