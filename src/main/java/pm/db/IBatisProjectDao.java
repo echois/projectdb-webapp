@@ -868,6 +868,25 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    public List<Researcher> getResearchersWhere(String field, Object data) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("field", field);
+        params.put("data", data);
+        final List<Researcher> l = getSqlSession().selectList(
+                "pm.db.getResearchersWhere", params);
+        if (l != null) {
+            for (final Researcher r : l) {
+                final InstitutionalRole ir = (InstitutionalRole) getSqlSession()
+                        .selectOne("pm.db.getInstitutionalRoleById",
+                                r.getInstitutionalRoleId());
+                r.setInstitutionalRoleName(ir.getName());
+                r.setStatusName(getResearcherStatusById(r.getStatusId()));
+            }
+        }
+        return l;
+    }
+
+    @Override
     public List<ResearchOutput> getResearchOutput() throws Exception {
         final List<ResearchOutput> l = getSqlSession().selectList(
                 "pm.db.getResearchOutput");

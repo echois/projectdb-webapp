@@ -209,6 +209,19 @@ public class ResearcherControllerRest {
         return researcherControls.getResearcherRoles();
     }
 
+    @ApiOperation(
+                  value = "Get some researchers",
+                  notes = "Returns all researchers with the specified parameter")
+    @RequestMapping(value = "/{field}/{data}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Researcher> getResearchersWhere(
+            @ApiParam(value = "Field. e.g. institutionalRoleId",
+                      required = true) @PathVariable final String field,
+            @ApiParam(value = "Data. e.g. 1", required = true) @PathVariable final Object data)
+            throws NoSuchEntityException {
+        return researcherControls.getResearchersWhere(field, data);
+    }
+
     @ApiOperation(value = "Get statuses",
                   notes = "Returns a list of possible researcher statuses")
     @RequestMapping(value = "/stat", method = RequestMethod.GET)

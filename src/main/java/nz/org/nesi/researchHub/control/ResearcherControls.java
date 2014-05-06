@@ -387,6 +387,30 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
+     * Returns the researchers with the specified parameter.
+     * 
+     * @param id
+     *            the researchers' id
+     * @return the researcher object
+     * @throws NoSuchEntityException
+     *             if the researcher or his projects can't be found
+     * @throws DatabaseException
+     *             if there is researcher problem with the database
+     */
+    public List<Researcher> getResearchersWhere(String field, Object data)
+            throws NoSuchEntityException {
+        List<Researcher> r = null;
+        try {
+            r = projectDao.getResearchersWhere(field, data);
+        } catch (final Exception e) {
+            throw new NoSuchEntityException("Can't find researcher with "
+                    + field + "=" + data, Researcher.class, 0);
+        }
+        return r;
+
+    }
+
+    /**
      * Returns a list of Researcher Statuses.
      * 
      * @return a list of Researcher Statuses

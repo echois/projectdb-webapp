@@ -58,6 +58,13 @@
 		FROM researcher
 		WHERE id = #{id}
 	</select>
+	
+	<select id="getResearchersWhere" parameterType="java.util.Map"
+		resultType="pm.pojo.Researcher">
+		SELECT *
+		FROM researcher
+		WHERE ${field} = #{data}
+	</select>
 
 	<select id="getAdviserById" parameterType="java.lang.Integer"
 		resultType="pm.pojo.Adviser">
