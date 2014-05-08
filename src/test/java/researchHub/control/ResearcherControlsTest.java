@@ -144,6 +144,11 @@ public class ResearcherControlsTest {
 	@Test
 	public void testCreateResearcherSuccessfully() throws Exception {
 
+        InstitutionalRole ir = new InstitutionalRole();
+        ir.setId(1);
+        ir.setName("StupidRole");
+        when(researcherControls.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+
 		when(projectDaoMock.createResearcher(researcher)).thenReturn(1);
 
 		researcherControls.createResearcher(researcher);
