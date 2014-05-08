@@ -903,7 +903,7 @@ public class ProjectControls extends AbstractControl {
                 m.invoke(o, nid);
             }
 
-            validateProject(pw);
+            // validateProject(pw);
             projectDao.updateProjectWrapper(id, pw);
         } catch (final Exception e) {
             throw new DatabaseException("Can't delete " + oid, e);
