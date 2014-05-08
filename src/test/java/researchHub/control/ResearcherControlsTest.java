@@ -59,6 +59,9 @@ public class ResearcherControlsTest {
 				setFullName("TestName");
 				setPhone("09000000");
 				setEmail("test@auckland.ac.nz");
+                setInstitutionalRoleId(1);
+                setPictureUrl("http://img1.wikia.nocookie.net/__cb20140207172458/simpsons/images/6/65/Bart_Simpson.png");
+
 			}
 		};
 
@@ -250,10 +253,6 @@ public class ResearcherControlsTest {
 		researcher.setId(1);
 		researcher.setLastModified("01/01/2014");
 
-        researcher.setInstitutionalRoleId(1);
-
-        researcher.setPictureUrl("http://img1.wikia.nocookie.net/__cb20140207172458/simpsons/images/6/65/Bart_Simpson.png");
-
         InstitutionalRole ir = new InstitutionalRole();
         ir.setId(1);
         ir.setName("StupidRole");
@@ -309,8 +308,15 @@ public class ResearcherControlsTest {
 	@Test(expected = ArgumentsAreDifferent.class)
 	public void testDeleteIncorrectAdviser() throws Exception {
 
+        InstitutionalRole ir = new InstitutionalRole();
+        ir.setId(1);
+        ir.setName("StupidRole");
+        when(projectDaoMock.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+
 		researcherControls.createResearcher(researcher);
 		researcher.setId(1);
+
+
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
 
 		researcherControls.delete(2);
