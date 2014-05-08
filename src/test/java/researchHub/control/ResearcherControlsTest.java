@@ -3,17 +3,10 @@
  */
 package researchHub.control;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.LinkedList;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +16,18 @@ import org.mockito.exceptions.verification.junit.ArgumentsAreDifferent;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import pm.db.ProjectDao;
+import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author echoi
@@ -250,6 +250,14 @@ public class ResearcherControlsTest {
 		researcher.setId(1);
 		researcher.setLastModified("01/01/2014");
 
+        researcher.setInstitutionalRoleId(1);
+
+        researcher.setPictureUrl("http://img1.wikia.nocookie.net/__cb20140207172458/simpsons/images/6/65/Bart_Simpson.png");
+
+        InstitutionalRole ir = new InstitutionalRole();
+        ir.setId(1);
+        ir.setName("StupidRole");
+        when(researcherControls.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
 
 		researcherControls.editResearcher(researcher);
