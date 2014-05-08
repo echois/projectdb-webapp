@@ -41,323 +41,323 @@ import pm.pojo.Researcher;
 @ContextConfiguration(locations = { "/Controls-context.xml" })
 public class ProjectControlsTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@InjectMocks
-	private ProjectControls projectControls = new ProjectControls();
-	@InjectMocks
-	private final ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
+    private Adviser adviser;
+    private APLink aplink;
 
-	private Project project;
-	private ProjectWrapper projectWrapper;
-	private ProjectFacility projectFacility;
-	private APLink aplink;
-	private Adviser adviser;
-	private Researcher researcher;
-	private RPLink rplink;
+    private Project project;
+    /**
+     * @throws java.lang.Exception
+     */
+    @InjectMocks
+    private ProjectControls projectControls = new ProjectControls();
+    @InjectMocks
+    private final ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
+    private ProjectFacility projectFacility;
+    private ProjectWrapper projectWrapper;
+    private Researcher researcher;
+    private RPLink rplink;
 
-	@Before
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
-		// provide minimum information to create a project.
-		project = new Project() {
-			{
-				setName("TestName");
-				setProjectCode("");
-				setHostInstitution("");
+        // provide minimum information to create a project.
+        project = new Project() {
+            {
+                setName("New Project");
+                setProjectCode("");
+                setHostInstitution("");
 
-			}
-		};
+            }
+        };
 
-		projectWrapper = new ProjectWrapper() {
-			{
-				setProject(project);
-			}
-		};
+        projectWrapper = new ProjectWrapper() {
+            {
+                setProject(project);
+            }
+        };
 
-		projectControls = new ProjectControls() {
-			{
-				projectDao = projectDaoMock;
-			}
-		};
+        projectControls = new ProjectControls() {
+            {
+                projectDao = projectDaoMock;
+            }
+        };
 
-		projectFacility = new ProjectFacility() {
-			{
-				setFacilityName("Pan");
-				setProjectId(null);
-				setFacilityId(1);
-			}
-		};
+        projectFacility = new ProjectFacility() {
+            {
+                setFacilityName("Pan");
+                setProjectId(null);
+                setFacilityId(1);
+            }
+        };
 
-		adviser = new Adviser() {
-			{
-				setFullName("TestAdviser");
-			}
-		};
+        adviser = new Adviser() {
+            {
+                setFullName("TestAdviser");
+            }
+        };
 
-		aplink = new APLink() {
-			{
-				setAdviser(adviser);
-			}
-		};
+        aplink = new APLink() {
+            {
+                setAdviser(adviser);
+            }
+        };
 
-		researcher = new Researcher() {
-			{
-				setFullName("TestResearcher");
-			}
-		};
+        researcher = new Researcher() {
+            {
+                setFullName("TestResearcher");
+            }
+        };
 
-		rplink = new RPLink() {
-			{
-				setResearcher(researcher);
-			}
-		};
-	}
+        rplink = new RPLink() {
+            {
+                setResearcher(researcher);
+            }
+        };
+    }
 
-	@Test
-	public void testGetProjectById() throws Exception {
+    @Test(expected = InvalidEntityException.class)
+    public void testAddInvalidProjectAdviser() throws Exception {
+        projectControls.addAdviser(aplink);
+    }
 
-		String expectedFullname = "TestName";
+    @Test(expected = InvalidEntityException.class)
+    public void testAddInvalidProjectResarcher() throws Exception {
+        projectControls.addResearcher(rplink);
+    }
 
-		project.setId(1);
+    @Test
+    public void testAddProjectAdviserSuccessfully() throws Exception {
+        project.setProjectCode("pc0001");
+        when(projectDaoMock.getProjectWrapperById(1))
+                .thenReturn(projectWrapper);
+        when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
 
-		projectWrapper.getProject().setId(1);
-		when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
-		assertEquals(expectedFullname, projectControls.getProjectWrapper(1)
-				.getProject().getName());
-	}
+        projectControls.createProjectWrapper(projectWrapper);
 
-	@Test
-	public void testCreateProjectSuccessfully() throws Exception {
+        adviser.setId(1);
+        aplink.setAdviser(adviser);
+        aplink.setProjectId(1);
+        projectWrapper.getApLinks().add(aplink);
+        aplink.setAdviserId(adviser.getId());
+        aplink.setAdviserRoleId(2);
+        aplink.setAdviserRoleName("Primary Adviser");
+        projectControls.addAdviser(aplink);
+    }
 
-		when(projectDaoMock.createProjectWrapper(projectWrapper)).thenReturn(1);
+    @Test(expected = DatabaseException.class)
+    public void testAddProjectAdviserWithIncorrectId() throws Exception {
+        aplink.setAdviserId(1);
+        projectControls.addAdviser(aplink);
+    }
 
-		projectControls.createProjectWrapper(projectWrapper);
-		verify(projectDaoMock).createProjectWrapper(projectWrapper);
-	}
+    @Test
+    public void testAddProjectResearcherSuccessfully() throws Exception {
+        project.setProjectCode("pc0001");
+        when(projectDaoMock.getProjectWrapperById(1))
+                .thenReturn(projectWrapper);
+        when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
 
-	@Test(expected = InvalidEntityException.class)
-	public void testMissingName() throws Exception {
+        projectControls.createProjectWrapper(projectWrapper);
 
-		final Project newproject = new Project() {
-			{
-				setName("");
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		};
+        researcher.setId(1);
+        rplink.setResearcher(researcher);
+        rplink.setProjectId(1);
+        projectWrapper.getRpLinks().add(rplink);
+        rplink.setResearcherId(researcher.getId());
+        rplink.setResearcherRoleId(2);
+        rplink.setResearcherRoleName("Project Owner");
+        projectControls.addResearcher(rplink);
+    }
 
-		ProjectWrapper newprojectWrapper = new ProjectWrapper() {
-			{
-				setProject(newproject);
-			}
-		};
-		when(projectDaoMock.createProjectWrapper(newprojectWrapper))
-				.thenReturn(1);
+    @Test(expected = DatabaseException.class)
+    public void testAddProjectResearcherWithIncorrectId() throws Exception {
+        rplink.setResearcherId(1);
+        projectControls.addResearcher(rplink);
+    }
 
-		projectControls.createProjectWrapper(newprojectWrapper);
+    @Test
+    public void testAllowDuplicateFullNameAsNewProject() throws Exception {
 
-	}
+        final List<Project> all = new LinkedList<Project>();
+        all.add(new Project() {
+            {
+                setName("TestName");
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        });
+        all.add(new Project() {
+            {
+                setName("New Project");
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        });
 
-	@Test
-	public void testDuplicateProjectName() throws Exception {
+        final Project newproject = new Project() {
+            {
+                setName("New Project");
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        };
+        ProjectWrapper newprojectWrapper = new ProjectWrapper() {
+            {
+                setProject(newproject);
+            }
+        };
 
-		final List<Project> all = new LinkedList<Project>();
-		all.add(new Project() {
-			{
-				setName("TestName");
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		});
-		all.add(new Project() {
-			{
-				setName("TestName2");
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		});
+        // Mock alert: return mocked result set on find
+        try {
+            when(projectDaoMock.getProjects()).thenReturn(all);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		ProjectWrapper newprojectWrapper = new ProjectWrapper() {
-			{
-				setProject(all.get(0));
-			}
-		};
-		projectControls.getProjects();
-		when(projectControls.getProjects()).thenReturn(all);
+        when(projectControls.getProjects()).thenReturn(all);
 
-		projectControls.createProjectWrapper(newprojectWrapper);
-	}
+        projectControls.createProjectWrapper(newprojectWrapper);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testCreateProjectWithId() throws Exception {
+    @Test
+    public void testCreateProjectSuccessfully() throws Exception {
 
-		final Project newproject = new Project() {
-			{
-				setName("TestNewName");
-				setId(1);
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		};
-		ProjectWrapper newprojectWrapper = new ProjectWrapper() {
-			{
-				setProject(newproject);
-			}
-		};
+        when(projectDaoMock.createProjectWrapper(projectWrapper)).thenReturn(1);
 
-		when(projectDaoMock.getProjectWrapperById(1)).thenReturn(
-				newprojectWrapper);
+        projectControls.createProjectWrapper(projectWrapper);
+        verify(projectDaoMock).createProjectWrapper(projectWrapper);
+    }
 
-		projectControls.createProjectWrapper(newprojectWrapper);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateProjectWithId() throws Exception {
 
-	@Test
-	public void testAllowDuplicateFullNameAsNewProject() throws Exception {
+        final Project newproject = new Project() {
+            {
+                setName("TestNewName");
+                setId(1);
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        };
+        ProjectWrapper newprojectWrapper = new ProjectWrapper() {
+            {
+                setProject(newproject);
+            }
+        };
 
-		final List<Project> all = new LinkedList<Project>();
-		all.add(new Project() {
-			{
-				setName("TestName");
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		});
-		all.add(new Project() {
-			{
-				setName("New Project");
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		});
+        when(projectDaoMock.getProjectWrapperById(1)).thenReturn(
+                newprojectWrapper);
 
-		final Project newproject = new Project() {
-			{
-				setName("New Project");
-				setProjectCode("");
-				setHostInstitution("");
-			}
-		};
-		ProjectWrapper newprojectWrapper = new ProjectWrapper() {
-			{
-				setProject(newproject);
-			}
-		};
+        projectControls.createProjectWrapper(newprojectWrapper);
+    }
 
-		// Mock alert: return mocked result set on find
-		try {
-			when(projectDaoMock.getProjects()).thenReturn(all);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateProjectWithNoHPCFacilities() throws Exception {
+        project.setProjectCode("pc0001");
+        project.setId(1);
+        when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
+        projectControls.createProjectWrapper(projectWrapper);
+    }
 
-		when(projectControls.getProjects()).thenReturn(all);
+    @Test
+    public void testDuplicateProjectName() throws Exception {
 
-		projectControls.createProjectWrapper(newprojectWrapper);
-	}
+        final List<Project> all = new LinkedList<Project>();
+        all.add(new Project() {
+            {
+                setName("New Project");
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        });
+        all.add(new Project() {
+            {
+                setName("New Project");
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        });
 
-	@Test
-	public void testGetProjectsByProjectCode() throws Exception {
+        ProjectWrapper newprojectWrapper = new ProjectWrapper() {
+            {
+                setProject(all.get(0));
+            }
+        };
+        projectControls.getProjects();
+        when(projectControls.getProjects()).thenReturn(all);
 
-		String expectedFullname = "TestName";
-		project.setProjectCode("pc0001");
-		project.setId(1);
+        projectControls.createProjectWrapper(newprojectWrapper);
+    }
 
-		when(projectDaoMock.getProjectWrapperById(1))
-				.thenReturn(projectWrapper);
-		when(projectControls.getProjectWrapper("pc0001")).thenReturn(
-				projectWrapper);
+    @Test
+    public void testGetNesiProjectByProjectCode() throws Exception {
 
-		assertEquals(expectedFullname,
-				projectControls.getProjectWrapper("pc0001").getProject()
-						.getName());
-	}
+        project.setProjectCode("nesi00001");
+        projectFacility.setProjectId(1);
+        final List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
+        projectFacilities.add(projectFacility);
 
-	@Test
-	public void testGetNesiProjectByProjectCode() throws Exception {
+        ProjectWrapper newpw = new ProjectWrapper() {
+            {
+                setProject(project);
+                setProjectFacilities(projectFacilities);
+            }
+        };
 
-		project.setProjectCode("nesi00001");
-		projectFacility.setProjectId(1);
-		final List<ProjectFacility> projectFacilities = new LinkedList<ProjectFacility>();
-		projectFacilities.add(projectFacility);
+        when(projectControls.getProjectWrapper("nesi00001")).thenReturn(newpw);
+        when(projectControls.createProjectWrapper(newpw)).thenReturn(1);
+    }
 
-		ProjectWrapper newpw = new ProjectWrapper() {
-			{
-				setProject(project);
-				setProjectFacilities(projectFacilities);
-			}
-		};
+    @Test
+    public void testGetProjectById() throws Exception {
 
-		when(projectControls.getProjectWrapper("nesi00001")).thenReturn(newpw);
-		when(projectControls.createProjectWrapper(newpw)).thenReturn(1);
-	}
+        String expectedFullname = "New Project";
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testCreateProjectWithNoHCPFacilities() throws Exception {
-		project.setProjectCode("pc0001");
-		project.setId(1);
-		when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
-		projectControls.createProjectWrapper(projectWrapper);
-	}
+        project.setId(1);
 
-	@Test(expected = InvalidEntityException.class)
-	public void testAddInvalidProjectAdviser() throws Exception {
-		projectControls.addAdviser(aplink);
-	}
+        projectWrapper.getProject().setId(1);
+        when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
+        assertEquals(expectedFullname, projectControls.getProjectWrapper(1)
+                .getProject().getName());
+    }
 
-	@Test(expected = DatabaseException.class)
-	public void testAddProjectAdviserWithIncorrectId() throws Exception {
-		aplink.setAdviserId(1);
-		projectControls.addAdviser(aplink);
-	}
+    @Test
+    public void testGetProjectsByProjectCode() throws Exception {
 
-	@Test
-	public void testAddProjectAdviserSuccessfully() throws Exception {
-		project.setProjectCode("pc0001");
-		when(projectDaoMock.getProjectWrapperById(1))
-				.thenReturn(projectWrapper);
-		when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
+        String expectedFullname = project.getName();
+        project.setProjectCode("pc0001");
+        project.setId(1);
 
-		projectControls.createProjectWrapper(projectWrapper);
+        when(projectDaoMock.getProjectWrapperById(1))
+                .thenReturn(projectWrapper);
+        when(projectControls.getProjectWrapper("pc0001")).thenReturn(
+                projectWrapper);
 
-		adviser.setId(1);
-		aplink.setAdviser(adviser);
-		aplink.setProjectId(1);
-		projectWrapper.getApLinks().add(aplink);
-		aplink.setAdviserId(adviser.getId());
-		aplink.setAdviserRoleId(2);
-		aplink.setAdviserRoleName("Primary Adviser");
-		projectControls.addAdviser(aplink);
-	}
+        assertEquals(expectedFullname,
+                projectControls.getProjectWrapper("pc0001").getProject()
+                        .getName());
+    }
 
-	@Test(expected = InvalidEntityException.class)
-	public void testAddInvalidProjectResarcher() throws Exception {
-		projectControls.addResearcher(rplink);
-	}
+    @Test(expected = InvalidEntityException.class)
+    public void testMissingName() throws Exception {
 
-	@Test(expected = DatabaseException.class)
-	public void testAddProjectResearcherWithIncorrectId() throws Exception {
-		rplink.setResearcherId(1);
-		projectControls.addResearcher(rplink);
-	}
+        final Project newproject = new Project() {
+            {
+                setName("");
+                setProjectCode("");
+                setHostInstitution("");
+            }
+        };
 
-	@Test
-	public void testAddProjectResearcherSuccessfully() throws Exception {
-		project.setProjectCode("pc0001");
-		when(projectDaoMock.getProjectWrapperById(1))
-				.thenReturn(projectWrapper);
-		when(projectControls.getProjectWrapper(1)).thenReturn(projectWrapper);
+        ProjectWrapper newprojectWrapper = new ProjectWrapper() {
+            {
+                setProject(newproject);
+            }
+        };
+        when(projectDaoMock.createProjectWrapper(newprojectWrapper))
+                .thenReturn(1);
 
-		projectControls.createProjectWrapper(projectWrapper);
+        projectControls.createProjectWrapper(newprojectWrapper);
 
-		researcher.setId(1);
-		rplink.setResearcher(researcher);
-		rplink.setProjectId(1);
-		projectWrapper.getRpLinks().add(rplink);
-		rplink.setResearcherId(researcher.getId());
-		rplink.setResearcherRoleId(2);
-		rplink.setResearcherRoleName("Project Owner");
-		projectControls.addResearcher(rplink);
-	}
+    }
 }

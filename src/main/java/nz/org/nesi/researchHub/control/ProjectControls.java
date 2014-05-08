@@ -176,6 +176,8 @@ public class ProjectControls extends AbstractControl {
             projectDao.updateProjectWrapper(al.getProjectId(), pw);
         } catch (final CustomException e) {
             throw new DatabaseException(e.getCustomMsg() + al.getProjectId(), e);
+        } catch (final Exception e) {
+            throw new DatabaseException(e.getMessage() + al.getProjectId(), e);
         }
     }
 

@@ -26,7 +26,7 @@ public class AbstractControl {
     // @Autowired
     // protected TempProjectManager tempProjectManager;
     @Autowired
-    protected AuthzAspect authzAspect;
+    public AuthzAspect authzAspect;
     // @Value("${remoteUserHeader}")
     // protected String remoteUserHeader;
     // @Value("${heatmapBaseUserUrl}")
