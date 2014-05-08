@@ -294,6 +294,12 @@ public class ResearcherControlsTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testDeleteResearcher() throws Exception {
+
+        InstitutionalRole ir = new InstitutionalRole();
+        ir.setId(1);
+        ir.setName("StupidRole");
+        when(researcherControls.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+
 		researcher.setId(1);
 
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
