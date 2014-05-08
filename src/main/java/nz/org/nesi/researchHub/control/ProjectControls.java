@@ -557,7 +557,7 @@ public class ProjectControls extends AbstractControl {
                 }
                 if (pw.getProject().getNextFollowUpDate().trim().equals("")) {
                     final Date nextFollowUp = new Date();
-                    nextFollowUp.setMonth(nextFollowUp.getMonth() + 3);
+                    nextFollowUp.setMonth(nextFollowUp.getMonth() + 6);
                     pw.getProject()
                             .setNextFollowUpDate(df.format(nextFollowUp));
                 }
