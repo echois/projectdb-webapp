@@ -65,7 +65,7 @@ public class RestExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(OutOfDateException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public ErrorInfo handleGenericException(final HttpServletRequest req,
             final Exception ex) {
