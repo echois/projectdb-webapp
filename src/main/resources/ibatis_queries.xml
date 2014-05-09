@@ -7,6 +7,59 @@
 
 	<cache />
 
+	<select id="getPersons" resultType="pm.pojo.Person">
+		SELECT *
+		FROM person
+		ORDER BY
+		fullName
+	</select>
+	
+	<select id="getPersonById" parameterType="java.lang.Integer"
+		resultType="pm.pojo.Person">
+		SELECT *
+		FROM person
+		WHERE id = #{id}
+	</select>
+	
+	<insert id="createPerson" parameterType="pm.pojo.Person">
+	INSERT INTO person (
+	fullName,
+	preferredName,
+	email,
+	phone,
+	address,
+	institution,
+	division,
+	department,
+	pictureUrl,
+	startDate,
+	endDate,
+	notes,
+	researcherStatusId,
+	groupId,
+	roleId
+	) VALUES(
+	#{fullName},
+	#{preferredName},
+	#{email},
+	#{phone},
+	#{address},
+	#{institution},
+	#{division},
+	#{department},
+	#{pictureUrl},
+	#{startDate},
+	#{endDate},
+	#{notes},
+	#{researcherStatusId},
+	#{groupId},
+	#{roleId}
+	)
+		<selectKey keyProperty="id" resultType="int">
+			SELECT
+			LAST_INSERT_ID() AS id
+		</selectKey>		
+	</insert>
 	<insert id="logChange" parameterType="pm.pojo.Change">
 		INSERT INTO changelog (
 		`adviserId`,
