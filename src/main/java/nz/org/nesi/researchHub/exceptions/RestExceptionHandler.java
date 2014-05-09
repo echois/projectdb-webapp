@@ -1,7 +1,5 @@
 package nz.org.nesi.researchHub.exceptions;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -9,6 +7,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Project: project_management
@@ -60,6 +60,17 @@ public class RestExceptionHandler {
             final OutOfDateException ex) {
 
         log.debug("OutOfDateException: " + ex.getLocalizedMessage());
+
+        return new ErrorInfo(req.getRequestURL().toString(), ex);
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(OutOfDateException.class)
+    @ResponseBody
+    public ErrorInfo handleGenericException(final HttpServletRequest req,
+            final Exception ex) {
+
+        log.debug("Exception: " + ex.getLocalizedMessage());
 
         return new ErrorInfo(req.getRequestURL().toString(), ex);
     }
