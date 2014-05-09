@@ -3,10 +3,17 @@
  */
 package researchHub.control;
 
-import com.google.common.collect.Lists;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.OutOfDateException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,18 +23,15 @@ import org.mockito.exceptions.verification.junit.ArgumentsAreDifferent;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Project;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.google.common.collect.Lists;
 
 /**
  * @author echoi
@@ -45,6 +49,7 @@ public class ResearcherControlsTest {
 	private ResearcherControls researcherControls;
 	@InjectMocks
 	private final ProjectDao projectDaoMock = Mockito.mock(ProjectDao.class);
+	private final AuthzAspect authzAspectMock = Mockito.mock(AuthzAspect.class);
 
 	private Researcher researcher;
 	private Project project;
@@ -59,8 +64,8 @@ public class ResearcherControlsTest {
 				setFullName("TestName");
 				setPhone("09000000");
 				setEmail("test@auckland.ac.nz");
-                setInstitutionalRoleId(1);
-                setPictureUrl("http://img1.wikia.nocookie.net/__cb20140207172458/simpsons/images/6/65/Bart_Simpson.png");
+				setInstitutionalRoleId(1);
+				setPictureUrl("http://img1.wikia.nocookie.net/__cb20140207172458/simpsons/images/6/65/Bart_Simpson.png");
 
 			}
 		};
@@ -80,6 +85,7 @@ public class ResearcherControlsTest {
 		researcherControls = new ResearcherControls() {
 			{
 				projectDao = projectDaoMock;
+				authzAspect = authzAspectMock;
 			}
 		};
 	}
@@ -144,10 +150,11 @@ public class ResearcherControlsTest {
 	@Test
 	public void testCreateResearcherSuccessfully() throws Exception {
 
-        InstitutionalRole ir = new InstitutionalRole();
-        ir.setId(1);
-        ir.setName("StupidRole");
-        when(researcherControls.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+		InstitutionalRole ir = new InstitutionalRole();
+		ir.setId(1);
+		ir.setName("StupidRole");
+		when(researcherControls.getInstitutionalRoles()).thenReturn(
+				Lists.newArrayList(ir));
 
 		when(projectDaoMock.createResearcher(researcher)).thenReturn(1);
 
@@ -258,10 +265,11 @@ public class ResearcherControlsTest {
 		researcher.setId(1);
 		researcher.setLastModified("01/01/2014");
 
-        InstitutionalRole ir = new InstitutionalRole();
-        ir.setId(1);
-        ir.setName("StupidRole");
-        when(researcherControls.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+		InstitutionalRole ir = new InstitutionalRole();
+		ir.setId(1);
+		ir.setName("StupidRole");
+		when(researcherControls.getInstitutionalRoles()).thenReturn(
+				Lists.newArrayList(ir));
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
 
 		researcherControls.editResearcher(researcher);
@@ -300,10 +308,11 @@ public class ResearcherControlsTest {
 	@Test(expected = NullPointerException.class)
 	public void testDeleteResearcher() throws Exception {
 
-        InstitutionalRole ir = new InstitutionalRole();
-        ir.setId(1);
-        ir.setName("StupidRole");
-        when(researcherControls.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+		InstitutionalRole ir = new InstitutionalRole();
+		ir.setId(1);
+		ir.setName("StupidRole");
+		when(researcherControls.getInstitutionalRoles()).thenReturn(
+				Lists.newArrayList(ir));
 
 		researcher.setId(1);
 
@@ -319,14 +328,14 @@ public class ResearcherControlsTest {
 	@Test(expected = ArgumentsAreDifferent.class)
 	public void testDeleteIncorrectAdviser() throws Exception {
 
-        InstitutionalRole ir = new InstitutionalRole();
-        ir.setId(1);
-        ir.setName("StupidRole");
-        when(projectDaoMock.getInstitutionalRoles()).thenReturn(Lists.newArrayList(ir));
+		InstitutionalRole ir = new InstitutionalRole();
+		ir.setId(1);
+		ir.setName("StupidRole");
+		when(projectDaoMock.getInstitutionalRoles()).thenReturn(
+				Lists.newArrayList(ir));
 
 		researcherControls.createResearcher(researcher);
 		researcher.setId(1);
-
 
 		when(researcherControls.getResearcher(1)).thenReturn(researcher);
 
