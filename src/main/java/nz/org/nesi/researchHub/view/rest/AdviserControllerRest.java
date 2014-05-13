@@ -130,7 +130,7 @@ public class AdviserControllerRest {
     public Adviser getAdviserByTuakiriId(
             @ApiParam(value = "Adviser's tuakiri shared token", required = true) @PathVariable final String tuakiriId)
             throws NoSuchEntityException {
-        return adviserControls.getAdviserByTuakiriId(tuakiriId);
+        return adviserControls.getAdviserByTuakiriSharedToken(tuakiriId);
     }
 
     @ApiOperation(value = "Get roles",

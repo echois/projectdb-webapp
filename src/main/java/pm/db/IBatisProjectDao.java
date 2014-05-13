@@ -344,6 +344,14 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    public Adviser getAdviserByTuakiriSharedToken(final String id)
+            throws Exception {
+        final Adviser a = (Adviser) getSqlSession().selectOne(
+                "pm.db.getAdviserByTuakiriSharedToken", id);
+        return a;
+    }
+
+    @Override
     public Adviser getAdviserByTuakiriUniqueId(final String id)
             throws Exception {
         final Adviser a = (Adviser) getSqlSession().selectOne(

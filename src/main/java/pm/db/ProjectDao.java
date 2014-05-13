@@ -50,6 +50,8 @@ public interface ProjectDao {
 
     public Adviser getAdviserById(Integer id) throws Exception;
 
+    Adviser getAdviserByTuakiriSharedToken(String id) throws Exception;
+
     public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
 
     public AdviserRole getAdviserRoleById(Integer id) throws Exception;

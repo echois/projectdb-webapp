@@ -287,14 +287,14 @@ public class AdviserControls extends AbstractControl {
      * @throws DatabaseException
      *             if there is adviser problem with the database
      */
-    public Adviser getAdviserByTuakiriId(final String tuakiriId)
+    public Adviser getAdviserByTuakiriSharedToken(final String tuakiriId)
             throws NumberFormatException, NoSuchEntityException {
         if (tuakiriId == null) {
             throw new IllegalArgumentException("No adviser id provided");
         }
         Adviser a = null;
         try {
-            a = projectDao.getAdviserByTuakiriUniqueId(tuakiriId);
+            a = projectDao.getAdviserByTuakiriSharedToken(tuakiriId);
             if (a == null) {
                 throw new NullPointerException();
             }

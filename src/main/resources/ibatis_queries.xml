@@ -73,8 +73,15 @@
 		FROM adviser
 		WHERE id = #{id}
 	</select>
-
+	
 	<select id="getAdviserByTuakiriUniqueId" parameterType="java.lang.String"
+ 		resultType="pm.pojo.Adviser">
+		SELECT *
+		FROM adviser
+		WHERE tuakiriUniqueId = #{id}
+	</select>
+
+	<select id="getAdviserByTuakiriSharedToken" parameterType="java.lang.String"
 		resultType="pm.pojo.Adviser">
 		SELECT a.*
 		FROM adviser AS a
