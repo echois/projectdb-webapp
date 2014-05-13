@@ -76,9 +76,10 @@
 
 	<select id="getAdviserByTuakiriUniqueId" parameterType="java.lang.String"
 		resultType="pm.pojo.Adviser">
-		SELECT *
-		FROM adviser
-		WHERE tuakiriUniqueId = #{id}
+		SELECT a.*
+		FROM adviser AS a
+		INNER JOIN adviser_properties AS p
+		WHERE p.propname='tuakiriSharedToken' AND p.propvalue = #{id}
 	</select>
 
 	<select id="getAdviserByDrupalId" parameterType="java.lang.String"

@@ -120,6 +120,19 @@ public class AdviserControllerRest {
         return adviserControls.getAdviserByDrupalId(drupalId);
     }
 
+    @RequestMapping(value = "/tuakiri/{tuakiriId}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+                  value = "Get adviser by their tuakiri id",
+                  notes = "Returns the adviser object associated with this tuakiri shared token",
+                  responseClass = "Adviser")
+    @ApiErrors({ NoSuchEntityException.class, DatabaseException.class })
+    public Adviser getAdviserByTuakiriId(
+            @ApiParam(value = "Adviser's tuakiri shared token", required = true) @PathVariable final String tuakiriId)
+            throws NoSuchEntityException {
+        return adviserControls.getAdviserByTuakiriId(tuakiriId);
+    }
+
     @ApiOperation(value = "Get roles",
                   notes = "Returns a list of possible roles on a project",
                   responseClass = "List<AdviserRole>")

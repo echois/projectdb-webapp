@@ -275,6 +275,42 @@ public class AdviserControls extends AbstractControl {
     }
 
     /**
+     * Returns the adviser with the specified tuakiri id.
+     * 
+     * @param id
+     *            the advisers' tuakiri id
+     * @return the advisor object
+     * @throws NumberFormatException
+     * @throws Exception
+     * @throws NoSuchEntityException
+     *             if the adviser or his projects can't be found
+     * @throws DatabaseException
+     *             if there is adviser problem with the database
+     */
+    public Adviser getAdviserByTuakiriId(final String tuakiriId)
+            throws NumberFormatException, NoSuchEntityException {
+        if (tuakiriId == null) {
+            throw new IllegalArgumentException("No adviser id provided");
+        }
+        Adviser a = null;
+        try {
+            a = projectDao.getAdviserByTuakiriUniqueId(tuakiriId);
+            if (a == null) {
+                throw new NullPointerException();
+            }
+        } catch (final NullPointerException npe) {
+            throw new NoSuchEntityException(
+                    "Can't find advisor with tuakiri id " + tuakiriId,
+                    Adviser.class, Integer.valueOf(tuakiriId), npe);
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't find adviser with tuakiri id "
+                    + tuakiriId, e);
+        }
+
+        return a;
+    }
+
+    /**
      * Returns a list of AdviserRoles.
      * 
      * @return a list of AdviserRoles
