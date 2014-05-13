@@ -79,6 +79,7 @@
 		SELECT a.*
 		FROM adviser AS a
 		INNER JOIN adviser_properties AS p
+		ON a.id=p.adviserId
 		WHERE p.propname='tuakiriSharedToken' AND p.propvalue = #{id}
 	</select>
 
