@@ -118,6 +118,9 @@ public class ResearcherControls extends AbstractControl {
         if (field.equals("PictureUrl") && (data.equals("") || data == null)) {
             data = "https://www.nesi.org.nz/sites/default/files/nesi_avatar.png";
         }
+        if (field.equals("FullName")) {
+            data = data.trim();
+        }
         validateResearcher(field, data);
         if (id != null) {
             // check whether an researcher with this id exists
