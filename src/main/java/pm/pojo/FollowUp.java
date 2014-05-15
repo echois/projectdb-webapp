@@ -15,6 +15,8 @@ public class FollowUp implements Serializable {
     private Integer id;
     private String notes;
     private Integer projectId;
+    private Integer researcherId;
+    private String researcherName;
 
     public FollowUp() {
         attachments = new LinkedList<Attachment>();
@@ -90,6 +92,22 @@ public class FollowUp implements Serializable {
 
     public void setProjectId(final Integer projectId) {
         this.projectId = projectId;
+    }
+
+    public Integer getResearcherId() {
+        return researcherId;
+    }
+
+    public void setResearcherId(Integer researcherId) {
+        this.researcherId = researcherId;
+    }
+
+    public String getResearcherName() {
+        return researcherName;
+    }
+
+    public void setResearcherName(String researcherName) {
+        this.researcherName = researcherName;
     }
 
 }

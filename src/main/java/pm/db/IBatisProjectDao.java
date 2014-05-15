@@ -526,9 +526,16 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         final List<FollowUp> l = getSqlSession().selectList(
                 "pm.db.getFollowUpsForProjectId", id);
         for (final FollowUp f : l) {
-            final Adviser tmp = (Adviser) getSqlSession().selectOne(
-                    "pm.db.getAdviserById", f.getAdviserId());
-            f.setAdviserName(tmp.getFullName());
+            if (f.getAdviserId() != null) {
+                final Adviser tmp = (Adviser) getSqlSession().selectOne(
+                        "pm.db.getAdviserById", f.getAdviserId());
+                f.setAdviserName(tmp.getFullName());
+            } else if (f.getResearcherId() != null) {
+                final Researcher tmp = (Researcher) getSqlSession().selectOne(
+                        "pm.db.getResearcherById", f.getResearcherId());
+                f.setResearcherName(tmp.getFullName());
+            }
+
             f.setAttachments(getAttachmentsForFollowUpId(f.getId()));
         }
         return l;
