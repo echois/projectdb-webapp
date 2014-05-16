@@ -275,6 +275,8 @@ public class ProjectControls extends AbstractControl {
                     .getProjectId());
             pw.getRpLinks().add(rl);
             projectDao.updateProjectWrapper(rl.getProjectId(), pw);
+        } catch (final CustomException e) {
+            throw new DatabaseException(e.getCustomMsg() + rl.getProjectId(), e);
         } catch (final Exception e) {
             throw new DatabaseException("Can't fetch project with id "
                     + rl.getProjectId(), e);
