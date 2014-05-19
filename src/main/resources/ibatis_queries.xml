@@ -649,11 +649,13 @@
 		INSERT INTO projectfollowup (
 		projectId,
 		adviserId,
+		researcherId,
 		date,
 		notes
 		) values (
 		#{projectId},
 		#{adviserId},
+		#{researcherId},
 		#{date},
 		#{notes}
 		)
