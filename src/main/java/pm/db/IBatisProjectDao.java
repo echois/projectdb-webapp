@@ -91,7 +91,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     private Integer createFollowUp(final FollowUp f) throws Exception {
-        getSqlSession().insert("pm.db.createFollowUp", f);
+        getSqlSession().insert("pm.db.upsertFollowUp", f);
         final Integer fid = f.getId();
         final List<Attachment> attachments = f.getAttachments();
         if ((f.getAttachmentDescription() != null && f
@@ -187,7 +187,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     private void createResearchOutput(final ResearchOutput o) throws Exception {
-        getSqlSession().insert("pm.db.createResearchOutput", o);
+        getSqlSession().insert("pm.db.upsertResearchOutput", o);
     }
 
     private Integer createReview(final Review r) throws Exception {
@@ -925,13 +925,19 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         final List<ResearchOutput> l = getSqlSession().selectList(
                 "pm.db.getResearchOutputsForProjectId", id);
         for (final ResearchOutput ro : l) {
-            final Adviser a = (Adviser) getSqlSession().selectOne(
-                    "pm.db.getAdviserById", ro.getAdviserId());
+            if (ro.getAdviserId() != null) {
+                final Adviser tmp = (Adviser) getSqlSession().selectOne(
+                        "pm.db.getAdviserById", ro.getAdviserId());
+                ro.setAdviserName(tmp.getFullName());
+            } else if (ro.getResearcherId() != null) {
+                final Researcher tmp = (Researcher) getSqlSession().selectOne(
+                        "pm.db.getResearcherById", ro.getResearcherId());
+                ro.setResearcherName(tmp.getFullName());
+            }
             final ResearchOutputType tmp = (ResearchOutputType) getSqlSession()
                     .selectOne("pm.db.getResearchOutputTypeById",
                             ro.getTypeId());
             ro.setType(tmp.getName());
-            ro.setAdviserName(a.getFullName());
         }
         return l;
     }
@@ -1065,16 +1071,22 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     @Override
     @RequireAdviserOnProject
     public void upsertFollowUp(final FollowUp f) {
-        getSqlSession().update("pm.db.updateFollowUp", f);
+        getSqlSession().insert("pm.db.upsertFollowUp", f);
     }
 
     @Override
     public void upsertProjectProperty(final ProjectProperty p) {
-        getSqlSession().update("upsertProjectProperty", p);
+        getSqlSession().insert("pm.db.upsertProjectProperty", p);
     }
 
     @Override
     public void upsertResearcherProperty(final ResearcherProperty p) {
-        getSqlSession().update("upsertResearcherProperty", p);
+        getSqlSession().insert("pm.db.upsertResearcherProperty", p);
+    }
+
+    @Override
+    @RequireAdviserOnProject
+    public void upsertResearchOutput(ResearchOutput ro) {
+        getSqlSession().insert("pm.db.upsertResearchOutput", ro);
     }
 }

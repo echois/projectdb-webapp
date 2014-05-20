@@ -115,16 +115,6 @@ public class ProjectControllerRest {
     // projectControls.editProjectWrapper(id, project);
     // }
 
-    @RequestMapping(value = "/ro", method = RequestMethod.PUT)
-    @ApiOperation(value = "Add Research Output",
-                  notes = "Add research output to project")
-    @ResponseBody
-    public void addResearchOutput(
-            @ApiParam(value = "ResearchOutput object", required = true) @RequestBody final ResearchOutput ro)
-            throws Exception {
-        projectControls.addResearchOutput(ro);
-    }
-
     @RequestMapping(value = "/review", method = RequestMethod.PUT)
     @ApiOperation(value = "Add Review", notes = "Add review to project")
     @ResponseBody
@@ -564,6 +554,16 @@ public class ProjectControllerRest {
             @ApiParam(value = "ProjectProperty object", required = true) @RequestBody final ProjectProperty p)
             throws Exception {
         projectControls.upsertProperty(p);
+    }
+
+    @RequestMapping(value = "/ro", method = RequestMethod.PUT)
+    @ApiOperation(value = "Add/Edit Research Output",
+                  notes = "Add/Edit research output on project")
+    @ResponseBody
+    public void upsertResearchOutput(
+            @ApiParam(value = "ResearchOutput object", required = true) @RequestBody final ResearchOutput ro)
+            throws Exception {
+        projectControls.upsertResearchOutput(ro);
     }
 
     @RequestMapping(value = "/{id}/validate", method = RequestMethod.GET)

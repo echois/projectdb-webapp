@@ -645,46 +645,6 @@
 		)
 	</insert>
 
-	<insert id="createFollowUp" parameterType="pm.pojo.FollowUp">
-		INSERT INTO projectfollowup (
-		projectId,
-		adviserId,
-		researcherId,
-		date,
-		notes
-		) values (
-		#{projectId},
-		#{adviserId},
-		#{researcherId},
-		#{date},
-		#{notes}
-		)
-		<selectKey keyProperty="id" resultType="int">
-			SELECT
-			LAST_INSERT_ID() AS id
-		</selectKey>
-	</insert>
-
-	<insert id="createResearchOutput" parameterType="pm.pojo.ResearchOutput">
-		INSERT INTO
-		researchoutput (
-		projectId,
-		adviserId,
-		typeId,
-		description,
-		link,
-		date
-		)
-		values (
-		#{projectId},
-		#{adviserId},
-		#{typeId},
-		#{description},
-		#{link},
-		#{date}
-		)
-	</insert>
-
 	<insert id="createAttachment" parameterType="pm.pojo.Attachment">
 		INSERT INTO
 		attachment (
@@ -815,7 +775,7 @@
 		WHERE id = #{id}
 	</update>
 	
-	<update id="updateFollowUp" parameterType="pm.pojo.FollowUp">
+	<insert id="upsertFollowUp" parameterType="pm.pojo.FollowUp">
 		REPLACE INTO projectfollowup SET
 		id = #{id},
 		projectId = #{projectId},
@@ -823,7 +783,19 @@
 		researcherId = #{researcherId},
 		date = #{date},
 		notes = #{notes}
-	</update>
+	</insert>
+	
+	<insert id="upsertResearchOutput" parameterType="pm.pojo.ResearchOutput">
+		REPLACE INTO researchoutput SET
+		id = #{id},
+		projectId = #{projectId},
+		adviserId = #{adviserId},
+		researcherId = #{researcherId},
+		typeId = #{typeId},
+		description = #{description},
+		link = #{link},
+		date = #{date}
+	</insert>
 
 	<delete id="deleteProject" parameterType="java.lang.Integer">
 		DELETE FROM project

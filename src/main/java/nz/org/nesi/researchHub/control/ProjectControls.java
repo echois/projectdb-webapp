@@ -269,21 +269,6 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Add the specified research_output to this project
-     * 
-     * @param id
-     *            the id
-     * @throws Exception
-     */
-    public void addResearchOutput(final ResearchOutput ro) throws Exception {
-        final ProjectWrapper pw = projectDao.getProjectWrapperById(ro
-                .getProjectId());
-        pw.getResearchOutputs().add(ro);
-        validateProject(pw);
-        projectDao.updateProjectWrapper(ro.getProjectId(), pw);
-    }
-
-    /**
      * Add the specified project_kpi to this project
      * 
      * @param id
@@ -960,6 +945,17 @@ public class ProjectControls extends AbstractControl {
             p = old;
         }
         projectDao.upsertProjectProperty(p);
+    }
+
+    /**
+     * Add the specified research_output to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void upsertResearchOutput(final ResearchOutput ro) throws Exception {
+        projectDao.upsertResearchOutput(ro);
     }
 
     /**

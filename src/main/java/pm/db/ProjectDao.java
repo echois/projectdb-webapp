@@ -179,4 +179,6 @@ public interface ProjectDao {
     public void upsertProjectProperty(ProjectProperty p);
 
     public void upsertResearcherProperty(ResearcherProperty r);
+
+    public void upsertResearchOutput(ResearchOutput ro);
 }
