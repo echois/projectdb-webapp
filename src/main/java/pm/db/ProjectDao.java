@@ -7,6 +7,7 @@ import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
 import pm.pojo.Change;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
@@ -172,6 +173,8 @@ public interface ProjectDao {
             throws Exception;
 
     public void updateResearcher(Researcher r);
+
+    public void upsertFollowUp(FollowUp f);
 
     public void upsertProjectProperty(ProjectProperty p);
 

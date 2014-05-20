@@ -814,6 +814,16 @@
 		notes = #{notes}
 		WHERE id = #{id}
 	</update>
+	
+	<update id="updateFollowUp" parameterType="pm.pojo.FollowUp">
+		REPLACE INTO projectfollowup SET
+		id = #{id},
+		projectId = #{projectId},
+		adviserId = #{adviserId},
+		researcherId = #{researcherId},
+		date = #{date},
+		notes = #{notes}
+	</update>
 
 	<delete id="deleteProject" parameterType="java.lang.Integer">
 		DELETE FROM project

@@ -1,23 +1,52 @@
 package nz.org.nesi.researchHub.view.rest;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import nz.org.nesi.researchHub.control.AdviserControls;
 import nz.org.nesi.researchHub.control.ProjectControls;
 import nz.org.nesi.researchHub.control.ResearcherControls;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 import nz.org.nesi.researchHub.model.ProjectEnvironmentModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import pm.pojo.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import pm.pojo.APLink;
+import pm.pojo.Adviser;
+import pm.pojo.AdviserAction;
+import pm.pojo.AdviserRole;
+import pm.pojo.Attachment;
+import pm.pojo.Change;
+import pm.pojo.Facility;
+import pm.pojo.FollowUp;
+import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
+import pm.pojo.Project;
+import pm.pojo.ProjectKpi;
+import pm.pojo.ProjectProperty;
+import pm.pojo.ProjectStatus;
+import pm.pojo.ProjectType;
+import pm.pojo.ProjectWrapper;
+import pm.pojo.RPLink;
+import pm.pojo.ResearchOutput;
+import pm.pojo.ResearchOutputType;
+import pm.pojo.Researcher;
+import pm.pojo.ResearcherRole;
+import pm.pojo.Review;
+import pm.pojo.Site;
+
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * Project: project_management
@@ -30,13 +59,13 @@ import java.util.concurrent.TimeUnit;
 public class ProjectControllerRest {
 
     @Autowired
+    private AdviserControls adviserControls;
+
+    @Autowired
     private ProjectControls projectControls;
 
     @Autowired
     private ResearcherControls researcherControls;
-    
-    @Autowired
-    private AdviserControls adviserControls;
 
     @RequestMapping(value = "/adviseraction", method = RequestMethod.PUT)
     @ApiOperation(value = "Add Adviser Action",
@@ -67,13 +96,13 @@ public class ProjectControllerRest {
         projectControls.addAttachment(a);
     }
 
-    @RequestMapping(value = "/followup", method = RequestMethod.PUT)
-    @ApiOperation(value = "Add Follow Up", notes = "Add followup to project")
+    @RequestMapping(value = "/kpi", method = RequestMethod.PUT)
+    @ApiOperation(value = "Add Project KPI", notes = "Add KPI to project")
     @ResponseBody
-    public void addFollowUp(
-            @ApiParam(value = "FollowUp object", required = true) @RequestBody final FollowUp f)
+    public void addKpi(
+            @ApiParam(value = "ProjectKpi object", required = true) @RequestBody final ProjectKpi pk)
             throws Exception {
-        projectControls.addFollowUp(f);
+        projectControls.addKpi(pk);
     }
 
     // DON'T IMPLEMENT EDIT PROJECT YET, EXPOSING THE PROJECTWRAPPER OBJECT IS A
@@ -85,15 +114,6 @@ public class ProjectControllerRest {
     // project) throws InvalidEntityException {
     // projectControls.editProjectWrapper(id, project);
     // }
-
-    @RequestMapping(value = "/kpi", method = RequestMethod.PUT)
-    @ApiOperation(value = "Add Project KPI", notes = "Add KPI to project")
-    @ResponseBody
-    public void addKpi(
-            @ApiParam(value = "ProjectKpi object", required = true) @RequestBody final ProjectKpi pk)
-            throws Exception {
-        projectControls.addKpi(pk);
-    }
 
     @RequestMapping(value = "/ro", method = RequestMethod.PUT)
     @ApiOperation(value = "Add Research Output",
@@ -331,6 +351,173 @@ public class ProjectControllerRest {
         return projectControls.getSites();
     }
 
+    @RequestMapping(value = "/environment", method = RequestMethod.GET)
+    @ApiOperation(
+                  value = "Get project environment",
+                  notes = "Returns a map of all relevant up-to-date helper objects/lists, convenience method.")
+    @ResponseBody
+    public ProjectEnvironmentModel getUpToDateEnivironment() throws Exception {
+
+        final ProjectEnvironmentModel pem = new ProjectEnvironmentModel();
+
+        ExecutorService executor = Executors.newFixedThreadPool(12);
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<String> institutions = getInstitutions();
+                    pem.setInstitutions(institutions);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<Facility> faculties = getFacilities();
+                    pem.setFaculties(faculties);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<Site> sites = getSites();
+                    pem.setSites(sites);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<ProjectType> types = getProjectTypes();
+                    pem.setTypes(types);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<ProjectStatus> stats = getProjectStatuses();
+                    pem.setStats(stats);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<Kpi> kpis = getKpis();
+                    pem.setKpis(kpis);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<KpiCode> kpcs = getKpiCodes();
+                    pem.setKpcs(kpcs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<ResearchOutputType> rotypes = getROTypes();
+                    pem.setRotypes(rotypes);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<ResearcherRole> roles = researcherControls
+                            .getResearcherRoles();
+                    pem.setRoles(roles);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<Researcher> researchers = researcherControls
+                            .getAllResearchers();
+                    pem.setResearchers(researchers);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<AdviserRole> ad_roles = adviserControls
+                            .getAdviserRoles();
+                    pem.setAd_roles(ad_roles);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+        t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<Adviser> advisers = adviserControls.getAllAdvisers();
+                    pem.setAdvisers(advisers);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        executor.execute(t);
+
+        executor.shutdown();
+
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+
+        return pem;
+
+    }
+
     @RequestMapping(value = "/{id}/{oid}/{type}", method = RequestMethod.DELETE)
     @ApiOperation(
                   value = "Remove object link from project",
@@ -359,6 +546,16 @@ public class ProjectControllerRest {
         projectControls.rollback(uid, rid);
     }
 
+    @RequestMapping(value = "/followup", method = RequestMethod.PUT)
+    @ApiOperation(value = "Add/Edit Follow Up",
+                  notes = "Add/Edit followup on project")
+    @ResponseBody
+    public void upsertFollowUp(
+            @ApiParam(value = "FollowUp object", required = true) @RequestBody final FollowUp f)
+            throws Exception {
+        projectControls.upsertFollowUp(f);
+    }
+
     @RequestMapping(value = "/prop", method = RequestMethod.PUT)
     @ApiOperation(value = "Upsert Project Property",
                   notes = "Add or edit project property")
@@ -379,158 +576,6 @@ public class ProjectControllerRest {
             @ApiParam(value = "Project id", required = true) @PathVariable final Integer id)
             throws InvalidEntityException, NoSuchEntityException {
         projectControls.validateProject(id);
-    }
-
-    @RequestMapping(value = "/environment", method = RequestMethod.GET)
-    @ApiOperation(value = "Get project environment",
-                  notes = "Returns a map of all relevant up-to-date helper objects/lists, convenience method.")
-    @ResponseBody
-    public ProjectEnvironmentModel getUpToDateEnivironment() throws Exception {
-
-        final ProjectEnvironmentModel pem = new ProjectEnvironmentModel();
-        
-        ExecutorService executor = Executors.newFixedThreadPool(12);
-
-        Thread t = new Thread() {
-            public void run() {
-                try {
-                    List<String> institutions = getInstitutions();
-                    pem.setInstitutions(institutions);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<Facility> faculties = getFacilities();
-                    pem.setFaculties(faculties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<Site> sites = getSites();
-                    pem.setSites(sites);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<ProjectType> types = getProjectTypes();
-                    pem.setTypes(types);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<ProjectStatus> stats = getProjectStatuses();
-                    pem.setStats(stats);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<Kpi> kpis = getKpis();
-                    pem.setKpis(kpis);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<KpiCode> kpcs = getKpiCodes();
-                    pem.setKpcs(kpcs);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<ResearchOutputType> rotypes = getROTypes();
-                    pem.setRotypes(rotypes);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<ResearcherRole> roles = researcherControls.getResearcherRoles();
-                    pem.setRoles(roles);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<Researcher> researchers = researcherControls.getAllResearchers();
-                    pem.setResearchers(researchers);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<AdviserRole> ad_roles = adviserControls.getAdviserRoles();
-                    pem.setAd_roles(ad_roles);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-        t = new Thread() {
-            public void run() {
-                try {
-                    List<Adviser> advisers = adviserControls.getAllAdvisers();
-                    pem.setAdvisers(advisers);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        executor.execute(t);
-
-        executor.shutdown();
-
-        executor.awaitTermination(10, TimeUnit.SECONDS);
-
-        return pem;
-        
-
     }
 
 }

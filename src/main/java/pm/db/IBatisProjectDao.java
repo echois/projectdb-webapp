@@ -1063,6 +1063,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    @RequireAdviserOnProject
+    public void upsertFollowUp(final FollowUp f) {
+        getSqlSession().update("pm.db.updateFollowUp", f);
+    }
+
+    @Override
     public void upsertProjectProperty(final ProjectProperty p) {
         getSqlSession().update("upsertProjectProperty", p);
     }
