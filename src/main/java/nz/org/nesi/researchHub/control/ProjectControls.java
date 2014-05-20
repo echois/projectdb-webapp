@@ -442,8 +442,8 @@ public class ProjectControls extends AbstractControl {
                     }
                     pw.setProjectFacilities(projectFacilities);
                 } else {
-                    final Class<ProjectWrapper> c = ProjectWrapper.class;
-                    Method getPojo = c.getDeclaredMethod(method);
+                    pojoClass = ProjectWrapper.class;
+                    Method getPojo = pojoClass.getDeclaredMethod(method);
                     Object pojo = getPojo.invoke(pw);
                     pojoClass = pojo.getClass();
                     if (deep) {
