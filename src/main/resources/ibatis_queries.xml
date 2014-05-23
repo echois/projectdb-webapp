@@ -126,12 +126,21 @@
 		FROM adviser
 		WHERE id = #{id}
 	</select>
-
+	
 	<select id="getAdviserByTuakiriUniqueId" parameterType="java.lang.String"
-		resultType="pm.pojo.Adviser">
+ 		resultType="pm.pojo.Adviser">
 		SELECT *
 		FROM adviser
 		WHERE tuakiriUniqueId = #{id}
+	</select>
+
+	<select id="getAdviserByTuakiriSharedToken" parameterType="java.lang.String"
+		resultType="pm.pojo.Adviser">
+		SELECT a.*
+		FROM adviser AS a
+		INNER JOIN adviser_properties AS p
+		ON a.id=p.adviserId
+		WHERE p.propname='tuakiriSharedToken' AND p.propvalue = #{id}
 	</select>
 
 	<select id="getAdviserByDrupalId" parameterType="java.lang.String"
@@ -689,44 +698,6 @@
 		)
 	</insert>
 
-	<insert id="createFollowUp" parameterType="pm.pojo.FollowUp">
-		INSERT INTO projectfollowup (
-		projectId,
-		adviserId,
-		date,
-		notes
-		) values (
-		#{projectId},
-		#{adviserId},
-		#{date},
-		#{notes}
-		)
-		<selectKey keyProperty="id" resultType="int">
-			SELECT
-			LAST_INSERT_ID() AS id
-		</selectKey>
-	</insert>
-
-	<insert id="createResearchOutput" parameterType="pm.pojo.ResearchOutput">
-		INSERT INTO
-		researchoutput (
-		projectId,
-		adviserId,
-		typeId,
-		description,
-		link,
-		date
-		)
-		values (
-		#{projectId},
-		#{adviserId},
-		#{typeId},
-		#{description},
-		#{link},
-		#{date}
-		)
-	</insert>
-
 	<insert id="createAttachment" parameterType="pm.pojo.Attachment">
 		INSERT INTO
 		attachment (
@@ -856,6 +827,28 @@
 		notes = #{notes}
 		WHERE id = #{id}
 	</update>
+	
+	<insert id="upsertFollowUp" parameterType="pm.pojo.FollowUp">
+		REPLACE INTO projectfollowup SET
+		id = #{id},
+		projectId = #{projectId},
+		adviserId = #{adviserId},
+		researcherId = #{researcherId},
+		date = #{date},
+		notes = #{notes}
+	</insert>
+	
+	<insert id="upsertResearchOutput" parameterType="pm.pojo.ResearchOutput">
+		REPLACE INTO researchoutput SET
+		id = #{id},
+		projectId = #{projectId},
+		adviserId = #{adviserId},
+		researcherId = #{researcherId},
+		typeId = #{typeId},
+		description = #{description},
+		link = #{link},
+		date = #{date}
+	</insert>
 
 	<delete id="deleteProject" parameterType="java.lang.Integer">
 		DELETE FROM project

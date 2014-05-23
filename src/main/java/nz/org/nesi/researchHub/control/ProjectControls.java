@@ -229,21 +229,6 @@ public class ProjectControls extends AbstractControl {
      * 
      * @param id
      *            the id
-     * @throws Exception
-     */
-    public void addFollowUp(final FollowUp f) throws Exception {
-        final ProjectWrapper pw = projectDao.getProjectWrapperById(f
-                .getProjectId());
-        pw.getFollowUps().add(f);
-        validateProject(pw);
-        projectDao.updateProjectWrapper(f.getProjectId(), pw);
-    }
-
-    /**
-     * Add the specified project_kpi to this project
-     * 
-     * @param id
-     *            the id
      * @throws InvalidEntityException
      */
     public void addKpi(final ProjectKpi pk) throws Exception {
@@ -275,25 +260,12 @@ public class ProjectControls extends AbstractControl {
                     .getProjectId());
             pw.getRpLinks().add(rl);
             projectDao.updateProjectWrapper(rl.getProjectId(), pw);
+        } catch (final CustomException e) {
+            throw new DatabaseException(e.getCustomMsg() + rl.getProjectId(), e);
         } catch (final Exception e) {
             throw new DatabaseException("Can't fetch project with id "
                     + rl.getProjectId(), e);
         }
-    }
-
-    /**
-     * Add the specified research_output to this project
-     * 
-     * @param id
-     *            the id
-     * @throws Exception
-     */
-    public void addResearchOutput(final ResearchOutput ro) throws Exception {
-        final ProjectWrapper pw = projectDao.getProjectWrapperById(ro
-                .getProjectId());
-        pw.getResearchOutputs().add(ro);
-        validateProject(pw);
-        projectDao.updateProjectWrapper(ro.getProjectId(), pw);
     }
 
     /**
@@ -470,8 +442,8 @@ public class ProjectControls extends AbstractControl {
                     }
                     pw.setProjectFacilities(projectFacilities);
                 } else {
-                    final Class<ProjectWrapper> c = ProjectWrapper.class;
-                    Method getPojo = c.getDeclaredMethod(method);
+                    pojoClass = ProjectWrapper.class;
+                    Method getPojo = pojoClass.getDeclaredMethod(method);
                     Object pojo = getPojo.invoke(pw);
                     pojoClass = pojo.getClass();
                     if (deep) {
@@ -939,6 +911,17 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Upsert the specified followup
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void upsertFollowUp(final FollowUp f) throws Exception {
+        projectDao.upsertFollowUp(f);
+    }
+
+    /**
      * Add/Edit the specified project property
      * 
      * @param id
@@ -962,6 +945,17 @@ public class ProjectControls extends AbstractControl {
             p = old;
         }
         projectDao.upsertProjectProperty(p);
+    }
+
+    /**
+     * Add the specified research_output to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void upsertResearchOutput(final ResearchOutput ro) throws Exception {
+        projectDao.upsertResearchOutput(ro);
     }
 
     /**

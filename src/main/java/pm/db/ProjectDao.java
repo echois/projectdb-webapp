@@ -7,6 +7,7 @@ import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
 import pm.pojo.Change;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
@@ -52,6 +53,8 @@ public interface ProjectDao {
 	public Adviser getAdviserById(Integer id) throws Exception;
 
 	public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
+
+	Adviser getAdviserByTuakiriSharedToken(String id) throws Exception;
 
 	public AdviserRole getAdviserRoleById(Integer id) throws Exception;
 
@@ -172,13 +175,18 @@ public interface ProjectDao {
 
 	public void updateResearcher(Researcher r);
 
+	public void upsertFollowUp(FollowUp f);
+
 	public void upsertProjectProperty(ProjectProperty p);
 
 	public void upsertResearcherProperty(ResearcherProperty r);
+
+	public void upsertResearchOutput(ResearchOutput ro);
 
 	public Integer createPerson(Person person) throws Exception;
 
 	public List<Person> getPersons() throws Exception;
 
 	public Person getPersonById(Integer id) throws Exception;
+
 }
