@@ -1,6 +1,8 @@
 package nz.org.nesi.researchHub.view.rest;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -286,6 +288,14 @@ public class ProjectControllerRest {
     @ResponseBody
     public List<Project> getProjects() {
         return projectControls.getProjects();
+    }
+
+    @RequestMapping(value = "/full", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all projects, including members per role",
+                  notes = "Returns every project in the database")
+    @ResponseBody
+    public java.util.Map<String, Map<String, Set<String>>> getProjectsWithMembers() throws Exception {
+        return projectControls.getAllProjects();
     }
 
     @RequestMapping(value = "/stat", method = RequestMethod.GET)

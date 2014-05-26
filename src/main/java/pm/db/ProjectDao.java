@@ -1,29 +1,10 @@
 package pm.db;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import pm.pojo.Adviser;
-import pm.pojo.AdviserRole;
-import pm.pojo.Affiliation;
-import pm.pojo.Change;
-import pm.pojo.Facility;
-import pm.pojo.FollowUp;
-import pm.pojo.InstitutionalRole;
-import pm.pojo.Kpi;
-import pm.pojo.KpiCode;
-import pm.pojo.Project;
-import pm.pojo.ProjectKpi;
-import pm.pojo.ProjectProperty;
-import pm.pojo.ProjectStatus;
-import pm.pojo.ProjectType;
-import pm.pojo.ProjectWrapper;
-import pm.pojo.ResearchOutput;
-import pm.pojo.ResearchOutputType;
-import pm.pojo.Researcher;
-import pm.pojo.ResearcherProperty;
-import pm.pojo.ResearcherRole;
-import pm.pojo.ResearcherStatus;
-import pm.pojo.Site;
+import pm.pojo.*;
 
 public interface ProjectDao {
 
@@ -77,6 +58,8 @@ public interface ProjectDao {
     public List<Affiliation> getAffiliationsByInstitutionCode(
             String institutionCode) throws Exception;
 
+    public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers() throws Exception;
+
     List<Change> getChangeLogForTable(String table) throws Exception;
 
     public String getDrupalIdByAdviserId(Integer id) throws Exception;
@@ -115,6 +98,8 @@ public interface ProjectDao {
 
     public List<Project> getProjects() throws Exception;
 
+    public List<Integer> getProjectIds() throws Exception;
+
     public List<Project> getProjectsForAdviserId(Integer id) throws Exception;
 
     public List<Project> getProjectsForResearcherId(Integer id)
@@ -127,6 +112,9 @@ public interface ProjectDao {
     public List<ProjectType> getProjectTypes() throws Exception;
 
     public ProjectWrapper getProjectWrapperById(Integer id) throws Exception;
+
+//    public List<RPLink> getRPLinksForProject(final Integer pid)
+//            throws Exception;
 
     public ProjectWrapper getProjectWrapperByProjectCode(String projectCode)
             throws Exception;

@@ -1,10 +1,9 @@
 package pm.db;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 
@@ -704,6 +703,14 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    public List<Integer> getProjectIds() throws Exception {
+        final List<Integer> ps = getSqlSession()
+                .selectList("pm.db.getProjectIds");
+        return ps;
+    }
+
+
+    @Override
     public List<Project> getProjectsForAdviserId(final Integer id)
             throws Exception {
         final List<Project> ps = getSqlSession().selectList(
@@ -982,6 +989,57 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         }
         return l;
     }
+
+    public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers() throws Exception {
+
+        List<Researcher> allResearchers = getResearchers();
+        Map<Integer, Researcher> researcherById = Maps.newHashMap();
+        for (Researcher r : allResearchers) {
+            researcherById.put(r.getId(), r);
+        }
+
+        List<ResearcherRole> allRoles = getResearcherRoles();
+        Map<Integer, ResearcherRole> rolesById = Maps.newHashMap();
+        for (ResearcherRole r : allRoles ) {
+            rolesById.put(r.getId(), r);
+        }
+
+        List<Project> allProjects = getProjects();
+
+        Map<String, Map<String, Set<String>>> all = Maps.newTreeMap();
+
+        for ( Project p : allProjects ) {
+
+            final List<RPLink> l = getSqlSession().selectList(
+                    "pm.db.getRPLinksForProjectId", p.getId());
+
+            final Map<String, Set<String>> allMembers = Maps.newTreeMap();
+            if ( l != null ) {
+                for ( final RPLink rp : l ) {
+
+                    Researcher researcher = researcherById.get(rp.getResearcherId());
+                    ResearcherRole role = rolesById.get(rp.getResearcherRoleId());
+
+                    String rolename = rolesById.get(role.getId()).getName();
+
+                    Set<String> roleMembers = allMembers.get(rolename);
+                    if ( roleMembers == null ) {
+                        roleMembers = Sets.newTreeSet();
+                        allMembers.put(rolename, roleMembers);
+                    }
+                    roleMembers.add(researcher.getFullName());
+                }
+
+                all.put(p.getProjectCode(), allMembers);
+
+            }
+
+
+        }
+        return all;
+
+    }
+
 
     @Override
     public List<Site> getSites() throws Exception {
