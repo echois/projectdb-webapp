@@ -113,7 +113,7 @@ public class ProjectControls extends AbstractControl {
 
         if (pw.getProject().getProjectCode() == null
                 || pw.getProject().getProjectCode().isEmpty()
-                || !pw.getProject().getProjectCode().matches("[a-z]+\\d{5}")) {
+                || !pw.getProject().getProjectCode().matches("[a-z]+\\d{3,}")) {
             throw new InvalidEntityException(
                     "There must be a valid project code", Project.class,
                     "projectCode");
