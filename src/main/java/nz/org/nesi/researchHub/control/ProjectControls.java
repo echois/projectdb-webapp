@@ -611,7 +611,7 @@ public class ProjectControls extends AbstractControl {
      *
      * @return all project map
      */
-    public Map<String, Map<String, Set<String>>> getAllProjects() throws Exception {
+    public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers() throws Exception {
 
         Map<String, Map<String, Set<String>>> allProjects = projectDao.getAllProjectsAndMembers();
 

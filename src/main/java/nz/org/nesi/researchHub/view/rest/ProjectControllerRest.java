@@ -295,7 +295,7 @@ public class ProjectControllerRest {
                   notes = "Returns every project in the database")
     @ResponseBody
     public java.util.Map<String, Map<String, Set<String>>> getProjectsWithMembers() throws Exception {
-        return projectControls.getAllProjects();
+        return projectControls.getAllProjectsAndMembers();
     }
 
     @RequestMapping(value = "/stat", method = RequestMethod.GET)

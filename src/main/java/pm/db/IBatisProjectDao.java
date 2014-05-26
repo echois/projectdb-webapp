@@ -2,6 +2,7 @@ package pm.db;
 
 import java.util.*;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
@@ -1009,6 +1010,10 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         Map<String, Map<String, Set<String>>> all = Maps.newTreeMap();
 
         for ( Project p : allProjects ) {
+
+            if ( Strings.isNullOrEmpty(p.getProjectCode()) ) {
+                continue;
+            }
 
             final List<RPLink> l = getSqlSession().selectList(
                     "pm.db.getRPLinksForProjectId", p.getId());
