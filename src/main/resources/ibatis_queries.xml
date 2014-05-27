@@ -1155,4 +1155,10 @@
 		#{propvalue}
 		)
 	</insert>
+	
+	<select id="getProjectAllocations" resultType = "pm.pojo.ProjectAllocation">
+		SELECT *
+		FROM projectallocation
+		ORDER BY id
+	</select>
 </mapper>

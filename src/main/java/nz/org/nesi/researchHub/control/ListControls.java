@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import pm.pojo.Affiliation;
+import pm.pojo.ProjectAllocation;
 
 /**
  * @author echoi
@@ -382,4 +383,47 @@ public class ListControls extends AbstractControl {
 		}
 
 	}
+
+	// TODO: Create, get and edit new project allocation
+
+	/**
+	 * Returns list of all allocations.
+	 * 
+	 * @return all project allocations in the project database
+	 */
+	public List<ProjectAllocation> getAllProjectAllocations() {
+
+		List<ProjectAllocation> pa = null;
+		try {
+			pa = projectDao.getProjectAllocations();
+		} catch (final Exception e) {
+			throw new DatabaseException("Can't get Project Allocations.", e);
+		}
+		return pa;
+
+	}
+
+	/**
+	 * Creates new project allocation in the database.
+	 * 
+	 * The project allocation object can't have an id specified, since that gets
+	 * auto-generated at lower level.
+	 * 
+	 * @param project
+	 *            the new Project
+	 * @throws Exception
+	 */
+	/*
+	 * public synchronized Integer createProjectAllocation( final
+	 * ProjectAllocation pa) throws InvalidEntityException {
+	 * 
+	 * // if project id or allocations are missing, exception should be thrown
+	 * 
+	 * //
+	 * 
+	 * 
+	 * try { final Integer paid = projectDao. } return null;
+	 * 
+	 * }
+	 */
 }
