@@ -457,6 +457,20 @@ public class ResearcherControls extends AbstractControl {
      */
 
     public void upsertProperty(final ResearcherProperty r) throws Exception {
+        if (r.getId() != null) {
+            final ResearcherProperty old = projectDao.getResearcherProperty(r
+                    .getId());
+            if (r.getPropname() != null) {
+                old.setPropname(r.getPropname());
+            }
+            if (r.getPropvalue() != null) {
+                old.setPropvalue(r.getPropvalue());
+            }
+            if (r.getSiteId() != null) {
+                old.setSiteId(r.getSiteId());
+            }
+            r = old;
+        }
         projectDao.upsertResearcherProperty(r);
     }
 

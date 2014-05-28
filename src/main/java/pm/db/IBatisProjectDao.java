@@ -805,6 +805,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    public ResearcherProperty getResearcherProperty(final Integer id) {
+        return (ResearcherProperty) getSqlSession().selectOne(
+                "getResearcherProperty", id);
+    }
+
+    @Override
     public ResearcherRole getResearcherRoleById(final Integer id)
             throws Exception {
         return (ResearcherRole) getSqlSession().selectOne(
