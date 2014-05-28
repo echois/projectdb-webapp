@@ -19,7 +19,7 @@
 		#{adviserId},
 		#{tbl},
 		#{tbl_id},
-		#{field},		
+		#{field},
 		#{new_val},
 		#{old_val}
 		)
@@ -44,7 +44,7 @@
 		FROM project
 		WHERE id = #{id}
 	</select>
-	
+
 	<select id="getProjectByCode" parameterType="String"
 		resultType="pm.pojo.Project">
 		SELECT *
@@ -58,7 +58,7 @@
 		FROM researcher
 		WHERE id = #{id}
 	</select>
-	
+
 	<select id="getResearchersWhere" parameterType="java.util.Map"
 		resultType="pm.pojo.Researcher">
 		SELECT *
@@ -75,10 +75,19 @@
 	</select>
 
 	<select id="getAdviserByTuakiriUniqueId" parameterType="java.lang.String"
-		resultType="pm.pojo.Adviser">
+ 		resultType="pm.pojo.Adviser">
 		SELECT *
 		FROM adviser
 		WHERE tuakiriUniqueId = #{id}
+	</select>
+
+	<select id="getAdviserByTuakiriSharedToken" parameterType="java.lang.String"
+		resultType="pm.pojo.Adviser">
+		SELECT a.*
+		FROM adviser AS a
+		INNER JOIN adviser_properties AS p
+		ON a.id=p.adviserId
+		WHERE p.propname='tuakiriSharedToken' AND p.propvalue = #{id}
 	</select>
 
 	<select id="getAdviserByDrupalId" parameterType="java.lang.String"
@@ -171,6 +180,11 @@
 
 	<select id="getProjects" resultType="pm.pojo.Project">
 		SELECT *
+		FROM project
+	</select>
+
+    <select id="getProjectIds" resultType="java.lang.Integer">
+		SELECT id
 		FROM project
 	</select>
 
@@ -442,6 +456,13 @@
 		WHERE id = #{id}
 	</select>
 
+	<select id="getResearcherProperty" parameterType="java.lang.Integer"
+		resultType="pm.pojo.ResearcherProperty">
+		SELECT *
+		FROM researcher_properties
+		WHERE id = #{id}
+	</select>
+
 	<select id="getPropnames" resultType="java.lang.String">
 		SELECT DISTINCT propname
 		FROM project_properties
@@ -533,7 +554,7 @@
 		#{notes}
 		)
 	</insert>
-	
+
 	<insert id="createResearcher" parameterType="pm.pojo.Researcher">
 		INSERT INTO researcher (
 		fullName,
@@ -633,44 +654,6 @@
 		#{facilityId},
 		#{propname},
 		#{propvalue}
-		)
-	</insert>
-
-	<insert id="createFollowUp" parameterType="pm.pojo.FollowUp">
-		INSERT INTO projectfollowup (
-		projectId,
-		adviserId,
-		date,
-		notes
-		) values (
-		#{projectId},
-		#{adviserId},
-		#{date},
-		#{notes}
-		)
-		<selectKey keyProperty="id" resultType="int">
-			SELECT
-			LAST_INSERT_ID() AS id
-		</selectKey>
-	</insert>
-
-	<insert id="createResearchOutput" parameterType="pm.pojo.ResearchOutput">
-		INSERT INTO
-		researchoutput (
-		projectId,
-		adviserId,
-		typeId,
-		description,
-		link,
-		date
-		)
-		values (
-		#{projectId},
-		#{adviserId},
-		#{typeId},
-		#{description},
-		#{link},
-		#{date}
 		)
 	</insert>
 
@@ -804,6 +787,28 @@
 		WHERE id = #{id}
 	</update>
 
+	<insert id="upsertFollowUp" parameterType="pm.pojo.FollowUp">
+		REPLACE INTO projectfollowup SET
+		id = #{id},
+		projectId = #{projectId},
+		adviserId = #{adviserId},
+		researcherId = #{researcherId},
+		date = #{date},
+		notes = #{notes}
+	</insert>
+
+	<insert id="upsertResearchOutput" parameterType="pm.pojo.ResearchOutput">
+		REPLACE INTO researchoutput SET
+		id = #{id},
+		projectId = #{projectId},
+		adviserId = #{adviserId},
+		researcherId = #{researcherId},
+		typeId = #{typeId},
+		description = #{description},
+		link = #{link},
+		date = #{date}
+	</insert>
+
 	<delete id="deleteProject" parameterType="java.lang.Integer">
 		DELETE FROM project
 		WHERE id = #{id}
@@ -931,6 +936,12 @@
 		project_properties
 		WHERE id = #{id}
 	</delete>
+	
+	<delete id="deleteResearcherProperty" parameterType="java.lang.Integer">
+		DELETE FROM
+		researcher_properties
+		WHERE id = #{id}
+	</delete>
 
 	<select id="getSites" resultType="pm.pojo.Site">
 		SELECT *
@@ -950,28 +961,28 @@
 		researchoutputtype
 		ORDER BY name
 	</select>
-	
+
 	<insert id="createInstitution" parameterType="pm.pojo.Affiliation">
-		INSERT INTO	institution(name, code) 
+		INSERT INTO	institution(name, code)
 		values (#{institution}, #{institutionCode})
 	</insert>
-	
+
 	<insert id="createDivision" parameterType="pm.pojo.Affiliation">
-		INSERT INTO	division(institutionId, name, code) 
+		INSERT INTO	division(institutionId, name, code)
 		SELECT id, #{division}, #{divisionCode}
 		FROM institution
 		WHERE code=#{institutionCode}
 	</insert>
-	
+
 	<insert id="createDepartment" parameterType="pm.pojo.Affiliation">
 		INSERT INTO department(institutionId, divisionId, name, code)
         SELECT i.id, d.id, #{department},#{departmentCode}
         FROM institution i, division d where i.code=#{institutionCode} and d.code=#{divisionCode}
     </insert>
-    
+
 	<select id="getAffiliations" resultType="pm.pojo.Affiliation">
 		SELECT DISTINCT
-		IFNULL(i.name,'') as institution, IFNULL(i.code,'') as institutionCode, 
+		IFNULL(i.name,'') as institution, IFNULL(i.code,'') as institutionCode,
 		'' as division, '' as divisionCode, '' as department, '' as departmentCode
 		FROM
 		institution i
@@ -1007,11 +1018,11 @@
 		FROM institution i
 		JOIN division di ON i.id = di.institutionId and i.code = #{institutionCode}
 		LEFT JOIN department de on di.id = de.divisionId
-		
+
 		ORDER
-		BY institution, division, department		
+		BY institution, division, department
 	</select>
-	
+
 	<select id="getAffiliationsByDivisionCode" parameterType="java.lang.String"
 		resultType="pm.pojo.Affiliation">
 		SELECT DISTINCT IFNULL(i.name,'')
@@ -1023,9 +1034,9 @@
 		JOIN department de on di.id = de.divisionId
 
 		ORDER
-		BY institution, division, department		
+		BY institution, division, department
 	</select>
-	
+
 		<select id="getAffiliationsByDepartmentCode" parameterType="java.lang.String"
 		resultType="pm.pojo.Affiliation">
 		SELECT DISTINCT IFNULL(i.name,'')
@@ -1037,9 +1048,9 @@
 		JOIN department de on di.id = de.divisionId and de.code= #{departmentCode}
 
 		ORDER
-		BY institution, division, department		
+		BY institution, division, department
 	</select>
-	
+
 	<select id="getInstitutions" resultType="java.lang.String">
 		SELECT DISTINCT name
 		FROM institution
@@ -1143,12 +1154,14 @@
 	<insert id="upsertResearcherProperty" parameterType="pm.pojo.ResearcherProperty">
 		REPLACE INTO
 		researcher_properties (
+		id,
 		researcherId,
 		siteId,
 		propname,
 		propvalue
 		) values
 		(
+		#{id},
 		#{researcherId},
 		#{siteId},
 		#{propname},

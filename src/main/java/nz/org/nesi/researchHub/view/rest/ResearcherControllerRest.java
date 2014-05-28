@@ -230,6 +230,15 @@ public class ResearcherControllerRest {
         return researcherControls.getStatuses();
     }
 
+    @RequestMapping(value = "/prop/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Remove researcher property",
+                  notes = "Removes a researcher property")
+    @ResponseBody
+    public void remove(@ApiParam(value = "Researcher property id",
+                                 required = true) @PathVariable final Integer id) {
+        researcherControls.removeProperty(id);
+    }
+
     @RequestMapping(value = "/rollback/{uid}/{rid}", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(

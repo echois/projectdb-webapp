@@ -118,6 +118,9 @@ public class ResearcherControls extends AbstractControl {
         if (field.equals("PictureUrl") && (data.equals("") || data == null)) {
             data = "https://www.nesi.org.nz/sites/default/files/nesi_avatar.png";
         }
+        if (field.equals("FullName")) {
+            data = data.trim();
+        }
         validateResearcher(field, data);
         if (id != null) {
             // check whether an researcher with this id exists
@@ -421,6 +424,14 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
+     * Remove a property
+     */
+
+    public void removeProperty(Integer id) {
+        projectDao.deleteResearcherProperty(id);
+    }
+
+    /**
      * Rollback to a given change id.
      * 
      * @return a list of Changes
@@ -453,7 +464,21 @@ public class ResearcherControls extends AbstractControl {
      * @throws Exception
      */
 
-    public void upsertProperty(final ResearcherProperty r) throws Exception {
+    public void upsertProperty(ResearcherProperty r) throws Exception {
+        if (r.getId() != null) {
+            final ResearcherProperty old = projectDao.getResearcherProperty(r
+                    .getId());
+            if (r.getPropname() != null) {
+                old.setPropname(r.getPropname());
+            }
+            if (r.getPropvalue() != null) {
+                old.setPropvalue(r.getPropvalue());
+            }
+            if (r.getSiteId() != null) {
+                old.setSiteId(r.getSiteId());
+            }
+            r = old;
+        }
         projectDao.upsertResearcherProperty(r);
     }
 

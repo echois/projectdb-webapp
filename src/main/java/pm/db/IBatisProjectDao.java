@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -40,6 +41,10 @@ import pm.pojo.ResearcherRole;
 import pm.pojo.ResearcherStatus;
 import pm.pojo.Review;
 import pm.pojo.Site;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		ProjectDao {
@@ -92,7 +97,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	private Integer createFollowUp(final FollowUp f) throws Exception {
-		getSqlSession().insert("pm.db.createFollowUp", f);
+		getSqlSession().insert("pm.db.upsertFollowUp", f);
 		final Integer fid = f.getId();
 		final List<Attachment> attachments = f.getAttachments();
 		if ((f.getAttachmentDescription() != null && f
@@ -188,7 +193,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	private void createResearchOutput(final ResearchOutput o) throws Exception {
-		getSqlSession().insert("pm.db.createResearchOutput", o);
+		getSqlSession().insert("pm.db.upsertResearchOutput", o);
 	}
 
 	private Integer createReview(final Review r) throws Exception {
@@ -288,6 +293,11 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		getSqlSession().update("pm.db.deleteResearcher", id);
 	}
 
+	@Override
+	public void deleteResearcherProperty(Integer id) {
+		getSqlSession().delete("deleteResearcherProperty", id);
+	}
+
 	private void deleteResearchOutput(final Integer id) throws Exception {
 		getSqlSession().update("pm.db.deleteResearchOutput", id);
 	}
@@ -341,6 +351,14 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		final Adviser a = (Adviser) getSqlSession().selectOne(
 				"pm.db.getAdviserById", id);
 		a.setNumProjects(getNumProjectsForAdviser(a.getId()));
+		return a;
+	}
+
+	@Override
+	public Adviser getAdviserByTuakiriSharedToken(final String id)
+			throws Exception {
+		final Adviser a = (Adviser) getSqlSession().selectOne(
+				"pm.db.getAdviserByTuakiriSharedToken", id);
 		return a;
 	}
 
@@ -432,6 +450,63 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		return afs;
 	}
 
+	@Override
+	public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers()
+			throws Exception {
+
+		List<Researcher> allResearchers = getResearchers();
+		Map<Integer, Researcher> researcherById = Maps.newHashMap();
+		for (Researcher r : allResearchers) {
+			researcherById.put(r.getId(), r);
+		}
+
+		List<ResearcherRole> allRoles = getResearcherRoles();
+		Map<Integer, ResearcherRole> rolesById = Maps.newHashMap();
+		for (ResearcherRole r : allRoles) {
+			rolesById.put(r.getId(), r);
+		}
+
+		List<Project> allProjects = getProjects();
+
+		Map<String, Map<String, Set<String>>> all = Maps.newTreeMap();
+
+		for (Project p : allProjects) {
+
+			if (Strings.isNullOrEmpty(p.getProjectCode())) {
+				continue;
+			}
+
+			final List<RPLink> l = getSqlSession().selectList(
+					"pm.db.getRPLinksForProjectId", p.getId());
+
+			final Map<String, Set<String>> allMembers = Maps.newTreeMap();
+			if (l != null) {
+				for (final RPLink rp : l) {
+
+					Researcher researcher = researcherById.get(rp
+							.getResearcherId());
+					ResearcherRole role = rolesById.get(rp
+							.getResearcherRoleId());
+
+					String rolename = rolesById.get(role.getId()).getName();
+
+					Set<String> roleMembers = allMembers.get(rolename);
+					if (roleMembers == null) {
+						roleMembers = Sets.newTreeSet();
+						allMembers.put(rolename, roleMembers);
+					}
+					roleMembers.add(researcher.getFullName());
+				}
+
+				all.put(p.getProjectCode(), allMembers);
+
+			}
+
+		}
+		return all;
+
+	}
+
 	private List<APLink> getAPLinksForProject(final Integer pid)
 			throws Exception {
 		final List<APLink> l = getSqlSession().selectList(
@@ -519,9 +594,16 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		final List<FollowUp> l = getSqlSession().selectList(
 				"pm.db.getFollowUpsForProjectId", id);
 		for (final FollowUp f : l) {
-			final Adviser tmp = (Adviser) getSqlSession().selectOne(
-					"pm.db.getAdviserById", f.getAdviserId());
-			f.setAdviserName(tmp.getFullName());
+			if (f.getAdviserId() != null) {
+				final Adviser tmp = (Adviser) getSqlSession().selectOne(
+						"pm.db.getAdviserById", f.getAdviserId());
+				f.setAdviserName(tmp.getFullName());
+			} else if (f.getResearcherId() != null) {
+				final Researcher tmp = (Researcher) getSqlSession().selectOne(
+						"pm.db.getResearcherById", f.getResearcherId());
+				f.setResearcherName(tmp.getFullName());
+			}
+
 			f.setAttachments(getAttachmentsForFollowUpId(f.getId()));
 		}
 		return l;
@@ -631,6 +713,13 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		p.setStatusName(getProjectStatusById(p.getStatusId()));
 		return p;
 
+	}
+
+	@Override
+	public List<Integer> getProjectIds() throws Exception {
+		final List<Integer> ps = getSqlSession().selectList(
+				"pm.db.getProjectIds");
+		return ps;
 	}
 
 	@Override
@@ -791,6 +880,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	@Override
+	public ResearcherProperty getResearcherProperty(final Integer id) {
+		return (ResearcherProperty) getSqlSession().selectOne(
+				"getResearcherProperty", id);
+	}
+
+	@Override
 	public ResearcherRole getResearcherRoleById(final Integer id)
 			throws Exception {
 		return (ResearcherRole) getSqlSession().selectOne(
@@ -911,13 +1006,19 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		final List<ResearchOutput> l = getSqlSession().selectList(
 				"pm.db.getResearchOutputsForProjectId", id);
 		for (final ResearchOutput ro : l) {
-			final Adviser a = (Adviser) getSqlSession().selectOne(
-					"pm.db.getAdviserById", ro.getAdviserId());
+			if (ro.getAdviserId() != null) {
+				final Adviser tmp = (Adviser) getSqlSession().selectOne(
+						"pm.db.getAdviserById", ro.getAdviserId());
+				ro.setAdviserName(tmp.getFullName());
+			} else if (ro.getResearcherId() != null) {
+				final Researcher tmp = (Researcher) getSqlSession().selectOne(
+						"pm.db.getResearcherById", ro.getResearcherId());
+				ro.setResearcherName(tmp.getFullName());
+			}
 			final ResearchOutputType tmp = (ResearchOutputType) getSqlSession()
 					.selectOne("pm.db.getResearchOutputTypeById",
 							ro.getTypeId());
 			ro.setType(tmp.getName());
-			ro.setAdviserName(a.getFullName());
 		}
 		return l;
 	}
@@ -1049,13 +1150,25 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	@Override
+	@RequireAdviserOnProject
+	public void upsertFollowUp(final FollowUp f) {
+		getSqlSession().insert("pm.db.upsertFollowUp", f);
+	}
+
+	@Override
 	public void upsertProjectProperty(final ProjectProperty p) {
-		getSqlSession().update("upsertProjectProperty", p);
+		getSqlSession().insert("pm.db.upsertProjectProperty", p);
 	}
 
 	@Override
 	public void upsertResearcherProperty(final ResearcherProperty p) {
-		getSqlSession().update("upsertResearcherProperty", p);
+		getSqlSession().insert("pm.db.upsertResearcherProperty", p);
+	}
+
+	@Override
+	@RequireAdviserOnProject
+	public void upsertResearchOutput(ResearchOutput ro) {
+		getSqlSession().insert("pm.db.upsertResearchOutput", ro);
 	}
 
 	@Override
@@ -1074,5 +1187,4 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	public List<ProjectAllocation> getProjectAllocations() {
 		return getSqlSession().selectList("pm.db.getProjectAllocations");
 	}
-
 }

@@ -4,10 +4,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+import com.google.common.collect.TreeMultimap;
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
 import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
@@ -73,7 +75,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Validates the project wrapper object.
-     * 
+     *
      * @param pw
      *            the project wrapper
      * @throws InvalidEntityException
@@ -113,7 +115,7 @@ public class ProjectControls extends AbstractControl {
 
         if (pw.getProject().getProjectCode() == null
                 || pw.getProject().getProjectCode().isEmpty()
-                || !pw.getProject().getProjectCode().matches("[a-z]+\\d{5}")) {
+                || !pw.getProject().getProjectCode().matches("[a-z]+\\d{3,}")) {
             throw new InvalidEntityException(
                     "There must be a valid project code", Project.class,
                     "projectCode");
@@ -159,7 +161,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Add the specified adviser to this project
-     * 
+     *
      * @param id
      *            the id
      * @throws Exception
@@ -183,7 +185,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Add the specified project_kpi to this project
-     * 
+     *
      * @param id
      *            the id
      * @throws Exception
@@ -198,7 +200,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Add the specified attachment to the project
-     * 
+     *
      * @param id
      *            the id
      * @throws Exception
@@ -226,22 +228,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Add the specified project_kpi to this project
-     * 
-     * @param id
-     *            the id
-     * @throws Exception
-     */
-    public void addFollowUp(final FollowUp f) throws Exception {
-        final ProjectWrapper pw = projectDao.getProjectWrapperById(f
-                .getProjectId());
-        pw.getFollowUps().add(f);
-        validateProject(pw);
-        projectDao.updateProjectWrapper(f.getProjectId(), pw);
-    }
-
-    /**
-     * Add the specified project_kpi to this project
-     * 
+     *
      * @param id
      *            the id
      * @throws InvalidEntityException
@@ -260,7 +247,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Add the specified researcher to this project
-     * 
+     *
      * @param id
      *            the id
      * @throws InvalidEntityException
@@ -275,6 +262,8 @@ public class ProjectControls extends AbstractControl {
                     .getProjectId());
             pw.getRpLinks().add(rl);
             projectDao.updateProjectWrapper(rl.getProjectId(), pw);
+        } catch (final CustomException e) {
+            throw new DatabaseException(e.getCustomMsg() + rl.getProjectId(), e);
         } catch (final Exception e) {
             throw new DatabaseException("Can't fetch project with id "
                     + rl.getProjectId(), e);
@@ -282,23 +271,8 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Add the specified research_output to this project
-     * 
-     * @param id
-     *            the id
-     * @throws Exception
-     */
-    public void addResearchOutput(final ResearchOutput ro) throws Exception {
-        final ProjectWrapper pw = projectDao.getProjectWrapperById(ro
-                .getProjectId());
-        pw.getResearchOutputs().add(ro);
-        validateProject(pw);
-        projectDao.updateProjectWrapper(ro.getProjectId(), pw);
-    }
-
-    /**
      * Add the specified project_kpi to this project
-     * 
+     *
      * @param id
      *            the id
      * @throws Exception
@@ -313,7 +287,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Creates a new project in the database.
-     * 
+     *
      * @param pw
      *            the projectWrapper object
      * @return the id of the new project
@@ -353,7 +327,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Delete the project wrapper object with the specified id.
-     * 
+     *
      * @param id
      *            the id
      */
@@ -370,7 +344,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Edit a project wrapper object.
-     * 
+     *
      * @param project
      *            the updated project wrapper
      * @throws InvalidEntityException
@@ -414,7 +388,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Edit one field of a project wrapper object.
-     * 
+     *
      * @param project
      *            the updated project wrapper
      * @throws Exception
@@ -470,8 +444,8 @@ public class ProjectControls extends AbstractControl {
                     }
                     pw.setProjectFacilities(projectFacilities);
                 } else {
-                    final Class<ProjectWrapper> c = ProjectWrapper.class;
-                    Method getPojo = c.getDeclaredMethod(method);
+                    pojoClass = ProjectWrapper.class;
+                    Method getPojo = pojoClass.getDeclaredMethod(method);
                     Object pojo = getPojo.invoke(pw);
                     pojoClass = pojo.getClass();
                     if (deep) {
@@ -594,10 +568,10 @@ public class ProjectControls extends AbstractControl {
     /**
      * Get all projects that contain the specified filter string
      * (case-insensitive) in one or more of the project properties.
-     * 
+     *
      * Mind, this returns only the Project object, not the ProjectWrapper ones
      * (see: {@link #getProjects()}.
-     * 
+     *
      * @param filter
      *            the filter string, can't be empty
      * @return all projects matching the filter
@@ -633,8 +607,20 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Returns a map of all projects, with all researcher members for every project, and their roles.
+     *
+     * @return all project map
+     */
+    public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers() throws Exception {
+
+        Map<String, Map<String, Set<String>>> allProjects = projectDao.getAllProjectsAndMembers();
+
+        return allProjects;
+    }
+
+    /**
      * Returns a list of changes. If no id is given, it returns all changes.
-     * 
+     *
      * @return a list of Changes
      * @throws Exception
      */
@@ -652,7 +638,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of facilities.
-     * 
+     *
      * @return a list of facilities
      * @throws Exception
      */
@@ -662,7 +648,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of institutions.
-     * 
+     *
      * @return a list of institutions
      * @throws Exception
      */
@@ -672,7 +658,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of KpiCodes.
-     * 
+     *
      * @return a list of KpiCodes
      * @throws Exception
      */
@@ -682,7 +668,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of Kpis.
-     * 
+     *
      * @return a list of Kpis
      * @throws Exception
      */
@@ -693,7 +679,7 @@ public class ProjectControls extends AbstractControl {
     /**
      * Get the timestamp of the most recently modified project, or the specified
      * project
-     * 
+     *
      * @return a timestamp
      * @throws Exception
      */
@@ -708,7 +694,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of all KPIS reported for all projects.
-     * 
+     *
      * @return a list of ProjectKpis
      * @throws Exception
      */
@@ -718,7 +704,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Gets the project properties associated with the specified project id.
-     * 
+     *
      * @param projectId
      *            the project
      * @return the ProjectProperties
@@ -733,10 +719,10 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Get all projects in the database.
-     * 
+     *
      * Mind, this doesn't return project wrapper objects, just the plain
      * objects. We could change that, not sure about performance in that case.
-     * 
+     *
      * @return all projects
      */
     public List<Project> getProjects() {
@@ -750,7 +736,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of ProjectStatuses.
-     * 
+     *
      * @return a list of ProjectStatuses
      * @throws Exception
      */
@@ -760,7 +746,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of ProjectTypes.
-     * 
+     *
      * @return a list of ProjectTypes
      * @throws Exception
      */
@@ -770,7 +756,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Utility method that forwards to {@link #getProjectWrapper(String)}.
-     * 
+     *
      * @param id
      *            the id of the project
      * @return the projectWrapper object
@@ -782,7 +768,7 @@ public class ProjectControls extends AbstractControl {
     /**
      * Gets the project (with associated objects) with the specified id or
      * project code.
-     * 
+     *
      * @param projectIdOrCode
      *            the project id or project code
      * @return the Project
@@ -815,7 +801,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of all Research Output reported for all projects.
-     * 
+     *
      * @return a list of ResearchOutput
      * @throws Exception
      */
@@ -825,7 +811,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of possible Research Output types.
-     * 
+     *
      * @return a list of Research Output types
      * @throws Exception
      */
@@ -835,7 +821,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Returns a list of sites.
-     * 
+     *
      * @return a list of sites
      * @throws Exception
      */
@@ -845,7 +831,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Remove the specified adviser or researcher from this project
-     * 
+     *
      * @param id
      *            the id
      */
@@ -912,7 +898,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Rollback to a given change id.
-     * 
+     *
      * @return a list of Changes
      * @throws Exception
      */
@@ -939,8 +925,19 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Upsert the specified followup
+     *
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void upsertFollowUp(final FollowUp f) throws Exception {
+        projectDao.upsertFollowUp(f);
+    }
+
+    /**
      * Add/Edit the specified project property
-     * 
+     *
      * @param id
      *            the id
      * @throws Exception
@@ -965,8 +962,19 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Add the specified research_output to this project
+     *
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void upsertResearchOutput(final ResearchOutput ro) throws Exception {
+        projectDao.upsertResearchOutput(ro);
+    }
+
+    /**
      * Validates an project object, by id.
-     * 
+     *
      * @param a
      *            the project id
      * @throws InvalidEntityException
@@ -981,7 +989,7 @@ public class ProjectControls extends AbstractControl {
 
     /**
      * Validates a field.
-     * 
+     *
      * @param field
      *            , data
      * @throws InvalidEntityException

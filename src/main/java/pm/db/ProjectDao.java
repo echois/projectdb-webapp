@@ -1,12 +1,15 @@
 package pm.db;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
 import pm.pojo.Affiliation;
 import pm.pojo.Change;
 import pm.pojo.Facility;
+import pm.pojo.FollowUp;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
 import pm.pojo.KpiCode;
@@ -47,9 +50,13 @@ public interface ProjectDao {
 
 	public void deleteResearcher(Integer id) throws Exception;
 
+	public void deleteResearcherProperty(Integer id);
+
 	public Adviser getAdviserByDrupalId(String id) throws Exception;
 
 	public Adviser getAdviserById(Integer id) throws Exception;
+
+	Adviser getAdviserByTuakiriSharedToken(String id) throws Exception;
 
 	public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
 
@@ -74,6 +81,9 @@ public interface ProjectDao {
 
 	public List<Affiliation> getAffiliationsByInstitutionCode(
 			String institutionCode) throws Exception;
+
+	public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers()
+			throws Exception;
 
 	List<Change> getChangeLogForTable(String table) throws Exception;
 
@@ -104,6 +114,8 @@ public interface ProjectDao {
 
 	public Integer getNumProjectsForAdviser(Integer adviserId) throws Exception;
 
+	public List<Integer> getProjectIds() throws Exception;
+
 	public List<ProjectKpi> getProjectKpis() throws Exception;
 
 	public List<ProjectProperty> getProjectProperties(Integer id)
@@ -124,6 +136,9 @@ public interface ProjectDao {
 
 	public List<ProjectType> getProjectTypes() throws Exception;
 
+	// public List<RPLink> getRPLinksForProject(final Integer pid)
+	// throws Exception;
+
 	public ProjectWrapper getProjectWrapperById(Integer id) throws Exception;
 
 	public ProjectWrapper getProjectWrapperByProjectCode(String projectCode)
@@ -135,6 +150,8 @@ public interface ProjectDao {
 
 	public List<ResearcherProperty> getResearcherProperties(Integer id)
 			throws Exception;
+
+	ResearcherProperty getResearcherProperty(Integer id);
 
 	public ResearcherRole getResearcherRoleById(Integer id) throws Exception;
 
@@ -172,9 +189,13 @@ public interface ProjectDao {
 
 	public void updateResearcher(Researcher r);
 
+	public void upsertFollowUp(FollowUp f);
+
 	public void upsertProjectProperty(ProjectProperty p);
 
 	public void upsertResearcherProperty(ResearcherProperty r);
+
+	public void upsertResearchOutput(ResearchOutput ro);
 
 	public void createProjectAllocation(Integer pid);
 
