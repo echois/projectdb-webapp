@@ -936,6 +936,12 @@
 		project_properties
 		WHERE id = #{id}
 	</delete>
+	
+	<delete id="deleteResearcherProperty" parameterType="java.lang.Integer">
+		DELETE FROM
+		researcher_properties
+		WHERE id = #{id}
+	</delete>
 
 	<select id="getSites" resultType="pm.pojo.Site">
 		SELECT *

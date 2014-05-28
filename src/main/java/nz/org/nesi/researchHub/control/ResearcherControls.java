@@ -424,6 +424,14 @@ public class ResearcherControls extends AbstractControl {
     }
 
     /**
+     * Remove a property
+     */
+
+    public void removeProperty(Integer id) {
+        projectDao.deleteResearcherProperty(id);
+    }
+
+    /**
      * Rollback to a given change id.
      * 
      * @return a list of Changes

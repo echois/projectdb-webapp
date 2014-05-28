@@ -1,10 +1,11 @@
 package pm.db;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 
@@ -39,6 +40,10 @@ import pm.pojo.ResearcherRole;
 import pm.pojo.ResearcherStatus;
 import pm.pojo.Review;
 import pm.pojo.Site;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class IBatisProjectDao extends SqlSessionDaoSupport implements
         ProjectDao {
@@ -287,6 +292,11 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         getSqlSession().update("pm.db.deleteResearcher", id);
     }
 
+    @Override
+    public void deleteResearcherProperty(Integer id) {
+        getSqlSession().delete("deleteResearcherProperty", id);
+    }
+
     private void deleteResearchOutput(final Integer id) throws Exception {
         getSqlSession().update("pm.db.deleteResearchOutput", id);
     }
@@ -437,6 +447,63 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         final List<Affiliation> afs = getSqlSession().selectList(
                 "pm.db.getAffiliationsByInstitutionCode", institutionCode);
         return afs;
+    }
+
+    @Override
+    public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers()
+            throws Exception {
+
+        List<Researcher> allResearchers = getResearchers();
+        Map<Integer, Researcher> researcherById = Maps.newHashMap();
+        for (Researcher r : allResearchers) {
+            researcherById.put(r.getId(), r);
+        }
+
+        List<ResearcherRole> allRoles = getResearcherRoles();
+        Map<Integer, ResearcherRole> rolesById = Maps.newHashMap();
+        for (ResearcherRole r : allRoles) {
+            rolesById.put(r.getId(), r);
+        }
+
+        List<Project> allProjects = getProjects();
+
+        Map<String, Map<String, Set<String>>> all = Maps.newTreeMap();
+
+        for (Project p : allProjects) {
+
+            if (Strings.isNullOrEmpty(p.getProjectCode())) {
+                continue;
+            }
+
+            final List<RPLink> l = getSqlSession().selectList(
+                    "pm.db.getRPLinksForProjectId", p.getId());
+
+            final Map<String, Set<String>> allMembers = Maps.newTreeMap();
+            if (l != null) {
+                for (final RPLink rp : l) {
+
+                    Researcher researcher = researcherById.get(rp
+                            .getResearcherId());
+                    ResearcherRole role = rolesById.get(rp
+                            .getResearcherRoleId());
+
+                    String rolename = rolesById.get(role.getId()).getName();
+
+                    Set<String> roleMembers = allMembers.get(rolename);
+                    if (roleMembers == null) {
+                        roleMembers = Sets.newTreeSet();
+                        allMembers.put(rolename, roleMembers);
+                    }
+                    roleMembers.add(researcher.getFullName());
+                }
+
+                all.put(p.getProjectCode(), allMembers);
+
+            }
+
+        }
+        return all;
+
     }
 
     private List<APLink> getAPLinksForProject(final Integer pid)
@@ -648,6 +715,13 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
     }
 
     @Override
+    public List<Integer> getProjectIds() throws Exception {
+        final List<Integer> ps = getSqlSession().selectList(
+                "pm.db.getProjectIds");
+        return ps;
+    }
+
+    @Override
     public List<ProjectKpi> getProjectKpis() throws Exception {
         final List<ProjectKpi> l = getSqlSession().selectList(
                 "pm.db.getProjectKpis");
@@ -702,14 +776,6 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         }
         return ps;
     }
-
-    @Override
-    public List<Integer> getProjectIds() throws Exception {
-        final List<Integer> ps = getSqlSession()
-                .selectList("pm.db.getProjectIds");
-        return ps;
-    }
-
 
     @Override
     public List<Project> getProjectsForAdviserId(final Integer id)
@@ -996,61 +1062,6 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
         }
         return l;
     }
-
-    public Map<String, Map<String, Set<String>>> getAllProjectsAndMembers() throws Exception {
-
-        List<Researcher> allResearchers = getResearchers();
-        Map<Integer, Researcher> researcherById = Maps.newHashMap();
-        for (Researcher r : allResearchers) {
-            researcherById.put(r.getId(), r);
-        }
-
-        List<ResearcherRole> allRoles = getResearcherRoles();
-        Map<Integer, ResearcherRole> rolesById = Maps.newHashMap();
-        for (ResearcherRole r : allRoles ) {
-            rolesById.put(r.getId(), r);
-        }
-
-        List<Project> allProjects = getProjects();
-
-        Map<String, Map<String, Set<String>>> all = Maps.newTreeMap();
-
-        for ( Project p : allProjects ) {
-
-            if ( Strings.isNullOrEmpty(p.getProjectCode()) ) {
-                continue;
-            }
-
-            final List<RPLink> l = getSqlSession().selectList(
-                    "pm.db.getRPLinksForProjectId", p.getId());
-
-            final Map<String, Set<String>> allMembers = Maps.newTreeMap();
-            if ( l != null ) {
-                for ( final RPLink rp : l ) {
-
-                    Researcher researcher = researcherById.get(rp.getResearcherId());
-                    ResearcherRole role = rolesById.get(rp.getResearcherRoleId());
-
-                    String rolename = rolesById.get(role.getId()).getName();
-
-                    Set<String> roleMembers = allMembers.get(rolename);
-                    if ( roleMembers == null ) {
-                        roleMembers = Sets.newTreeSet();
-                        allMembers.put(rolename, roleMembers);
-                    }
-                    roleMembers.add(researcher.getFullName());
-                }
-
-                all.put(p.getProjectCode(), allMembers);
-
-            }
-
-
-        }
-        return all;
-
-    }
-
 
     @Override
     public List<Site> getSites() throws Exception {
