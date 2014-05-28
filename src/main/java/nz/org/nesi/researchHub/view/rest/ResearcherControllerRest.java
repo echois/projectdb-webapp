@@ -230,7 +230,7 @@ public class ResearcherControllerRest {
         return researcherControls.getStatuses();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}/prop", method = RequestMethod.DELETE)
     @ApiOperation(value = "Remove researcher property",
                   notes = "Removes a researcher property")
     @ResponseBody
