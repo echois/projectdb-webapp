@@ -4,40 +4,49 @@ import java.io.Serializable;
 
 public class ProjectAllocation implements Serializable {
 	private Integer id;
-	private Integer siteId;
+	private String project;
 	private String allocation;
-	private Integer projectId;
+	private String site;
+	private String lastModified;
 
 	public Integer getId() {
 		return id;
 	}
 
-	public Integer getSiteId() {
-		return siteId;
+	public String getSite() {
+		return site;
 	}
 
 	public String getAllocation() {
 		return allocation;
 	}
 
-	public Integer getProjectId() {
-		return projectId;
+	public String getProject() {
+		return project;
+	}
+
+	public String getLastModified() {
+		return lastModified;
 	}
 
 	public void setId(final Integer id) {
 		this.id = id;
 	}
 
-	public void setSiteId(final Integer siteId) {
-		this.siteId = siteId;
+	public void setSite(final String site) {
+		this.site = site;
 	}
 
 	public void setAllocation(final String allocation) {
 		this.allocation = allocation;
 	}
 
-	public void setProjectId(final Integer projectId) {
-		this.projectId = projectId;
+	public void setProject(final String project) {
+		this.project = project;
+	}
+
+	public void setLastModified() {
+		this.lastModified = lastModified;
 	}
 
 }

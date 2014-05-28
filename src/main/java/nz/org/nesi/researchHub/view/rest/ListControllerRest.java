@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Affiliation;
+import pm.pojo.ProjectAllocation;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -113,5 +114,15 @@ public class ListControllerRest {
 			throws NoSuchEntityException {
 
 		return listControls.getAffiliationsByDivisionCode(divisionCode);
+	}
+
+	@ApiOperation(
+					value = "Get all project allocations",
+					notes = "Returns a list of objects that indicate all project allocations")
+	@RequestMapping(value = "/alloc", method = RequestMethod.GET)
+	@ResponseBody
+	public final List<ProjectAllocation> getAllProjectAllocations()
+			throws Exception {
+		return listControls.getAllProjectAllocations();
 	}
 }

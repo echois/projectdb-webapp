@@ -1157,8 +1157,10 @@
 	</insert>
 	
 	<select id="getProjectAllocations" resultType = "pm.pojo.ProjectAllocation">
-		SELECT *
-		FROM projectallocation
+		SELECT pa.id, p.name as project, s.name as site, pa.allocation, pa.lastModified 
+		FROM projectallocation pa
+		JOIN project p ON p.id = pa.projectId
+		JOIN site s ON s.id = pa.siteId
 		ORDER BY id
 	</select>
 </mapper>
