@@ -1148,12 +1148,14 @@
 	<insert id="upsertResearcherProperty" parameterType="pm.pojo.ResearcherProperty">
 		REPLACE INTO
 		researcher_properties (
+		id,
 		researcherId,
 		siteId,
 		propname,
 		propvalue
 		) values
 		(
+		#{id},
 		#{researcherId},
 		#{siteId},
 		#{propname},
