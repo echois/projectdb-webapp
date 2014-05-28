@@ -126,6 +126,8 @@ public interface ProjectDao {
     public List<ResearcherProperty> getResearcherProperties(Integer id)
             throws Exception;
 
+    ResearcherProperty getResearcherProperty(Integer id);
+
     public ResearcherRole getResearcherRoleById(Integer id) throws Exception;
 
     public List<ResearcherRole> getResearcherRoles() throws Exception;

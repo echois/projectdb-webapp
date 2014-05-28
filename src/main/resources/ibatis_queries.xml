@@ -456,6 +456,13 @@
 		WHERE id = #{id}
 	</select>
 
+	<select id="getResearcherProperty" parameterType="java.lang.Integer"
+		resultType="pm.pojo.ResearcherProperty">
+		SELECT *
+		FROM researcher_properties
+		WHERE id = #{id}
+	</select>
+
 	<select id="getPropnames" resultType="java.lang.String">
 		SELECT DISTINCT propname
 		FROM project_properties
