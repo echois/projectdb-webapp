@@ -456,7 +456,7 @@ public class ResearcherControls extends AbstractControl {
      * @throws Exception
      */
 
-    public void upsertProperty(final ResearcherProperty r) throws Exception {
+    public void upsertProperty(ResearcherProperty r) throws Exception {
         if (r.getId() != null) {
             final ResearcherProperty old = projectDao.getResearcherProperty(r
                     .getId());
