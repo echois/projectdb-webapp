@@ -1134,6 +1134,7 @@
 		FROM `project`
 		WHERE `projectCode`
 		LIKE CONCAT(#{code}, '%')
+		AND `projectCode` NOT LIKE "%99999"
 	</select>
 
 	<select id="getInstitutionCodeFromName" parameterType="java.lang.String"
