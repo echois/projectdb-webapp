@@ -90,7 +90,8 @@ public class ProjectControls extends AbstractControl {
                     Project.class, "name");
         }
 
-        if (pw.getProject().getName().equals("New Project")) {
+        if (pw.getProject().getName().equals("New Project")
+                || pw.getProject().getStatusId().equals(7)) {
             return; // Don't check HPC until the project has a real name
         }
 
