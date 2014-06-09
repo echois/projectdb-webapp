@@ -56,7 +56,7 @@
 			id="org.eclipse.jdt.core.formatter.insert_space_after_prefix_operator"
 			value="do not insert" />
 		<setting
-			id="org.eclipse.jdt.core.formatter.keep_else_statement_on_same_line"
+			id="org.eclipse.jdt.core.formatter.keep_else_statement_on_spame_line"
 			value="true" />
 		<setting id="org.eclipse.jdt.core.formatter.insert_space_after_ellipsis"
 			value="insert" />
