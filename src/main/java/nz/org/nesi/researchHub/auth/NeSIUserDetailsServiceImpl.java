@@ -27,14 +27,14 @@ public class NeSIUserDetailsServiceImpl implements UserDetailsService {
 		InputStream input = null;
 
 		try {
-			input = new FileInputStream("/home/markus/users.properties");
+			input = new FileInputStream("/etc/projectdb.users.conf");
 			prop.load(input);
 
 			for (final String name: prop.stringPropertyNames())
 				users.put(name, prop.getProperty(name));
 
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Can't load users config file: "+e.getLocalizedMessage(), e);
 		}
 
     }
