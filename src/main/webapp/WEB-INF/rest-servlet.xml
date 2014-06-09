@@ -25,36 +25,36 @@
 
 
 
-	<!-- Allows us to use @PreAuthorize family of security authorization annotations. -->
-	<security:global-method-security
-		pre-post-annotations="enabled">
-		<security:expression-handler ref="expressionHandler" />
-	</security:global-method-security>
+	<!--&lt;!&ndash; Allows us to use @PreAuthorize family of security authorization annotations. &ndash;&gt;-->
+	<!--<security:global-method-security-->
+		<!--pre-post-annotations="enabled">-->
+		<!--<security:expression-handler ref="expressionHandler" />-->
+	<!--</security:global-method-security>-->
 
-	<bean id="expressionHandler"
-		class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-		<property name="permissionEvaluator" ref="permissionEvaluator" />
-	</bean>
+	<!--<bean id="expressionHandler"-->
+		<!--class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">-->
+		<!--<property name="permissionEvaluator" ref="permissionEvaluator" />-->
+	<!--</bean>-->
 
-	<bean id="permissionEvaluator" class="nz.org.nesi.researchHub.auth.NeSIPermissionEvaluator" />
+	<!--<bean id="permissionEvaluator" class="nz.org.nesi.researchHub.auth.NeSIPermissionEvaluator" />-->
 
-	<security:authentication-manager>
-		<security:authentication-provider>
-			<security:user-service id="userService">
-				<security:user name="admin" password="password"
-					authorities="admin, adviser, customer" />
-				<security:user name="johndoe" password="password"
-					authorities="researcher" />
-			</security:user-service>
-		</security:authentication-provider>
-	</security:authentication-manager>
+	<!--<security:authentication-manager>-->
+		<!--<security:authentication-provider>-->
+			<!--<security:user-service id="userService">-->
+				<!--<security:user name="admin" password="password"-->
+					<!--authorities="admin, adviser, customer" />-->
+				<!--<security:user name="johndoe" password="password"-->
+					<!--authorities="researcher" />-->
+			<!--</security:user-service>-->
+		<!--</security:authentication-provider>-->
+	<!--</security:authentication-manager>-->
 
-	<security:http create-session="stateless"
-		use-expressions="true">
-		<security:intercept-url pattern="/service/**"
-			access="isAuthenticated()" />
-		<security:http-basic />
-	</security:http>
+	<!--<security:http create-session="stateless"-->
+		<!--use-expressions="true">-->
+		<!--<security:intercept-url pattern="/service/**"-->
+			<!--access="isAuthenticated()" />-->
+		<!--<security:http-basic />-->
+	<!--</security:http>-->
 
 
 </beans>
