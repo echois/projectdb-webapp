@@ -199,8 +199,9 @@ public interface ProjectDao {
 
 	public void createProjectAllocation(Integer pid);
 
-	public ProjectAllocation getProjectAllocation(Integer pid);
-
 	public List<ProjectAllocation> getProjectAllocations();
+
+	public ProjectAllocation getProjectAllocationByProjectCode(
+			String projectCode) throws Exception;
 
 }

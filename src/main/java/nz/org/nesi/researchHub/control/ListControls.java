@@ -10,6 +10,7 @@ import java.util.Map;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
+import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -401,6 +402,46 @@ public class ListControls extends AbstractControl {
 		}
 		return pa;
 
+	}
+
+	/**
+	 * Returns the project allocation with project id.
+	 * 
+	 * @param id
+	 *            the project' id
+	 * @return the project allocation object
+	 * @throws DatabaseException
+	 *             if there is problem with the database
+	 */
+	public ProjectAllocation getProjectAllocationByProjectCode(
+			final String projectCode) throws NoSuchEntityException {
+
+		if (projectCode == null) {
+			throw new IllegalArgumentException("No project code provided");
+		}
+
+		ProjectAllocation pa = null;
+		try {
+			pa = projectDao.getProjectAllocationByProjectCode(projectCode);
+		} catch (final Exception e) {
+			throw new DatabaseException(
+					"Can't find project allocation with project code "
+							+ projectCode, e);
+		}
+
+		return pa;
+	}
+
+	public void createProjectAllocation(
+			final ProjectAllocation projectAllocation) throws Exception {
+		// validateProjectAllocation(projectAllocation);
+		try {
+			createProjectAllocation(projectAllocation);
+
+		} catch (final Exception e) {
+			throw new DatabaseException("Can't create project allocation '"
+					+ projectAllocation.getProjectCode() + "'", e);
+		}
 	}
 
 	/**

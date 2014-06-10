@@ -4,17 +4,18 @@ import java.io.Serializable;
 
 public class ProjectAllocation implements Serializable {
 	private Integer id;
+	private String projectCode;
 	private String project;
 	private String allocation;
-	private String site;
+	private String facility;
 	private String lastModified;
 
 	public Integer getId() {
 		return id;
 	}
 
-	public String getSite() {
-		return site;
+	public String getFacility() {
+		return facility;
 	}
 
 	public String getAllocation() {
@@ -25,6 +26,10 @@ public class ProjectAllocation implements Serializable {
 		return project;
 	}
 
+	public String getProjectCode() {
+		return projectCode;
+	}
+
 	public String getLastModified() {
 		return lastModified;
 	}
@@ -33,8 +38,8 @@ public class ProjectAllocation implements Serializable {
 		this.id = id;
 	}
 
-	public void setSite(final String site) {
-		this.site = site;
+	public void setFacility(final String facility) {
+		this.facility = facility;
 	}
 
 	public void setAllocation(final String allocation) {
@@ -43,6 +48,10 @@ public class ProjectAllocation implements Serializable {
 
 	public void setProject(final String project) {
 		this.project = project;
+	}
+
+	public void setProjectCode(final String projectCode) {
+		this.projectCode = projectCode;
 	}
 
 	public void setLastModified() {
