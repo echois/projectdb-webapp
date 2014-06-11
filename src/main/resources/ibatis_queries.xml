@@ -1184,4 +1184,18 @@
 		JOIN facility f ON f.id = pa.facilityId
 		ORDER BY id
 	</select>
+	
+	<insert id="createProjectAllocation" parameterType="pm.pojo.ProjectAllocation">
+		INSERT INTO
+		projectallocation (
+		facilityId,
+		projectId,
+		allocation,
+		lastModified		
+		) 
+		SELECT f.id, p.id, #{allocation},#{lastModified}
+		FROM project p 
+		JOIN facility f on f.name =#{facility}
+		WHERE p.projectCode = #{projectCode}
+	</insert>
 </mapper>

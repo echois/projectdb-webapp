@@ -1172,18 +1172,16 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	@Override
-	public void createProjectAllocation(Integer pid) {
-		// TODO Auto-generated method stub
-		return;
+	public Integer createProjectAllocation(ProjectAllocation pa) {
+		getSqlSession().insert("pm.db.createProjectAllocation", pa);
+		return pa.getId();
 	}
 
 	@Override
-	public ProjectAllocation getProjectAllocationByProjectCode(
+	public List<ProjectAllocation> getProjectAllocationByProjectCode(
 			String projectCode) throws Exception {
-		final ProjectAllocation pa = (ProjectAllocation) getSqlSession()
-				.selectOne("pm.db.getProjectAllocationByProjectCode",
-						projectCode);
-		return pa;
+		return getSqlSession().selectList(
+				"pm.db.getProjectAllocationByProjectCode", projectCode);
 	}
 
 	@Override

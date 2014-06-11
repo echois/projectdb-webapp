@@ -413,14 +413,14 @@ public class ListControls extends AbstractControl {
 	 * @throws DatabaseException
 	 *             if there is problem with the database
 	 */
-	public ProjectAllocation getProjectAllocationByProjectCode(
+	public List<ProjectAllocation> getProjectAllocationByProjectCode(
 			final String projectCode) throws NoSuchEntityException {
 
 		if (projectCode == null) {
 			throw new IllegalArgumentException("No project code provided");
 		}
 
-		ProjectAllocation pa = null;
+		List<ProjectAllocation> pa = null;
 		try {
 			pa = projectDao.getProjectAllocationByProjectCode(projectCode);
 		} catch (final Exception e) {
@@ -430,18 +430,6 @@ public class ListControls extends AbstractControl {
 		}
 
 		return pa;
-	}
-
-	public void createProjectAllocation(
-			final ProjectAllocation projectAllocation) throws Exception {
-		// validateProjectAllocation(projectAllocation);
-		try {
-			createProjectAllocation(projectAllocation);
-
-		} catch (final Exception e) {
-			throw new DatabaseException("Can't create project allocation '"
-					+ projectAllocation.getProjectCode() + "'", e);
-		}
 	}
 
 	/**
@@ -454,17 +442,16 @@ public class ListControls extends AbstractControl {
 	 *            the new Project
 	 * @throws Exception
 	 */
-	/*
-	 * public synchronized Integer createProjectAllocation( final
-	 * ProjectAllocation pa) throws InvalidEntityException {
-	 * 
-	 * // if project id or allocations are missing, exception should be thrown
-	 * 
-	 * //
-	 * 
-	 * 
-	 * try { final Integer paid = projectDao. } return null;
-	 * 
-	 * }
-	 */
+	public Integer createProjectAllocation(
+			final ProjectAllocation projectAllocation) throws Exception {
+		// validateProjectAllocation(projectAllocation);
+		try {
+			return projectDao.createProjectAllocation(projectAllocation);
+
+		} catch (final Exception e) {
+			throw new DatabaseException("Can't create project allocation '"
+					+ projectAllocation.getProjectCode() + "'", e);
+		}
+	}
+
 }

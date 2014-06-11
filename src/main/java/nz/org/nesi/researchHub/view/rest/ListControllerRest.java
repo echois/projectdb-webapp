@@ -131,7 +131,7 @@ public class ListControllerRest {
 	@ApiOperation(
 					value = "Get project allocation by its project code",
 					notes = "Returns the project allocation object associated with project code")
-	public ProjectAllocation getProjectAllocationByProjectCode(
+	public List<ProjectAllocation> getProjectAllocationByProjectCode(
 			@ApiParam(value = "Project code", required = true) @PathVariable final String projectCode)
 			throws NoSuchEntityException {
 		return listControls.getProjectAllocationByProjectCode(projectCode);
@@ -140,11 +140,12 @@ public class ListControllerRest {
 	@RequestMapping(value = "/alloc/create", method = RequestMethod.POST)
 	@ApiOperation(
 					value = "Create project allocation",
-					notes = "Creates a new project allocation from the given object.")
+					notes = "Returns the generated project allocation id, if successful",
+					responseClass = "Integer")
 	@ResponseBody
-	public final void createProjectAllocation(
+	public Integer createProjectAllocation(
 			@ApiParam(value = "ProjectAllocation object", required = true) @RequestBody final ProjectAllocation projectAllocation)
 			throws Exception {
-		listControls.createProjectAllocation(projectAllocation);
+		return listControls.createProjectAllocation(projectAllocation);
 	}
 }
