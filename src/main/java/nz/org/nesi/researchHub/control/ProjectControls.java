@@ -122,6 +122,12 @@ public class ProjectControls extends AbstractControl {
                     "projectCode");
         }
 
+        if (pw.getProject().getStatusId().equals(5)) {
+            throw new InvalidEntityException(
+                    "A project status should not be left incomplete",
+                    Project.class, "projectStatus");
+        }
+
         int POCount = 0, PACount = 0;
 
         for (final RPLink rp : pw.getRpLinks()) {

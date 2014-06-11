@@ -525,6 +525,11 @@ public class ResearcherControls extends AbstractControl {
                     "Phone must contain at least one digit", Researcher.class,
                     "phone");
         }
+        if (r.getStatusId().equals(6)) {
+            throw new InvalidEntityException(
+                    "A researcher status should not be left incomplete",
+                    Researcher.class, "researcherStatus");
+        }
         try {
             Integer roleId = r.getInstitutionalRoleId();
             boolean valid = false;
