@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class AuthConfig extends WebSecurityConfigurerAdapter {
 
 
+	@Override
   protected void configure(HttpSecurity http) throws Exception {
     http
       .csrf().disable();
