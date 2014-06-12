@@ -806,7 +806,8 @@
 		typeId = #{typeId},
 		description = #{description},
 		link = #{link},
-		date = #{date}
+		date = #{date},
+		DOI = #{DOI}
 	</insert>
 
 	<delete id="deleteProject" parameterType="java.lang.Integer">
