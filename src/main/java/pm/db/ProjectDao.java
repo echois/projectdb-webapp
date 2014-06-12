@@ -197,11 +197,17 @@ public interface ProjectDao {
 
 	public void upsertResearchOutput(ResearchOutput ro);
 
-	public Integer createProjectAllocation(ProjectAllocation pa);
+	public void upsertProjectAllocation(ProjectAllocation pa);
 
 	public List<ProjectAllocation> getProjectAllocations();
 
 	public List<ProjectAllocation> getProjectAllocationByProjectCode(
 			String projectCode) throws Exception;
+
+	public List<ProjectAllocation> getProjectAllocationById(Integer projectId)
+			throws Exception;
+
+	public List<ProjectAllocation> getProjectAllocationsByFacility(
+			Integer facilityId);
 
 }

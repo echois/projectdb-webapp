@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pm.pojo.Affiliation;
-import pm.pojo.ProjectAllocation;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -114,38 +113,5 @@ public class ListControllerRest {
 			throws NoSuchEntityException {
 
 		return listControls.getAffiliationsByDivisionCode(divisionCode);
-	}
-
-	@ApiOperation(
-					value = "Get all project allocations",
-					notes = "Returns a list of objects that indicate all project allocations")
-	@RequestMapping(value = "/alloc", method = RequestMethod.GET)
-	@ResponseBody
-	public final List<ProjectAllocation> getAllProjectAllocations()
-			throws Exception {
-		return listControls.getAllProjectAllocations();
-	}
-
-	@RequestMapping(value = "/alloc/{projectCode}", method = RequestMethod.GET)
-	@ResponseBody
-	@ApiOperation(
-					value = "Get project allocation by its project code",
-					notes = "Returns the project allocation object associated with project code")
-	public List<ProjectAllocation> getProjectAllocationByProjectCode(
-			@ApiParam(value = "Project code", required = true) @PathVariable final String projectCode)
-			throws NoSuchEntityException {
-		return listControls.getProjectAllocationByProjectCode(projectCode);
-	}
-
-	@RequestMapping(value = "/alloc/create", method = RequestMethod.POST)
-	@ApiOperation(
-					value = "Create project allocation",
-					notes = "Returns the generated project allocation id, if successful",
-					responseClass = "Integer")
-	@ResponseBody
-	public Integer createProjectAllocation(
-			@ApiParam(value = "ProjectAllocation object", required = true) @RequestBody final ProjectAllocation projectAllocation)
-			throws Exception {
-		return listControls.createProjectAllocation(projectAllocation);
 	}
 }

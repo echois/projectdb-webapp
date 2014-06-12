@@ -1184,9 +1184,26 @@
 		JOIN facility f ON f.id = pa.facilityId
 		ORDER BY id
 	</select>
+
+	<select id="getProjectAllocationById" parameterType = "java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
+		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		FROM projectallocation pa
+		JOIN project p ON p.id = pa.projectId and p.id = #{projectId}
+		JOIN facility f ON f.id = pa.facilityId
+		ORDER BY id
+	</select>
 	
-	<insert id="createProjectAllocation" parameterType="pm.pojo.ProjectAllocation">
-		INSERT INTO
+	<select id="getProjectAllocationsByFacility" parameterType = "java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
+		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		FROM projectallocation pa
+		JOIN project p ON p.id = pa.projectId 
+		JOIN facility f ON f.id = pa.facilityId
+		where pa.facilityId = #{facilityId}
+		ORDER BY id
+	</select>
+	
+	<insert id="upsertProjectAllocation" parameterType="pm.pojo.ProjectAllocation">
+		REPLACE INTO
 		projectallocation (
 		facilityId,
 		projectId,
@@ -1195,7 +1212,8 @@
 		) 
 		SELECT f.id, p.id, #{allocation},#{lastModified}
 		FROM project p 
-		JOIN facility f on f.name =#{facility}
+		JOIN facility f on f.name = #{facility}
 		WHERE p.projectCode = #{projectCode}
 	</insert>
+
 </mapper>

@@ -10,13 +10,11 @@ import java.util.Map;
 
 import nz.org.nesi.researchHub.exceptions.DatabaseException;
 import nz.org.nesi.researchHub.exceptions.InvalidEntityException;
-import nz.org.nesi.researchHub.exceptions.NoSuchEntityException;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import pm.pojo.Affiliation;
-import pm.pojo.ProjectAllocation;
 
 /**
  * @author echoi
@@ -383,75 +381,6 @@ public class ListControls extends AbstractControl {
 					+ affiliation.getDepartmentCode() + "'", e);
 		}
 
-	}
-
-	// TODO: Create, get and edit new project allocation
-
-	/**
-	 * Returns list of all allocations.
-	 * 
-	 * @return all project allocations in the project database
-	 */
-	public List<ProjectAllocation> getAllProjectAllocations() {
-
-		List<ProjectAllocation> pa = null;
-		try {
-			pa = projectDao.getProjectAllocations();
-		} catch (final Exception e) {
-			throw new DatabaseException("Can't get Project Allocations.", e);
-		}
-		return pa;
-
-	}
-
-	/**
-	 * Returns the project allocation with project id.
-	 * 
-	 * @param id
-	 *            the project' id
-	 * @return the project allocation object
-	 * @throws DatabaseException
-	 *             if there is problem with the database
-	 */
-	public List<ProjectAllocation> getProjectAllocationByProjectCode(
-			final String projectCode) throws NoSuchEntityException {
-
-		if (projectCode == null) {
-			throw new IllegalArgumentException("No project code provided");
-		}
-
-		List<ProjectAllocation> pa = null;
-		try {
-			pa = projectDao.getProjectAllocationByProjectCode(projectCode);
-		} catch (final Exception e) {
-			throw new DatabaseException(
-					"Can't find project allocation with project code "
-							+ projectCode, e);
-		}
-
-		return pa;
-	}
-
-	/**
-	 * Creates new project allocation in the database.
-	 * 
-	 * The project allocation object can't have an id specified, since that gets
-	 * auto-generated at lower level.
-	 * 
-	 * @param project
-	 *            the new Project
-	 * @throws Exception
-	 */
-	public Integer createProjectAllocation(
-			final ProjectAllocation projectAllocation) throws Exception {
-		// validateProjectAllocation(projectAllocation);
-		try {
-			return projectDao.createProjectAllocation(projectAllocation);
-
-		} catch (final Exception e) {
-			throw new DatabaseException("Can't create project allocation '"
-					+ projectAllocation.getProjectCode() + "'", e);
-		}
 	}
 
 }

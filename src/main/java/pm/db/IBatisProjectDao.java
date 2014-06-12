@@ -1172,9 +1172,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	@Override
-	public Integer createProjectAllocation(ProjectAllocation pa) {
-		getSqlSession().insert("pm.db.createProjectAllocation", pa);
-		return pa.getId();
+	public void upsertProjectAllocation(ProjectAllocation pa) {
+		getSqlSession().insert("pm.db.upsertProjectAllocation", pa);
 	}
 
 	@Override
@@ -1188,4 +1187,19 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	public List<ProjectAllocation> getProjectAllocations() {
 		return getSqlSession().selectList("pm.db.getProjectAllocations");
 	}
+
+	@Override
+	public List<ProjectAllocation> getProjectAllocationsByFacility(
+			Integer facilityId) {
+		return getSqlSession().selectList(
+				"pm.db.getProjectAllocationsByFacility", facilityId);
+	}
+
+	@Override
+	public List<ProjectAllocation> getProjectAllocationById(
+			final Integer projectId) {
+		return getSqlSession().selectList("pm.db.getProjectAllocationById",
+				projectId);
+	}
+
 }
