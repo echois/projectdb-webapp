@@ -19,6 +19,8 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()
 				.antMatchers("/html/**").permitAll()
+				.antMatchers("/js/**").permitAll()
+				.antMatchers("/style/**").permitAll()
 				.anyRequest().authenticated()
 				.and()
 				.formLogin()
