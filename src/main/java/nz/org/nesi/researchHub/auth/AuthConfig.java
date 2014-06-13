@@ -6,25 +6,35 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Configuration
 @EnableWebMvcSecurity
 public class AuthConfig extends WebSecurityConfigurerAdapter {
 
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
 
-//	@Override
-//  protected void configure(HttpSecurity http) throws Exception {
-//    http
-//      .csrf().disable();
-//  }
+		http
+				.httpBasic()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/html/**").permitAll()
+				.anyRequest().authenticated()
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.permitAll()
+				.and()
+				.rememberMe();
+
+
+	}
 
 	@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+	public void configureGlobal(AuthenticationManagerBuilder auth)
+			throws Exception {
 
 		auth.userDetailsService(new NeSIUserDetailsServiceImpl());
 
-    }
+	}
 }
