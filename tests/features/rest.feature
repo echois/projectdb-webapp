@@ -5,6 +5,7 @@ Feature: Perform REST actions and check that they respond as expected
   @nojs @adviser @edit
   Scenario: Create an adviser
     When I "POST" "{'fullName':'!Batman', 'phone':1234, 'email':'bat@cave.com', 'pictureUrl':'http://static.comicvine.com/uploads/original/0/40/3207042-batman_arkham_origins-wide.jpg'}" at "advisers/"
+    Then I print last response
     Then the response doesn't contain "already exists"
     Then I "GET" "" at "advisers/id"
     Then the response contains "bat@cave"

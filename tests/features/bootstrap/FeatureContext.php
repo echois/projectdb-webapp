@@ -32,6 +32,9 @@ class FeatureContext extends MinkContext
       // Initialize your context here
       $this->users = $parameters['users'];
       $this->root = $parameters['base_url'];
+      if (isset($parameters['basic_auth'])) {
+        $this->basic_auth = $parameters['basic_auth'];
+      }
     }
 
     /**
