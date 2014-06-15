@@ -748,6 +748,12 @@
 		lastModified = now()
 		WHERE id = #{id}
 	</update>
+	
+	<update id="resetProjectCache" parameterType="java.lang.Integer">
+		UPDATE project SET
+		lastModified=NOW()
+		WHERE id = #{id}
+	</update>
 
 	<update id="updateResearcher" parameterType="pm.pojo.Researcher">
 		UPDATE researcher
