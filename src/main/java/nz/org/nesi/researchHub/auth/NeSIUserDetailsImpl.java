@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Project: project_management
- * <p/>
+ *
  * Written by: Markus Binsteiner Date: 11/12/13 Time: 1:47 PM
  */
 public class NeSIUserDetailsImpl implements UserDetails {
@@ -54,14 +54,12 @@ public class NeSIUserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return null; // To change body of implemented methods use File |
-                     // Settings | File Templates.
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return null; // To change body of implemented methods use File |
-                     // Settings | File Templates.
+        return (String)this.authentication.getCredentials();
     }
 
     public Person getPerson() {

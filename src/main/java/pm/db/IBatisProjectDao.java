@@ -47,7 +47,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class IBatisProjectDao extends SqlSessionDaoSupport implements
-		ProjectDao {
+
+ProjectDao {
 
 	@Override
 	@RequireAdviser
@@ -1075,6 +1076,12 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	@Override
+	public void resetProjectCache(Integer id) {
+		getSqlSession().update("pm.db.resetProjectCache", id);
+
+	}
+
+	@Override
 	@RequireAdviser
 	public void updateAdviser(final Adviser a) {
 		getSqlSession().update("pm.db.updateAdviser", a);
@@ -1141,6 +1148,8 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 		for (final ProjectFacility pf : pfs) {
 			createProjectFacility(pf);
 		}
+
+		resetProjectCache(pid);
 	}
 
 	@Override
@@ -1153,11 +1162,13 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	@RequireAdviserOnProject
 	public void upsertFollowUp(final FollowUp f) {
 		getSqlSession().insert("pm.db.upsertFollowUp", f);
+		resetProjectCache(f.getProjectId());
 	}
 
 	@Override
 	public void upsertProjectProperty(final ProjectProperty p) {
 		getSqlSession().insert("pm.db.upsertProjectProperty", p);
+		resetProjectCache(p.getProjectId());
 	}
 
 	@Override
@@ -1169,6 +1180,7 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	@RequireAdviserOnProject
 	public void upsertResearchOutput(ResearchOutput ro) {
 		getSqlSession().insert("pm.db.upsertResearchOutput", ro);
+		resetProjectCache(ro.getProjectId());
 	}
 
 	@Override
@@ -1211,5 +1223,4 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	public ProjectAllocation getProjectAllocationById(Integer id) {
 		return getSqlSession().selectOne("pm.db.getProjectAllocationById", id);
 	}
-
 }

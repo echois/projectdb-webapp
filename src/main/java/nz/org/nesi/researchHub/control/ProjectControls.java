@@ -91,7 +91,8 @@ public class ProjectControls extends AbstractControl {
 					Project.class, "name");
 		}
 
-		if (pw.getProject().getName().equals("New Project")) {
+		if (pw.getProject().getName().equals("New Project")
+				|| pw.getProject().getStatusId().equals(7)) {
 			return; // Don't check HPC until the project has a real name
 		}
 
@@ -120,6 +121,12 @@ public class ProjectControls extends AbstractControl {
 			throw new InvalidEntityException(
 					"There must be a valid project code", Project.class,
 					"projectCode");
+		}
+
+		if (pw.getProject().getStatusId().equals(5)) {
+			throw new InvalidEntityException(
+					"A project status should not be left incomplete",
+					Project.class, "projectStatus");
 		}
 
 		int POCount = 0, PACount = 0;
@@ -319,6 +326,8 @@ public class ProjectControls extends AbstractControl {
 		try {
 			final Integer pid = projectDao.createProjectWrapper(pw);
 			return pid;
+		} catch (final CustomException e) {
+			throw new DatabaseException(e.getCustomMsg(), e);
 		} catch (final Exception e) {
 			throw new DatabaseException("Could not create Project in database."
 					+ e.getMessage(), e);
@@ -869,8 +878,6 @@ public class ProjectControls extends AbstractControl {
 				pw.getFollowUps().remove(oid);
 			} else if (type.equals("adviseraction")) {
 				pw.getAdviserActions().remove(oid);
-			} else if (type.contains("allocation")) {
-				projectDao.deleteProjectAllocation(Integer.valueOf(oid));
 			} else if (type.equals("property")) {
 				projectDao.deleteProjectProperty(Integer.valueOf(oid));
 			} else if (type.contains("Attachments")) {
@@ -894,6 +901,7 @@ public class ProjectControls extends AbstractControl {
 				// .remove(nid)
 				m.invoke(o, nid);
 			}
+
 			// validateProject(pw);
 			projectDao.updateProjectWrapper(id, pw);
 		} catch (final Exception e) {
@@ -967,86 +975,6 @@ public class ProjectControls extends AbstractControl {
 	}
 
 	/**
-	 * Add/Edit the specified project allocation
-	 * 
-	 * @param id
-	 *            the id
-	 * @throws Exception
-	 */
-	public List<ProjectAllocation> getAllProjectAllocations() {
-
-		List<ProjectAllocation> pa = null;
-		try {
-			pa = projectDao.getProjectAllocations();
-		} catch (final Exception e) {
-			throw new DatabaseException("Can't get Project Allocations.", e);
-		}
-		return pa;
-
-	}
-
-	/**
-	 * Returns the project allocation with the specified id.
-	 * 
-	 * @param id
-	 *            the project allocation id
-	 * @return the project allocation object
-	 * @throws NoSuchEntityException
-	 *             if the project allocation can't be found
-	 * @throws DatabaseException
-	 *             if there is project allocation problem with the database
-	 */
-	public ProjectAllocation getProjectAllocationById(final Integer id)
-			throws NoSuchEntityException {
-
-		if (id == null) {
-			throw new IllegalArgumentException(
-					"No project allocation id provided");
-		}
-
-		ProjectAllocation pa = null;
-		try {
-			pa = projectDao.getProjectAllocationById(id);
-		} catch (final NullPointerException npe) {
-			throw new NoSuchEntityException(
-					"Can't find project allocation with id " + id,
-					ProjectAllocation.class, id, npe);
-		} catch (final Exception e) {
-			throw new DatabaseException(
-					"Can't find project allocation with id " + id, e);
-		}
-
-		return pa;
-	}
-
-	/**
-	 * Returns the project allocation with facility id.
-	 * 
-	 * @param facility
-	 *            the facility id
-	 * @return the project allocation object
-	 * @throws DatabaseException
-	 *             if there is problem with the database
-	 */
-	public List<ProjectAllocation> getProjectAllocationsByFacility(
-			Integer facilityId) {
-		if (facilityId == null) {
-			throw new IllegalArgumentException("No facility id provided");
-		}
-
-		List<ProjectAllocation> pa = null;
-		try {
-			pa = projectDao.getProjectAllocationsByFacility(facilityId);
-		} catch (final Exception e) {
-			throw new DatabaseException(
-					"Can't find project allocation with facility " + facilityId,
-					e);
-		}
-
-		return pa;
-	}
-
-	/**
 	 * Add the specified research_output to this project
 	 * 
 	 * @param id
@@ -1070,69 +998,6 @@ public class ProjectControls extends AbstractControl {
 			throws InvalidEntityException, NoSuchEntityException {
 		ProjectWrapper pw = getProjectWrapper(id);
 		validateProject(pw);
-	}
-
-	/**
-	 * Validates the project allocation object.
-	 * 
-	 * @param a
-	 *            the project allocation object
-	 * @throws InvalidEntityException
-	 *             if there is something wrong with the project allocation
-	 *             object
-	 */
-	private void validateProjectAllocation(ProjectAllocation pa)
-			throws InvalidEntityException {
-		// There is no more than one facility by projectCode
-		if (pa.getFacility() == null || pa.getFacility().trim().equals("")) {
-			throw new InvalidEntityException("Facility cannot be empty",
-					ProjectAllocation.class, "facility");
-		}
-
-		for (final ProjectAllocation other : getAllProjectAllocations()) {
-			if (pa.getFacility().equals(other.getFacility())
-					&& pa.getProjectCode().equals(other.getProjectCode())) {
-				throw new InvalidEntityException("Allocation for "
-						+ pa.getProjectCode() + " " + pa.getFacility()
-						+ " already exists in the database",
-						ProjectAllocation.class, "id");
-			}
-		}
-
-	}
-
-	/**
-	 * Delete the Project allocation with the specified id.
-	 * 
-	 * @param id
-	 *            the project allocation id
-	 */
-	public void deleteProjectAllocation(final Integer id) {
-		try {
-			projectDao.deleteProjectAllocation(id);
-		} catch (final Exception e) {
-			throw new DatabaseException(
-					"Can't delete project allocation with id " + id, e);
-		}
-	}
-
-	/**
-	 * Upsert the specified project_allocation to this project
-	 * 
-	 * @param id
-	 *            the id
-	 * @throws Exception
-	 */
-	public void upsertProjectAllocation(
-			final ProjectAllocation projectAllocation) throws Exception {
-		validateProjectAllocation(projectAllocation);
-		try {
-			projectDao.upsertProjectAllocation(projectAllocation);
-
-		} catch (final Exception e) {
-			throw new DatabaseException("Can't create project allocation '"
-					+ projectAllocation.getProjectCode() + "'", e);
-		}
 	}
 
 	/**
@@ -1231,6 +1096,149 @@ public class ProjectControls extends AbstractControl {
 								+ projectIdOrCode, e2);
 			}
 		}
+	}
+
+	/**
+	 * Validates the project allocation object.
+	 * 
+	 * @param a
+	 *            the project allocation object
+	 * @throws InvalidEntityException
+	 *             if there is something wrong with the project allocation
+	 *             object
+	 */
+	private void validateProjectAllocation(ProjectAllocation pa)
+			throws InvalidEntityException {
+		// There is no more than one facility by projectCode
+		if (pa.getFacility() == null || pa.getFacility().trim().equals("")) {
+			throw new InvalidEntityException("Facility cannot be empty",
+					ProjectAllocation.class, "facility");
+		}
+
+		for (final ProjectAllocation other : getAllProjectAllocations()) {
+			if (pa.getFacility().equals(other.getFacility())
+					&& pa.getProjectCode().equals(other.getProjectCode())) {
+				throw new InvalidEntityException("Allocation for "
+						+ pa.getProjectCode() + " " + pa.getFacility()
+						+ " already exists in the database",
+						ProjectAllocation.class, "id");
+			}
+		}
+
+	}
+
+	/**
+	 * Delete the Project allocation with the specified id.
+	 * 
+	 * @param id
+	 *            the project allocation id
+	 */
+	public void deleteProjectAllocation(final Integer id) {
+		try {
+			projectDao.deleteProjectAllocation(id);
+		} catch (final Exception e) {
+			throw new DatabaseException(
+					"Can't delete project allocation with id " + id, e);
+		}
+	}
+
+	/**
+	 * Upsert the specified project_allocation to this project
+	 * 
+	 * @param id
+	 *            the id
+	 * @throws Exception
+	 */
+	public void upsertProjectAllocation(
+			final ProjectAllocation projectAllocation) throws Exception {
+		validateProjectAllocation(projectAllocation);
+		try {
+			projectDao.upsertProjectAllocation(projectAllocation);
+
+		} catch (final Exception e) {
+			throw new DatabaseException("Can't create project allocation '"
+					+ projectAllocation.getProjectCode() + "'", e);
+		}
+	}
+
+	/**
+	 * Add/Edit the specified project allocation
+	 * 
+	 * @param id
+	 *            the id
+	 * @throws Exception
+	 */
+	public List<ProjectAllocation> getAllProjectAllocations() {
+
+		List<ProjectAllocation> pa = null;
+		try {
+			pa = projectDao.getProjectAllocations();
+		} catch (final Exception e) {
+			throw new DatabaseException("Can't get Project Allocations.", e);
+		}
+		return pa;
+
+	}
+
+	/**
+	 * Returns the project allocation with the specified id.
+	 * 
+	 * @param id
+	 *            the project allocation id
+	 * @return the project allocation object
+	 * @throws NoSuchEntityException
+	 *             if the project allocation can't be found
+	 * @throws DatabaseException
+	 *             if there is project allocation problem with the database
+	 */
+	public ProjectAllocation getProjectAllocationById(final Integer id)
+			throws NoSuchEntityException {
+
+		if (id == null) {
+			throw new IllegalArgumentException(
+					"No project allocation id provided");
+		}
+
+		ProjectAllocation pa = null;
+		try {
+			pa = projectDao.getProjectAllocationById(id);
+		} catch (final NullPointerException npe) {
+			throw new NoSuchEntityException(
+					"Can't find project allocation with id " + id,
+					ProjectAllocation.class, id, npe);
+		} catch (final Exception e) {
+			throw new DatabaseException(
+					"Can't find project allocation with id " + id, e);
+		}
+
+		return pa;
+	}
+
+	/**
+	 * Returns the project allocation with facility id.
+	 * 
+	 * @param facility
+	 *            the facility id
+	 * @return the project allocation object
+	 * @throws DatabaseException
+	 *             if there is problem with the database
+	 */
+	public List<ProjectAllocation> getProjectAllocationsByFacility(
+			Integer facilityId) {
+		if (facilityId == null) {
+			throw new IllegalArgumentException("No facility id provided");
+		}
+
+		List<ProjectAllocation> pa = null;
+		try {
+			pa = projectDao.getProjectAllocationsByFacility(facilityId);
+		} catch (final Exception e) {
+			throw new DatabaseException(
+					"Can't find project allocation with facility " + facilityId,
+					e);
+		}
+
+		return pa;
 	}
 
 }

@@ -2,9 +2,15 @@ Feature: Perform REST actions and check that they respond as expected
   In order to create a meaningful project
   I need to link it to an Adviser and a Researcher etc
   
+  @nojs @statuses
+  Scenario: Check what statuses a project can have
+    When I "GET" "" at "projects/stat"
+    Then the response is JSON
+  
   @nojs @adviser @edit
   Scenario: Create an adviser
     When I "POST" "{'fullName':'!Batman', 'phone':1234, 'email':'bat@cave.com', 'pictureUrl':'http://static.comicvine.com/uploads/original/0/40/3207042-batman_arkham_origins-wide.jpg'}" at "advisers/"
+    Then I print last response
     Then the response doesn't contain "already exists"
     Then I "GET" "" at "advisers/id"
     Then the response contains "bat@cave"

@@ -8,6 +8,7 @@ public class ResearchOutput implements Serializable {
     private String adviserName;
     private String date;
     private String description;
+    private String DOI;
     private Integer id;
     private String link;
     private String projectCode;
@@ -47,6 +48,14 @@ public class ResearchOutput implements Serializable {
 
     public Integer getProjectId() {
         return projectId;
+    }
+
+    public Integer getResearcherId() {
+        return researcherId;
+    }
+
+    public String getResearcherName() {
+        return researcherName;
     }
 
     public String getType() {
@@ -89,6 +98,14 @@ public class ResearchOutput implements Serializable {
         this.projectId = projectId;
     }
 
+    public void setResearcherId(Integer researcherId) {
+        this.researcherId = researcherId;
+    }
+
+    public void setResearcherName(String researcherName) {
+        this.researcherName = researcherName;
+    }
+
     public void setType(final String type) {
         this.type = type;
     }
@@ -97,20 +114,12 @@ public class ResearchOutput implements Serializable {
         this.typeId = typeId;
     }
 
-    public Integer getResearcherId() {
-        return researcherId;
+    public String getDOI() {
+        return DOI;
     }
 
-    public void setResearcherId(Integer researcherId) {
-        this.researcherId = researcherId;
-    }
-
-    public String getResearcherName() {
-        return researcherName;
-    }
-
-    public void setResearcherName(String researcherName) {
-        this.researcherName = researcherName;
+    public void setDOI(String dOI) {
+        DOI = dOI;
     }
 
 }

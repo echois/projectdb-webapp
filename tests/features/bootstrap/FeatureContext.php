@@ -32,6 +32,9 @@ class FeatureContext extends MinkContext
       // Initialize your context here
       $this->users = $parameters['users'];
       $this->root = $parameters['base_url'];
+      if (isset($parameters['basic_auth'])) {
+        $this->basic_auth = $parameters['basic_auth'];
+      }
     }
 
     /**
@@ -116,6 +119,7 @@ class FeatureContext extends MinkContext
         'ignore_errors' => true,
         'content' => $postdata,
         'header'=>"Accept: application/json\r\n" .
+                  "Authorization: Basic " . base64_encode($this->basic_auth['username'] . ":" . $this->basic_auth['password']) . "\r\n" .
                   "Content-Type: application/json\r\n" .
                   "RemoteUser: $u\r\n" .
                   "User-Agent: drupal\r\n"

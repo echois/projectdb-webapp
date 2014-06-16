@@ -182,6 +182,8 @@ public interface ProjectDao {
 
 	void logChange(Change c) throws Exception;
 
+	public void resetProjectCache(Integer id);
+
 	public void updateAdviser(Adviser a);
 
 	public void updateProjectWrapper(int projectId, ProjectWrapper pw)

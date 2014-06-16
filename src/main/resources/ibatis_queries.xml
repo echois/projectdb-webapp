@@ -748,6 +748,12 @@
 		lastModified = now()
 		WHERE id = #{id}
 	</update>
+	
+	<update id="resetProjectCache" parameterType="java.lang.Integer">
+		UPDATE project SET
+		lastModified=NOW()
+		WHERE id = #{id}
+	</update>
 
 	<update id="updateResearcher" parameterType="pm.pojo.Researcher">
 		UPDATE researcher
@@ -806,7 +812,8 @@
 		typeId = #{typeId},
 		description = #{description},
 		link = #{link},
-		date = #{date}
+		date = #{date},
+		DOI = #{DOI}
 	</insert>
 
 	<delete id="deleteProject" parameterType="java.lang.Integer">
@@ -1134,6 +1141,7 @@
 		FROM `project`
 		WHERE `projectCode`
 		LIKE CONCAT(#{code}, '%')
+		AND `projectCode` NOT LIKE "%99999"
 	</select>
 
 	<select id="getInstitutionCodeFromName" parameterType="java.lang.String"
