@@ -1214,12 +1214,13 @@
 	<insert id="upsertProjectAllocation" parameterType="pm.pojo.ProjectAllocation">
 		REPLACE INTO
 		projectallocation (
+		id,
 		facilityId,
 		projectId,
 		allocation,
 		lastModified		
 		) 
-		SELECT f.id, p.id, #{allocation},#{lastModified}
+		SELECT #{id},f.id, p.id, #{allocation},now()
 		FROM project p 
 		JOIN facility f on f.name = #{facility}
 		WHERE p.projectCode = #{projectCode}
