@@ -869,6 +869,8 @@ public class ProjectControls extends AbstractControl {
 				pw.getFollowUps().remove(oid);
 			} else if (type.equals("adviseraction")) {
 				pw.getAdviserActions().remove(oid);
+			} else if (type.contains("allocation")) {
+				projectDao.deleteProjectAllocation(Integer.valueOf(oid));
 			} else if (type.equals("property")) {
 				projectDao.deleteProjectProperty(Integer.valueOf(oid));
 			} else if (type.contains("Attachments")) {
@@ -892,7 +894,6 @@ public class ProjectControls extends AbstractControl {
 				// .remove(nid)
 				m.invoke(o, nid);
 			}
-
 			// validateProject(pw);
 			projectDao.updateProjectWrapper(id, pw);
 		} catch (final Exception e) {
@@ -985,6 +986,40 @@ public class ProjectControls extends AbstractControl {
 	}
 
 	/**
+	 * Returns the project allocation with the specified id.
+	 * 
+	 * @param id
+	 *            the project allocation id
+	 * @return the project allocation object
+	 * @throws NoSuchEntityException
+	 *             if the project allocation can't be found
+	 * @throws DatabaseException
+	 *             if there is project allocation problem with the database
+	 */
+	public ProjectAllocation getProjectAllocationById(final Integer id)
+			throws NoSuchEntityException {
+
+		if (id == null) {
+			throw new IllegalArgumentException(
+					"No project allocation id provided");
+		}
+
+		ProjectAllocation pa = null;
+		try {
+			pa = projectDao.getProjectAllocationById(id);
+		} catch (final NullPointerException npe) {
+			throw new NoSuchEntityException(
+					"Can't find project allocation with id " + id,
+					ProjectAllocation.class, id, npe);
+		} catch (final Exception e) {
+			throw new DatabaseException(
+					"Can't find project allocation with id " + id, e);
+		}
+
+		return pa;
+	}
+
+	/**
 	 * Returns the project allocation with facility id.
 	 * 
 	 * @param facility
@@ -996,7 +1031,7 @@ public class ProjectControls extends AbstractControl {
 	public List<ProjectAllocation> getProjectAllocationsByFacility(
 			Integer facilityId) {
 		if (facilityId == null) {
-			throw new IllegalArgumentException("No facility name provided");
+			throw new IllegalArgumentException("No facility id provided");
 		}
 
 		List<ProjectAllocation> pa = null;
@@ -1065,6 +1100,21 @@ public class ProjectControls extends AbstractControl {
 			}
 		}
 
+	}
+
+	/**
+	 * Delete the Project allocation with the specified id.
+	 * 
+	 * @param id
+	 *            the project allocation id
+	 */
+	public void deleteProjectAllocation(final Integer id) {
+		try {
+			projectDao.deleteProjectAllocation(id);
+		} catch (final Exception e) {
+			throw new DatabaseException(
+					"Can't delete project allocation with id " + id, e);
+		}
 	}
 
 	/**
@@ -1164,7 +1214,7 @@ public class ProjectControls extends AbstractControl {
 		try {
 			final int i = Integer.parseInt(projectIdOrCode);
 			try {
-				pa = projectDao.getProjectAllocationById(i);
+				pa = projectDao.getProjectAllocationsByProjectId(i);
 				return pa;
 			} catch (final Exception e) {
 				throw new DatabaseException(
@@ -1183,4 +1233,5 @@ public class ProjectControls extends AbstractControl {
 			}
 		}
 	}
+
 }

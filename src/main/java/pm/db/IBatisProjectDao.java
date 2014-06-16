@@ -1196,10 +1196,20 @@ public class IBatisProjectDao extends SqlSessionDaoSupport implements
 	}
 
 	@Override
-	public List<ProjectAllocation> getProjectAllocationById(
+	public List<ProjectAllocation> getProjectAllocationsByProjectId(
 			final Integer projectId) {
-		return getSqlSession().selectList("pm.db.getProjectAllocationById",
-				projectId);
+		return getSqlSession().selectList(
+				"pm.db.getProjectAllocationsByProjectId", projectId);
+	}
+
+	@Override
+	public void deleteProjectAllocation(final Integer id) {
+		getSqlSession().delete("pm.db.deleteProjectAllocation", id);
+	}
+
+	@Override
+	public ProjectAllocation getProjectAllocationById(Integer id) {
+		return getSqlSession().selectOne("pm.db.getProjectAllocationById", id);
 	}
 
 }

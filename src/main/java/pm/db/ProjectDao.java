@@ -201,13 +201,17 @@ public interface ProjectDao {
 
 	public List<ProjectAllocation> getProjectAllocations();
 
+	public ProjectAllocation getProjectAllocationById(Integer id);
+
 	public List<ProjectAllocation> getProjectAllocationByProjectCode(
 			String projectCode) throws Exception;
 
-	public List<ProjectAllocation> getProjectAllocationById(Integer projectId)
-			throws Exception;
+	public List<ProjectAllocation> getProjectAllocationsByProjectId(
+			Integer projectId) throws Exception;
 
 	public List<ProjectAllocation> getProjectAllocationsByFacility(
 			Integer facilityId);
+
+	public void deleteProjectAllocation(Integer id);
 
 }

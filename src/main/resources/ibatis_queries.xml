@@ -1177,6 +1177,15 @@
 		ORDER BY id
 	</select>
 	
+	<select id="getProjectAllocationById" parameterType="java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
+		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		FROM projectallocation pa
+		JOIN project p ON p.id = pa.projectId
+		JOIN facility f ON f.id = pa.facilityId
+		WHERE pa.id = #{id}
+		ORDER BY id
+	</select>
+
 	<select id="getProjectAllocationByProjectCode" parameterType = "java.lang.String" resultType = "pm.pojo.ProjectAllocation">
 		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
 		FROM projectallocation pa
@@ -1185,7 +1194,7 @@
 		ORDER BY id
 	</select>
 
-	<select id="getProjectAllocationById" parameterType = "java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
+	<select id="getProjectAllocationsByProjectId" parameterType = "java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
 		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
 		FROM projectallocation pa
 		JOIN project p ON p.id = pa.projectId and p.id = #{projectId}
@@ -1215,5 +1224,11 @@
 		JOIN facility f on f.name = #{facility}
 		WHERE p.projectCode = #{projectCode}
 	</insert>
+	
+	<delete id="deleteProjectAllocation" parameterType="java.lang.Integer">
+		DELETE FROM
+		projectallocation
+		WHERE id = #{id}
+	</delete>	
 
 </mapper>

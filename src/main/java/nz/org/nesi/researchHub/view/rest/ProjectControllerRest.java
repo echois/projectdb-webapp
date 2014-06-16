@@ -568,13 +568,13 @@ public class ProjectControllerRest {
 		projectControls.upsertProperty(p);
 	}
 
-	@RequestMapping(value = "/{projectIdOrCode}/alloc",
+	@RequestMapping(value = "/alloc/project/{projectIdOrCode}",
 					method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(
 					value = "Get project allocations by its project id or code",
 					notes = "Returns the project allocation object associated with project id or code")
-	public List<ProjectAllocation> getProjectAllocatios(
+	public List<ProjectAllocation> getAllocationsByProject(
 			@ApiParam(value = "Project id or code", required = true) @PathVariable final String projectIdOrCode)
 			throws NoSuchEntityException {
 		return projectControls.getAllocationsByProject(projectIdOrCode);
@@ -599,6 +599,18 @@ public class ProjectControllerRest {
 		return projectControls.getAllProjectAllocations();
 	}
 
+	@ResponseBody
+	@ApiOperation(
+					value = "Get an project allcoation by id",
+					notes = "Returns the project allocation object associated with this id",
+					responseClass = "ProjectAllocation")
+	@RequestMapping(value = "/alloc/{id}", method = RequestMethod.GET)
+	public ProjectAllocation getProjectAllocationById(
+			@ApiParam(value = "ProjectAllocation id", required = true) @PathVariable final Integer id)
+			throws NoSuchEntityException {
+		return projectControls.getProjectAllocationById(id);
+	}
+
 	@RequestMapping(value = "/alloc/{facilityId}/facility",
 					method = RequestMethod.GET)
 	@ResponseBody
@@ -609,6 +621,17 @@ public class ProjectControllerRest {
 			@ApiParam(value = "facility name", required = true) @PathVariable final Integer facilityId)
 			throws NoSuchEntityException {
 		return projectControls.getProjectAllocationsByFacility(facilityId);
+	}
+
+	@ApiOperation(
+					value = "Delete project allocation",
+					notes = "Deletes project allocation. This operation cannot be undone, unless the database is restored",
+					responseClass = "void")
+	@RequestMapping(value = "/alloc/delete/{id}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void deleteProjectAllocation(
+			@ApiParam(value = "Project Allocation id", required = true) @PathVariable final Integer id) {
+		projectControls.deleteProjectAllocation(id);
 	}
 
 	@RequestMapping(value = "/ro", method = RequestMethod.PUT)
