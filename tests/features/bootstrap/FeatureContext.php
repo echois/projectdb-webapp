@@ -119,6 +119,7 @@ class FeatureContext extends MinkContext
         'ignore_errors' => true,
         'content' => $postdata,
         'header'=>"Accept: application/json\r\n" .
+                  "Authorization: Basic " . base64_encode($this->basic_auth['username'] . ":" . $this->basic_auth['password']) .
                   "Content-Type: application/json\r\n" .
                   "RemoteUser: $u\r\n" .
                   "User-Agent: drupal\r\n"

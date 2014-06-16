@@ -7,8 +7,8 @@ default:
     parameters:
       default_browser: 'goutte'
       basic_auth:
-          username: 'behat'
-          password: 'insecure'
+        username: 'behat'
+        password: 'insecure'
       users:
         anonymous: '_'
         authenticated: 'behat-authd'
