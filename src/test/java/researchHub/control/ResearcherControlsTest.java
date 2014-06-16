@@ -214,6 +214,23 @@ public class ResearcherControlsTest {
 		researcherControls.createResearcher(newresearcher);
 	}
 
+	@Test(expected = InvalidEntityException.class)
+	public void testIncompleteResearcher() throws Exception {
+
+		Researcher newresearcher = new Researcher() {
+			{
+				setFullName("TestNewName");
+				setId(1);
+				setStatusId(6);
+				setPhone("09000000");
+				setEmail("test@auckland.ac.nz");
+			}
+		};
+		when(projectDaoMock.getResearcherById(1)).thenReturn(newresearcher);
+
+		researcherControls.createResearcher(newresearcher);
+	}
+
 	@Test
 	public void testAllowDuplicateFullNameAsNewResearcher() throws Exception {
 
