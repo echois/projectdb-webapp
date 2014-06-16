@@ -65,6 +65,7 @@ public class ResearcherControlsTest {
 				setPhone("09000000");
 				setEmail("test@auckland.ac.nz");
 				setInstitutionalRoleId(1);
+				setStatusId(1);
 				setPictureUrl("http://img1.wikia.nocookie.net/__cb20140207172458/simpsons/images/6/65/Bart_Simpson.png");
 
 			}
@@ -203,6 +204,7 @@ public class ResearcherControlsTest {
 			{
 				setFullName("TestNewName");
 				setId(1);
+				setStatusId(1);
 				setPhone("09000000");
 				setEmail("test@auckland.ac.nz");
 			}
