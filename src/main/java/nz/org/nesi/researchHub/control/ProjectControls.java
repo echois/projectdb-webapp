@@ -580,6 +580,9 @@ public class ProjectControls extends AbstractControl {
                 throw new InvalidEntityException(data + " does not match "
                         + pojoClass.getName() + "." + method
                         + "'s expected parameter", ProjectWrapper.class, object);
+
+            } catch (final CustomException e) {
+                throw new DatabaseException(e.getCustomMsg(), e);
             } catch (final Exception e) {
                 throw new DatabaseException(e.getMessage(), e);
             }
