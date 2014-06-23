@@ -353,6 +353,21 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Delete the Project allocation with the specified id.
+     * 
+     * @param id
+     *            the project allocation id
+     */
+    public void deleteProjectAllocation(final Integer id) {
+        try {
+            projectDao.deleteProjectAllocation(id);
+        } catch (final Exception e) {
+            throw new DatabaseException(
+                    "Can't delete project allocation with id " + id, e);
+        }
+    }
+
+    /**
      * Edit a project wrapper object.
      * 
      * @param project
@@ -617,6 +632,66 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Returns the project allocation with project code.
+     * 
+     * @param projectCode
+     *            the project code
+     * @return the project allocation object
+     * @throws DatabaseException
+     *             if there is problem with the database
+     */
+    public List<ProjectAllocation> getAllocationsByProject(
+            final String projectIdOrCode) throws NoSuchEntityException {
+
+        if (projectIdOrCode == null) {
+            throw new IllegalArgumentException("No project code or id provided");
+        }
+
+        List<ProjectAllocation> pa = null;
+
+        try {
+            final int i = Integer.parseInt(projectIdOrCode);
+            try {
+                pa = projectDao.getProjectAllocationsByProjectId(i);
+                return pa;
+            } catch (final Exception e) {
+                throw new DatabaseException(
+                        "Could not retrieve project with id: "
+                                + projectIdOrCode, e);
+            }
+        } catch (final Exception e) {
+            try {
+                pa = projectDao
+                        .getProjectAllocationByProjectCode(projectIdOrCode);
+                return pa;
+            } catch (final Exception e2) {
+                throw new DatabaseException(
+                        "Could not retrieve project with code: "
+                                + projectIdOrCode, e2);
+            }
+        }
+    }
+
+    /**
+     * Add/Edit the specified project allocation
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public List<ProjectAllocation> getAllProjectAllocations() {
+
+        List<ProjectAllocation> pa = null;
+        try {
+            pa = projectDao.getProjectAllocations();
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't get Project Allocations.", e);
+        }
+        return pa;
+
+    }
+
+    /**
      * Returns a map of all projects, with all researcher members for every
      * project, and their roles.
      * 
@@ -703,6 +778,67 @@ public class ProjectControls extends AbstractControl {
             return projectDao.getProjectWrapperById(id).getProject()
                     .getLastModified();
         }
+    }
+
+    /**
+     * Returns the project allocation with the specified id.
+     * 
+     * @param id
+     *            the project allocation id
+     * @return the project allocation object
+     * @throws NoSuchEntityException
+     *             if the project allocation can't be found
+     * @throws DatabaseException
+     *             if there is project allocation problem with the database
+     */
+    public ProjectAllocation getProjectAllocationById(final Integer id)
+            throws NoSuchEntityException {
+
+        if (id == null) {
+            throw new IllegalArgumentException(
+                    "No project allocation id provided");
+        }
+
+        ProjectAllocation pa = null;
+        try {
+            pa = projectDao.getProjectAllocationById(id);
+        } catch (final NullPointerException npe) {
+            throw new NoSuchEntityException(
+                    "Can't find project allocation with id " + id,
+                    ProjectAllocation.class, id, npe);
+        } catch (final Exception e) {
+            throw new DatabaseException(
+                    "Can't find project allocation with id " + id, e);
+        }
+
+        return pa;
+    }
+
+    /**
+     * Returns the project allocation with facility id.
+     * 
+     * @param facility
+     *            the facility id
+     * @return the project allocation object
+     * @throws DatabaseException
+     *             if there is problem with the database
+     */
+    public List<ProjectAllocation> getProjectAllocationsByFacility(
+            Integer facilityId) {
+        if (facilityId == null) {
+            throw new IllegalArgumentException("No facility id provided");
+        }
+
+        List<ProjectAllocation> pa = null;
+        try {
+            pa = projectDao.getProjectAllocationsByFacility(facilityId);
+        } catch (final Exception e) {
+            throw new DatabaseException(
+                    "Can't find project allocation with facility " + facilityId,
+                    e);
+        }
+
+        return pa;
     }
 
     /**
@@ -949,6 +1085,25 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Upsert the specified project_allocation to this project
+     * 
+     * @param id
+     *            the id
+     * @throws Exception
+     */
+    public void upsertProjectAllocation(
+            final ProjectAllocation projectAllocation) throws Exception {
+        validateProjectAllocation(projectAllocation);
+        try {
+            projectDao.upsertProjectAllocation(projectAllocation);
+
+        } catch (final Exception e) {
+            throw new DatabaseException("Can't create project allocation '"
+                    + projectAllocation.getProjectCode() + "'", e);
+        }
+    }
+
+    /**
      * Add/Edit the specified project property
      * 
      * @param id
@@ -1058,47 +1213,6 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
-     * Returns the project allocation with project code.
-     * 
-     * @param projectCode
-     *            the project code
-     * @return the project allocation object
-     * @throws DatabaseException
-     *             if there is problem with the database
-     */
-    public List<ProjectAllocation> getAllocationsByProject(
-            final String projectIdOrCode) throws NoSuchEntityException {
-
-        if (projectIdOrCode == null) {
-            throw new IllegalArgumentException("No project code or id provided");
-        }
-
-        List<ProjectAllocation> pa = null;
-
-        try {
-            final int i = Integer.parseInt(projectIdOrCode);
-            try {
-                pa = projectDao.getProjectAllocationsByProjectId(i);
-                return pa;
-            } catch (final Exception e) {
-                throw new DatabaseException(
-                        "Could not retrieve project with id: "
-                                + projectIdOrCode, e);
-            }
-        } catch (final Exception e) {
-            try {
-                pa = projectDao
-                        .getProjectAllocationByProjectCode(projectIdOrCode);
-                return pa;
-            } catch (final Exception e2) {
-                throw new DatabaseException(
-                        "Could not retrieve project with code: "
-                                + projectIdOrCode, e2);
-            }
-        }
-    }
-
-    /**
      * Validates the project allocation object.
      * 
      * @param a
@@ -1125,120 +1239,6 @@ public class ProjectControls extends AbstractControl {
             }
         }
 
-    }
-
-    /**
-     * Delete the Project allocation with the specified id.
-     * 
-     * @param id
-     *            the project allocation id
-     */
-    public void deleteProjectAllocation(final Integer id) {
-        try {
-            projectDao.deleteProjectAllocation(id);
-        } catch (final Exception e) {
-            throw new DatabaseException(
-                    "Can't delete project allocation with id " + id, e);
-        }
-    }
-
-    /**
-     * Upsert the specified project_allocation to this project
-     * 
-     * @param id
-     *            the id
-     * @throws Exception
-     */
-    public void upsertProjectAllocation(
-            final ProjectAllocation projectAllocation) throws Exception {
-        validateProjectAllocation(projectAllocation);
-        try {
-            projectDao.upsertProjectAllocation(projectAllocation);
-
-        } catch (final Exception e) {
-            throw new DatabaseException("Can't create project allocation '"
-                    + projectAllocation.getProjectCode() + "'", e);
-        }
-    }
-
-    /**
-     * Add/Edit the specified project allocation
-     * 
-     * @param id
-     *            the id
-     * @throws Exception
-     */
-    public List<ProjectAllocation> getAllProjectAllocations() {
-
-        List<ProjectAllocation> pa = null;
-        try {
-            pa = projectDao.getProjectAllocations();
-        } catch (final Exception e) {
-            throw new DatabaseException("Can't get Project Allocations.", e);
-        }
-        return pa;
-
-    }
-
-    /**
-     * Returns the project allocation with the specified id.
-     * 
-     * @param id
-     *            the project allocation id
-     * @return the project allocation object
-     * @throws NoSuchEntityException
-     *             if the project allocation can't be found
-     * @throws DatabaseException
-     *             if there is project allocation problem with the database
-     */
-    public ProjectAllocation getProjectAllocationById(final Integer id)
-            throws NoSuchEntityException {
-
-        if (id == null) {
-            throw new IllegalArgumentException(
-                    "No project allocation id provided");
-        }
-
-        ProjectAllocation pa = null;
-        try {
-            pa = projectDao.getProjectAllocationById(id);
-        } catch (final NullPointerException npe) {
-            throw new NoSuchEntityException(
-                    "Can't find project allocation with id " + id,
-                    ProjectAllocation.class, id, npe);
-        } catch (final Exception e) {
-            throw new DatabaseException(
-                    "Can't find project allocation with id " + id, e);
-        }
-
-        return pa;
-    }
-
-    /**
-     * Returns the project allocation with facility id.
-     * 
-     * @param facility
-     *            the facility id
-     * @return the project allocation object
-     * @throws DatabaseException
-     *             if there is problem with the database
-     */
-    public List<ProjectAllocation> getProjectAllocationsByFacility(
-            Integer facilityId) {
-        if (facilityId == null) {
-            throw new IllegalArgumentException("No facility id provided");
-        }
-
-        List<ProjectAllocation> pa = null;
-        try {
-            pa = projectDao.getProjectAllocationsByFacility(facilityId);
-        } catch (final Exception e) {
-            throw new DatabaseException(
-                    "Can't find project allocation with facility " + facilityId,
-                    e);
-        }
-
-        return pa;
     }
 
 }
