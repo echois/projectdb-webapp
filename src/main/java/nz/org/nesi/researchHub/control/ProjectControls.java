@@ -1091,10 +1091,24 @@ public class ProjectControls extends AbstractControl {
      *            the id
      * @throws Exception
      */
-    public void upsertProjectAllocation(
-            final ProjectAllocation projectAllocation) throws Exception {
+    public void upsertProjectAllocation(ProjectAllocation projectAllocation)
+            throws Exception {
         validateProjectAllocation(projectAllocation);
         try {
+            if (projectAllocation.getId() != null) {
+                final ProjectAllocation old = projectDao
+                        .getProjectAllocationById(projectAllocation.getId());
+                if (projectAllocation.getFacility() != null) {
+                    old.setFacility(projectAllocation.getFacility());
+                }
+                if (projectAllocation.getAllocation() != null) {
+                    old.setAllocation(projectAllocation.getAllocation());
+                }
+                if (projectAllocation.getProjectCode() != null) {
+                    old.setProjectCode(projectAllocation.getProjectCode());
+                }
+                projectAllocation = old;
+            }
             projectDao.upsertProjectAllocation(projectAllocation);
 
         } catch (final Exception e) {

@@ -1225,10 +1225,9 @@
 		id,
 		facilityId,
 		projectId,
-		allocation,
-		lastModified		
+		allocation,	
 		) 
-		SELECT #{id},f.id, p.id, #{allocation},now()
+		SELECT #{id},f.id, p.id, #{allocation}
 		FROM project p 
 		JOIN facility f on f.name = #{facility}
 		WHERE p.projectCode = #{projectCode}
