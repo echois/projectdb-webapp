@@ -1266,13 +1266,14 @@ public class ProjectControls extends AbstractControl {
      */
     private void validateProjectAllocation(ProjectAllocation pa)
             throws InvalidEntityException {
-        if (pa.getFacilityId() == null) {
+        if (pa.getId() == null && pa.getFacilityId() == null) {
             throw new InvalidEntityException("Facility cannot be empty",
                     ProjectAllocation.class, "facility");
         }
 
         for (final ProjectAllocation other : getAllProjectAllocations()) {
-            if (pa.getFacilityId().equals(other.getFacilityId())
+            if (pa.getId() == null
+                    && pa.getFacilityId().equals(other.getFacilityId())
                     && pa.getProjectId().equals(other.getProjectId())) {
                 throw new InvalidEntityException("Allocation for "
                         + pa.getProjectCode() + " " + pa.getFacilityName()
