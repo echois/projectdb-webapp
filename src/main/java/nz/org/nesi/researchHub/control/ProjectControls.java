@@ -1067,8 +1067,13 @@ public class ProjectControls extends AbstractControl {
             String[] bits = change.getField().split("_");
             String obj = bits[0];
             String field = change.getField().replace(obj + "_", "");
-            this.editProjectWrapper(pid, obj, field, "force",
-                    change.getOld_val());
+            try {
+                this.editProjectWrapper(pid, obj, field, "force",
+                        change.getOld_val());
+            } catch (Exception e) {
+                System.out.println("Don't know how to edit a "
+                        + change.getField() + ", skipping." + e.getMessage());
+            }
             if (change.getId().equals(rid)) return; // Reached desired revision
         }
     }
@@ -1099,39 +1104,40 @@ public class ProjectControls extends AbstractControl {
             if (projectAllocation.getId() != null) {
                 final ProjectAllocation old = projectDao
                         .getProjectAllocationById(projectAllocation.getId());
-                if (projectAllocation.getFacilityId() != null) {
-                    old.setFacilityId(projectAllocation.getFacilityId());
+                if (projectAllocation.getProjectId() != null
+                        && !projectAllocation.getProjectId().equals(
+                                old.getProjectId())) {
+                    throw new Exception(
+                            "Project id for an allocation cannot be changed");
+                }
+                if (projectAllocation.getFacilityId() != null
+                        && !projectAllocation.getFacilityId().equals(
+                                old.getFacilityId())) {
                     Change ch = new Change();
-                    ch.setTbl_id(projectAllocation.getId());
-                    ch.setTbl("projectallocation");
-                    ch.setField("facilityId");
+                    ch.setTbl_id(projectAllocation.getProjectId());
+                    ch.setTbl("project");
+                    ch.setField("allocation_" + projectAllocation.getId()
+                            + "_facilityId");
                     ch.setAdviserId(this.authzAspect.getAdviserId());
                     ch.setNew_val(projectAllocation.getFacilityId());
                     ch.setOld_val(old.getFacilityId());
                     changelist.add(ch);
+                    old.setFacilityId(projectAllocation.getFacilityId());
                 }
-                if (projectAllocation.getAllocationSeconds() != null) {
-                    old.setAllocationSeconds(projectAllocation
-                            .getAllocationSeconds());
+                if (projectAllocation.getAllocationSeconds() != null
+                        && !projectAllocation.getAllocationSeconds().equals(
+                                old.getAllocationSeconds())) {
                     Change ch = new Change();
-                    ch.setTbl_id(projectAllocation.getId());
-                    ch.setTbl("projectallocation");
-                    ch.setField("allocation");
+                    ch.setTbl_id(projectAllocation.getProjectId());
+                    ch.setTbl("project");
+                    ch.setField("allocation_" + projectAllocation.getId()
+                            + "_allocationSeconds");
                     ch.setAdviserId(this.authzAspect.getAdviserId());
                     ch.setNew_val("" + projectAllocation.getAllocationSeconds());
                     ch.setOld_val("" + old.getAllocationSeconds());
                     changelist.add(ch);
-                }
-                if (projectAllocation.getProjectId() != null) {
-                    old.setProjectId(projectAllocation.getProjectId());
-                    Change ch = new Change();
-                    ch.setTbl_id(projectAllocation.getId());
-                    ch.setTbl("projectallocation");
-                    ch.setField("allocation");
-                    ch.setAdviserId(this.authzAspect.getAdviserId());
-                    ch.setNew_val("" + projectAllocation.getProjectId());
-                    ch.setOld_val("" + old.getProjectId());
-                    changelist.add(ch);
+                    old.setAllocationSeconds(projectAllocation
+                            .getAllocationSeconds());
                 }
                 projectAllocation = old;
             }
