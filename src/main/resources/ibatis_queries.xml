@@ -1178,7 +1178,7 @@
 	</insert>
 	
 	<select id="getProjectAllocations" resultType = "pm.pojo.ProjectAllocation">
-		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		SELECT pa.id, p.id as projectId, p.projectCode as projectCode, p.name as projectName, f.id as facilityId, f.name as facilityName, pa.allocation as allocationSeconds, pa.lastModified 
 		FROM projectallocation pa
 		JOIN project p ON p.id = pa.projectId
 		JOIN facility f ON f.id = pa.facilityId
@@ -1186,7 +1186,7 @@
 	</select>
 	
 	<select id="getProjectAllocationById" parameterType="java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
-		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		SELECT pa.id, p.id as projectId, p.projectCode as projectCode, p.name as projectName, f.id as facilityId, f.name as facilityName, pa.allocation as allocationSeconds, pa.lastModified
 		FROM projectallocation pa
 		JOIN project p ON p.id = pa.projectId
 		JOIN facility f ON f.id = pa.facilityId
@@ -1195,7 +1195,7 @@
 	</select>
 
 	<select id="getProjectAllocationByProjectCode" parameterType = "java.lang.String" resultType = "pm.pojo.ProjectAllocation">
-		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		SELECT pa.id, p.id as projectId, p.projectCode as projectCode, p.name as projectName, f.id as facilityId, f.name as facilityName, pa.allocation as allocationSeconds, pa.lastModified 
 		FROM projectallocation pa
 		JOIN project p ON p.id = pa.projectId and p.projectCode = #{projectCode}
 		JOIN facility f ON f.id = pa.facilityId
@@ -1203,7 +1203,7 @@
 	</select>
 
 	<select id="getProjectAllocationsByProjectId" parameterType = "java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
-		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		SELECT pa.id, p.id as projectId, p.projectCode as projectCode, p.name as projectName, f.id as facilityId, f.name as facilityName, pa.allocation as allocationSeconds, pa.lastModified 
 		FROM projectallocation pa
 		JOIN project p ON p.id = pa.projectId and p.id = #{projectId}
 		JOIN facility f ON f.id = pa.facilityId
@@ -1211,7 +1211,7 @@
 	</select>
 	
 	<select id="getProjectAllocationsByFacility" parameterType = "java.lang.Integer" resultType = "pm.pojo.ProjectAllocation">
-		SELECT pa.id, p.projectCode as projectCode, p.name as project, f.name as facility, pa.allocation, pa.lastModified 
+		SELECT pa.id, p.id as projectId, p.projectCode as projectCode, p.name as projectName, f.id as facilityId, f.name as facilityName, pa.allocation as allocationSeconds, pa.lastModified
 		FROM projectallocation pa
 		JOIN project p ON p.id = pa.projectId 
 		JOIN facility f ON f.id = pa.facilityId
@@ -1221,16 +1221,11 @@
 	
 	<insert id="upsertProjectAllocation" parameterType="pm.pojo.ProjectAllocation">
 		REPLACE INTO
-		projectallocation (
-		id,
-		facilityId,
-		projectId,
-		allocation,	
-		) 
-		SELECT #{id},f.id, p.id, #{allocation}
-		FROM project p 
-		JOIN facility f on f.name = #{facility}
-		WHERE p.projectCode = #{projectCode}
+		projectallocation SET
+		id = #{id},
+		facilityId = #{facilityId},
+		projectId = #{projectId},
+		allocation = #{allocationSeconds}
 	</insert>
 	
 	<delete id="deleteProjectAllocation" parameterType="java.lang.Integer">

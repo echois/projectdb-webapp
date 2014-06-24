@@ -3,59 +3,77 @@ package pm.pojo;
 import java.io.Serializable;
 
 public class ProjectAllocation implements Serializable {
-	private Integer id;
-	private String projectCode;
-	private String project;
-	private String allocation;
-	private String facility;
-	private String lastModified;
+    private Long allocationSeconds;
+    private String facilityId;
+    private String facilityName;
+    private Integer id;
+    private String lastModified;
+    private String projectCode;
+    private Integer projectId;
+    private String projectName;
 
-	public Integer getId() {
-		return id;
-	}
+    public Long getAllocationSeconds() {
+        return allocationSeconds;
+    }
 
-	public String getFacility() {
-		return facility;
-	}
+    public String getFacilityId() {
+        return facilityId;
+    }
 
-	public String getAllocation() {
-		return allocation;
-	}
+    public String getFacilityName() {
+        return facilityName;
+    }
 
-	public String getProject() {
-		return project;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getProjectCode() {
-		return projectCode;
-	}
+    public String getLastModified() {
+        return lastModified;
+    }
 
-	public String getLastModified() {
-		return lastModified;
-	}
+    public String getProjectCode() {
+        return projectCode;
+    }
 
-	public void setId(final Integer id) {
-		this.id = id;
-	}
+    public Integer getProjectId() {
+        return projectId;
+    }
 
-	public void setFacility(final String facility) {
-		this.facility = facility;
-	}
+    public String getProjectName() {
+        return projectName;
+    }
 
-	public void setAllocation(final String allocation) {
-		this.allocation = allocation;
-	}
+    public void setAllocationSeconds(Long allocationSeconds) {
+        this.allocationSeconds = allocationSeconds;
+    }
 
-	public void setProject(final String project) {
-		this.project = project;
-	}
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
 
-	public void setProjectCode(final String projectCode) {
-		this.projectCode = projectCode;
-	}
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
+    }
 
-	public void setLastModified() {
-		this.lastModified = lastModified;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
 }

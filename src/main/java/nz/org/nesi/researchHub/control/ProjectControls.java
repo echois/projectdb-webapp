@@ -1095,21 +1095,50 @@ public class ProjectControls extends AbstractControl {
             throws Exception {
         validateProjectAllocation(projectAllocation);
         try {
+            List<Change> changelist = new LinkedList<Change>();
             if (projectAllocation.getId() != null) {
                 final ProjectAllocation old = projectDao
                         .getProjectAllocationById(projectAllocation.getId());
-                if (projectAllocation.getFacility() != null) {
-                    old.setFacility(projectAllocation.getFacility());
+                if (projectAllocation.getFacilityId() != null) {
+                    old.setFacilityId(projectAllocation.getFacilityId());
+                    Change ch = new Change();
+                    ch.setTbl_id(projectAllocation.getId());
+                    ch.setTbl("projectallocation");
+                    ch.setField("facilityId");
+                    ch.setAdviserId(this.authzAspect.getAdviserId());
+                    ch.setNew_val(projectAllocation.getFacilityId());
+                    ch.setOld_val(old.getFacilityId());
+                    changelist.add(ch);
                 }
-                if (projectAllocation.getAllocation() != null) {
-                    old.setAllocation(projectAllocation.getAllocation());
+                if (projectAllocation.getAllocationSeconds() != null) {
+                    old.setAllocationSeconds(projectAllocation
+                            .getAllocationSeconds());
+                    Change ch = new Change();
+                    ch.setTbl_id(projectAllocation.getId());
+                    ch.setTbl("projectallocation");
+                    ch.setField("allocation");
+                    ch.setAdviserId(this.authzAspect.getAdviserId());
+                    ch.setNew_val("" + projectAllocation.getAllocationSeconds());
+                    ch.setOld_val("" + old.getAllocationSeconds());
+                    changelist.add(ch);
                 }
-                if (projectAllocation.getProjectCode() != null) {
-                    old.setProjectCode(projectAllocation.getProjectCode());
+                if (projectAllocation.getProjectId() != null) {
+                    old.setProjectId(projectAllocation.getProjectId());
+                    Change ch = new Change();
+                    ch.setTbl_id(projectAllocation.getId());
+                    ch.setTbl("projectallocation");
+                    ch.setField("allocation");
+                    ch.setAdviserId(this.authzAspect.getAdviserId());
+                    ch.setNew_val("" + projectAllocation.getProjectId());
+                    ch.setOld_val("" + old.getProjectId());
+                    changelist.add(ch);
                 }
                 projectAllocation = old;
             }
             projectDao.upsertProjectAllocation(projectAllocation);
+            for (Change ch : changelist) {
+                projectDao.logChange(ch);
+            }
 
         } catch (final Exception e) {
             throw new DatabaseException("Can't create project allocation '"
@@ -1237,19 +1266,18 @@ public class ProjectControls extends AbstractControl {
      */
     private void validateProjectAllocation(ProjectAllocation pa)
             throws InvalidEntityException {
-        // There is no more than one facility by projectCode
-        if (pa.getFacility() == null || pa.getFacility().trim().equals("")) {
+        if (pa.getFacilityId() == null) {
             throw new InvalidEntityException("Facility cannot be empty",
                     ProjectAllocation.class, "facility");
         }
 
         for (final ProjectAllocation other : getAllProjectAllocations()) {
-            if (pa.getFacility().equals(other.getFacility())
-                    && pa.getProjectCode().equals(other.getProjectCode())) {
+            if (pa.getFacilityId().equals(other.getFacilityId())
+                    && pa.getProjectId().equals(other.getProjectId())) {
                 throw new InvalidEntityException("Allocation for "
-                        + pa.getProjectCode() + " " + pa.getFacility()
+                        + pa.getProjectCode() + " " + pa.getFacilityName()
                         + " already exists in the database",
-                        ProjectAllocation.class, "id");
+                        ProjectAllocation.class, "allocation");
             }
         }
 
