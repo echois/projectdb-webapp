@@ -1282,7 +1282,7 @@ public class ProjectControls extends AbstractControl {
                     && pa.getFacilityId().equals(other.getFacilityId())
                     && pa.getProjectId().equals(other.getProjectId())) {
                 throw new InvalidEntityException("Allocation for "
-                        + other.getProjectCode() + " "
+                        + other.getProjectCode() + " on "
                         + other.getFacilityName()
                         + " already exists in the database",
                         ProjectAllocation.class, "allocation");
