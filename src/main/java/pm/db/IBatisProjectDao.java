@@ -1223,4 +1223,9 @@ ProjectDao {
 	public ProjectAllocation getProjectAllocationById(Integer id) {
 		return getSqlSession().selectOne("pm.db.getProjectAllocationById", id);
 	}
+
+	@Override
+	public List<Project> getProjectsMissingDetails() {
+		return getSqlSession().selectList("pm.db.getProjectsMissingDetails");
+	}
 }

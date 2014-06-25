@@ -192,6 +192,14 @@ public class ProjectControllerRest {
 		return projectControls.filterProjects(filter);
 	}
 
+	@RequestMapping(value = "/missingdetails", method = RequestMethod.GET)
+	@ApiOperation(value = "Get a list of projects missing details",
+					notes = "Searches the list of projects missing details")
+	@ResponseBody
+	public List<Project> getProjectsMissingDetails() throws Exception {
+		return projectControls.getProjectsMissingDetails();
+	}
+
 	@RequestMapping(value = "/changes", method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "Get all changes",

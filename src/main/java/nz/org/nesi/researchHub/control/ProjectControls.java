@@ -884,6 +884,20 @@ public class ProjectControls extends AbstractControl {
     }
 
     /**
+     * Get all projects missing details
+     * 
+     * Mind, this returns only the Project object, not the ProjectWrapper ones
+     * (see: {@link #getProjects()}.
+     * 
+     * @return all projects missing details
+     */
+    public List<Project> getProjectsMissingDetails() {
+
+        final List<Project> ps = projectDao.getProjectsMissingDetails();
+        return ps;
+    }
+
+    /**
      * Returns a list of ProjectStatuses.
      * 
      * @return a list of ProjectStatuses

@@ -216,4 +216,6 @@ public interface ProjectDao {
 
 	public void deleteProjectAllocation(Integer id);
 
+	public List<Project> getProjectsMissingDetails();
+
 }

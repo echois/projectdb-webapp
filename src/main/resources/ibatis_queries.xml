@@ -488,6 +488,15 @@
 		)
 	</select>
 
+	<select id="getProjectsMissingDetails" resultType="pm.pojo.Project">
+		SELECT * FROM project
+		WHERE name LIKE '%stub%' OR name ='' OR name LIKE '%None%'
+		OR description='' OR description LIKE '%stub%' OR description LIKE '%None%'
+		OR startDate = ''
+		ORDER BY
+		id
+	</select>
+
 	<insert id="createProject" parameterType="pm.pojo.Project">
 		INSERT INTO project (
 		projectCode,
